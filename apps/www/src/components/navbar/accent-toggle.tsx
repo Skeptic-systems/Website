@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const ACCENT_LABEL_KEYS: Record<AccentKey, string> = {
+  default: "options.default",
   blue: "options.blue",
   green: "options.green",
   orange: "options.orange",
@@ -15,6 +16,7 @@ const ACCENT_LABEL_KEYS: Record<AccentKey, string> = {
 };
 
 const ACCENT_SWATCH: Record<AccentKey, { light: string; dark: string }> = {
+  default: { light: "#a3a3a3", dark: "#525252" },
   blue: { light: "#2563eb", dark: "#60a5fa" },
   green: { light: "#16a34a", dark: "#4ade80" },
   orange: { light: "#ea580c", dark: "#fb923c" },
@@ -83,13 +85,20 @@ export function AccentToggle() {
                   )}
                   disabled={!isReady}
                 >
-                  <span
-                    className="h-4 w-4 rounded-full"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, ${swatch.light} 50%, ${swatch.dark} 50%)`,
-                    }}
-                    aria-hidden
-                  />
+                  {key === "default" ? (
+                    <span
+                      className="h-4 w-4 rounded-full border border-neutral-300 dark:border-neutral-700 bg-gradient-to-br from-transparent to-transparent"
+                      aria-hidden
+                    />
+                  ) : (
+                    <span
+                      className="h-4 w-4 rounded-full"
+                      style={{
+                        backgroundImage: `linear-gradient(135deg, ${swatch.light} 50%, ${swatch.dark} 50%)`,
+                      }}
+                      aria-hidden
+                    />
+                  )}
                   <span>{t(ACCENT_LABEL_KEYS[key])}</span>
                 </button>
               );

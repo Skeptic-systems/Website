@@ -1,4 +1,8 @@
 {
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading..."
+  },
   "hero": {
     "title": "Skeptic Systems"
   },
@@ -17,6 +21,7 @@
     "accent": {
       "label": "Choose accent color",
       "options": {
+        "default": "Default",
         "blue": "Blue",
         "green": "Green",
         "orange": "Orange",

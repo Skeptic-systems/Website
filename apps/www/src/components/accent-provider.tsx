@@ -13,7 +13,7 @@ import {
 const ACCENT_ATTRIBUTE = "data-accent";
 const ACCENT_STORAGE_KEY = "www-accent";
 
-export const ACCENT_KEYS = ["blue", "green", "orange", "purple"] as const;
+export const ACCENT_KEYS = ["default", "blue", "green", "orange", "purple"] as const;
 
 export type AccentKey = (typeof ACCENT_KEYS)[number];
 
@@ -25,7 +25,7 @@ type AccentContextValue = {
 
 const AccentContext = createContext<AccentContextValue | null>(null);
 
-const DEFAULT_ACCENT: AccentKey = "blue";
+const DEFAULT_ACCENT: AccentKey = "default";
 
 const isAccentKey = (value: unknown): value is AccentKey =>
   typeof value === "string" && (ACCENT_KEYS as readonly string[]).includes(value as AccentKey);
@@ -48,6 +48,12 @@ export function AccentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof document === "undefined" || typeof window === "undefined" || !isReady) {
+      return;
+    }
+
+    if (accent === "default") {
+      document.documentElement.removeAttribute(ACCENT_ATTRIBUTE);
+      window.localStorage.removeItem(ACCENT_STORAGE_KEY);
       return;
     }
 

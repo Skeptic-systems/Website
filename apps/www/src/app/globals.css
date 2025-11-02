@@ -64,6 +64,14 @@
     --accent-dark-foreground: 240 10% 3.9%;
   }
 
+  /* Neutral accent when no explicit accent is selected */
+  :root:not([data-accent]) {
+    --accent-light: 0 0% 96%; /* neutral-100 */
+    --accent-light-foreground: 240 10% 3.9%; /* dark text */
+    --accent-dark: 0 0% 20%; /* neutral-800 */
+    --accent-dark-foreground: 0 0% 98%; /* light text */
+  }
+
   .dark {
     color-scheme: dark;
     --background: 0 0% 0%;
@@ -111,6 +119,30 @@
       0 0 1px rgba(0, 0, 0, 0.6),
       0 0 2px rgba(0, 0, 0, 0.6),
       0 0 3px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Subtle accent glow overlay, only visible when an accent is selected */
+  .accent-glow-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+    background-image: radial-gradient(
+      1800px circle at 18% 22%,
+      hsl(var(--accent) / 0.16),
+      transparent 60%
+    );
+  }
+  .dark .accent-glow-layer {
+    background-image: radial-gradient(
+      1800px circle at 18% 22%,
+      hsl(var(--accent) / 0.12),
+      transparent 55%
+    );
+    filter: saturate(90%);
+  }
+  :root[data-accent] .accent-glow-layer {
+    display: block;
   }
 }
 
