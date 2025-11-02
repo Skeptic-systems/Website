@@ -1,6 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { AccentToggle } from "@/components/navbar/accent-toggle";
+import { LocaleToggle } from "@/components/navbar/locale-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
   MobileNav,
@@ -10,15 +13,16 @@ import {
   NavBody,
   Navbar,
   NavbarButton,
-  NavbarLogo,
   NavItems,
 } from "@/components/ui/resizable-navbar";
 
 export function Topbar() {
+  const t = useTranslations("navbar");
+
   const navItems: { name: string; link: string }[] = [
-    { name: "About", link: "#about" },
-    { name: "Features", link: "#features" },
-    { name: "Contact", link: "#contact" },
+    { name: t("links.about"), link: "#about" },
+    { name: t("links.features"), link: "#features" },
+    { name: t("links.contact"), link: "#contact" },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -26,19 +30,19 @@ export function Topbar() {
   return (
     <Navbar className="top-0">
       <NavBody>
-        <NavbarLogo />
         <NavItems items={navItems} />
-        <div className="flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
+          <AccentToggle />
+          <LocaleToggle />
           <NavbarButton href="/login" variant="primary">
-            Login
+            {t("cta.login")}
           </NavbarButton>
         </div>
       </NavBody>
 
       <MobileNav>
         <MobileNavHeader>
-          <NavbarLogo />
           <MobileNavToggle
             isOpen={isMobileMenuOpen}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -46,9 +50,9 @@ export function Topbar() {
         </MobileNavHeader>
 
         <MobileNavMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)}>
-          {navItems.map((item, idx) => (
+          {navItems.map((item) => (
             <a
-              key={`mobile-link-${idx}`}
+              key={item.link}
               href={item.link}
               onClick={() => setIsMobileMenuOpen(false)}
               className="relative text-neutral-600 dark:text-neutral-300"
@@ -56,15 +60,17 @@ export function Topbar() {
               <span className="block">{item.name}</span>
             </a>
           ))}
-          <div className="flex w-full items-center justify-between gap-4">
+          <div className="flex w-full items-center justify-end gap-2">
             <ThemeToggle />
+            <AccentToggle />
+            <LocaleToggle />
             <NavbarButton
               href="/login"
               onClick={() => setIsMobileMenuOpen(false)}
               variant="primary"
               className="ml-auto"
             >
-              Login
+              {t("cta.login")}
             </NavbarButton>
           </div>
         </MobileNavMenu>

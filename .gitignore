@@ -59,3 +59,4 @@ lerna-debug.log*
 Thumbs.db
 .cursor/context/*
 .cursor/plan/*
+tmp/*
