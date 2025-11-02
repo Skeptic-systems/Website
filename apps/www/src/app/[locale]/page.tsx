@@ -10,7 +10,7 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <main className="container mx-auto px-4">
+    <main className="w-full">
       <Hero />
       <section id="about" className="relative w-full">
         <div className="pointer-events-none absolute -top-8 left-0 right-0 h-16 bg-gradient-to-b from-white to-transparent dark:from-black dark:to-transparent" />
