@@ -2,5 +2,37 @@
   "common": {
     "welcome": "Willkommen",
     "loading": "Lädt..."
+  },
+  "hero": {
+    "title": "Skeptic Systems"
+  },
+  "navbar": {
+    "links": {
+      "about": "Über uns",
+      "features": "Funktionen",
+      "contact": "Kontakt"
+    },
+    "cta": {
+      "login": "Anmelden"
+    },
+    "theme": {
+      "label": "Theme umschalten"
+    },
+    "accent": {
+      "label": "Akzentfarbe auswählen",
+      "options": {
+        "blue": "Blau",
+        "green": "Grün",
+        "orange": "Orange",
+        "purple": "Lila"
+      }
+    },
+    "locale": {
+      "label": "Sprache wechseln",
+      "options": {
+        "en": "EN",
+        "de": "DE"
+      }
+    }
   }
 }

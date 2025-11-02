@@ -45,19 +45,19 @@ Closes #123
 
 Explain the ticket number, type, and scope chosen.
 
-Then **execute the commit** using a single -m and explicit `n line breaks (PowerShell-safe):
+Then **execute the commit** with `--no-verify` (skip lefthook) using a single -m and explicit `n line breaks (PowerShell-safe):
 
 ```bash
-git commit -m "type(scope): description`n- Bullet 1`n- Bullet 2`nCloses #GITHUB_ISSUE"
+git commit --no-verify -m "type(scope): description`n- Bullet 1`n- Bullet 2`nCloses #GITHUB_ISSUE"
 ```
 
 Notes:
 - Do not use multiple -m flags.
 - Avoid empty blank lines; use `n to control exact line breaks.
-- If no body is needed, use only the subject:
+- If no body is needed, use only the subject (still with `--no-verify`):
 
 ```bash
-git commit -m "type(scope): description"
+git commit --no-verify -m "type(scope): description"
 ```
 
 After committing, show the commit hash and confirm success.
@@ -122,22 +122,14 @@ git push -u origin <suggested-branch>
 
 After pushing, show the branch and the short commit hash.
 
-### 6. Error Handling (including lefthook)
+### 6. Error Handling
 
-If the commit fails (e.g., lefthook, type-check, build, tests, or commitlint):
+All commits are executed with `--no-verify`, skipping lefthook hooks by default.
 
-- Show the error message and classify severity:
-  - Non-critical (eligible for bypass): stylistic/warning-only issues in files not modified by this commit, or broad project-wide lint that would require out-of-scope changes.
-  - Critical (must fix): TypeScript errors in changed areas, build failures, failing tests, or commit message validation.
-- If non-critical, re-run the commit with `--no-verify` and include a one-line rationale in the output.
+If the commit still fails (e.g., due to repository state, merge conflicts, or Git errors):
 
-PowerShell-safe example for bypass:
-
-```bash
-git commit --no-verify -m "type(scope): description`n- Bullet 1`n- Bullet 2"
-```
-
-- If critical, propose minimal focused fixes or offer to generate a new commit message when message validation failed.
+- Show the exact error output.
+- Propose minimal, focused fixes (e.g., resolve conflicts, stage files) and retry.
 
 ## Key Points
 

@@ -1,0 +1,71 @@
+---
+description: Git conventions for commits, scopes, and branches in this monorepo
+alwaysApply: true
+---
+
+# Git Conventions
+
+## Commit Message Format
+
+```text
+<type>(<scope>): <subject>
+
+- Bullet 1 describing what changed and why.
+- Bullet 2 with key impacted areas or behaviors.
+- Bullet 3 for notable implementation notes if needed.
+```
+
+- Use imperative, present tense; no trailing period in subject
+- Keep subject ≤ 72 chars
+
+### Types
+- `feat` `fix` `docs` `style` `refactor` `perf` `test` `build` `ci` `chore` `revert`
+
+### Scopes
+- `www` – Next.js app under `apps/www`
+- `api` – Hono API under `apps/api`
+- `repo` – Monorepo-level changes (tooling, config)
+
+### Examples
+
+```text
+feat(www): replace topbar with resizable navbar
+
+- Implement desktop/mobile navbar using motion-based components.
+- Keep existing routes and theme toggle intact.
+- Adjust gradient opacity on scroll for subtle contrast.
+```
+
+```text
+fix(api): validate pagination params and return 400 on invalid input
+
+- Add input parsing in handlers; ensure numeric bounds.
+- Return typed JSON error payloads consistently.
+```
+
+```text
+chore(repo): update ESLint and Tailwind to latest minor
+
+- Align configs across packages.
+```
+
+## Branch Naming
+
+```text
+<type>/<short-kebab-description>
+```
+
+Examples:
+
+```text
+feature/resizable-navbar
+bugfix/navbar-opacity-on-scroll
+chore/update-deps
+```
+
+## Lefthook & Commit Safety
+
+- Prefer fixing hook issues with minimal, focused edits.
+- Conditional `--no-verify` allowed if failures are non-critical and out-of-scope (e.g., stylistic warnings in untouched files).
+- Do not bypass for type/build/test failures in changed areas or commit message validation.
+- When bypassing, note the reason briefly in the commit output.
