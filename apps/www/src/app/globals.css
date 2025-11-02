@@ -66,7 +66,7 @@
 
   .dark {
     color-scheme: dark;
-    --background: 240 10% 3.9%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -102,14 +102,7 @@
   }
 }
 
-/* (previous Unicorn Studio attribution override removed) */
-
 @layer utilities {
-  .text-stroke {
-    -webkit-text-stroke: 2.5px rgba(255, 255, 255, 0.35);
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
-  }
-
   /* Stronger, responsive stroke for hero headline */
   .text-stroke-hero {
     -webkit-text-stroke: clamp(1px, 0.35vw, 6px) rgba(0, 0, 0, 0.65);

@@ -1,8 +1,4 @@
 {
-  "common": {
-    "welcome": "Welcome",
-    "loading": "Loading..."
-  },
   "hero": {
     "title": "Skeptic Systems"
   },

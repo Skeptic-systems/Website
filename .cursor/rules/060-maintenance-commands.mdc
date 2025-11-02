@@ -1,0 +1,41 @@
+---
+description: Safe maintenance flows for cleanup and rollback commands
+globs: ""
+alwaysApply: false
+---
+
+## Maintenance Commands
+
+This rule documents how `/cleanup` and `/back` must behave.
+
+### Principles
+
+- Do not remove or alter existing features or UI
+- Favor minimal, focused edits; keep diffs small
+- Enforce i18n rules: any removed keys must be removed symmetrically from both `en` and `de`
+- Create a safety snapshot (branch + tag) before destructive changes
+- Prefer preview → confirmation → apply
+
+### Cleanup Scope
+
+- `www` → `apps/www`
+- `api` → `apps/api`
+- no arg → repository root
+
+### Allowed Deletions
+
+- Unused translation keys (verified by code references)
+- Orphaned components/assets not imported anywhere
+- Unreferenced CSS utilities/variables
+- Demo/story files clearly not part of shipped UI
+
+### Not Allowed
+
+- Removing exported components used directly or indirectly by pages
+- Removing keys referenced by `t(...)`, `useTranslations(...)`, or server variants
+- Changing visible text outside i18n files
+
+### Rollback
+
+- `/back` restores to the most recent safety snapshot created by the maintenance commands
+

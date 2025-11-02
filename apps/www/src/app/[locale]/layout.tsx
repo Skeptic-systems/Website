@@ -23,7 +23,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
         <Topbar />
         {children}
       </ThemeProvider>
