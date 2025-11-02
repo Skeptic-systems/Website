@@ -1,0 +1,52 @@
+---
+description: Mandatory i18n usage for all user-facing text in apps/www
+globs: apps/www/src/**/*.{ts,tsx,mdx}
+alwaysApply: true
+---
+
+### Internationalization (i18n) – MANDATORY
+
+- **NO hardcoded user-facing text**: All visible strings in pages, layouts, components, and UI must come from i18n.
+- **Languages required**: Every key must exist in both `de` and `en`.
+- **Translation files**: `apps/www/src/locals` (e.g., `de.json`, `en.json`).
+- **i18n utilities**: `apps/www/src/i18n` (routing, server helpers). Use the established `next-intl` setup already present in the app.
+
+#### Required patterns
+- **Components/Pages**: Use `useTranslations("<namespace>")` (client) or `getMessages()`/`NextIntlClientProvider` (server) from `next-intl`.
+- **Namespaces**: Group keys by feature/page; avoid giant catch-all namespaces.
+- **No in-code fallbacks**: Do not embed English (or any language) literals as default text in code.
+- **Interpolation/formatting**: Use ICU placeholders (`{name}`) and `next-intl` formatters for dates/numbers; do not build sentences via string concatenation in code.
+- **Key hygiene**: Prefer descriptive keys (e.g., `hero.title`, `cta.primary.label`). Avoid dynamic key construction where possible.
+
+#### Code review enforcement
+- **Block PRs** that add/modify visible text without corresponding `de` and `en` entries.
+- Verify that all UI strings call `t("...")` (or equivalent) and that keys exist in both locale files.
+- Check that locale routing is respected and no text bypasses the `NextIntlClientProvider` context.
+
+#### Example (conceptual)
+```tsx
+// Component
+import { useTranslations } from "next-intl";
+
+export function HeroTitle() {
+  const t = useTranslations("hero");
+  return <h1>{t("title")}</h1>;
+}
+```
+
+```json
+// apps/www/src/locals/en.json
+{
+  "hero": { "title": "Modern website" }
+}
+```
+
+```json
+// apps/www/src/locals/de.json
+{
+  "hero": { "title": "Moderne Website" }
+}
+```
+
+This rule is critical. Hardcoded user-facing text is not allowed anywhere in `apps/www`.
+

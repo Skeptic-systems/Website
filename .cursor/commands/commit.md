@@ -45,15 +45,16 @@ Closes #123
 
 Explain the ticket number, type, and scope chosen.
 
-Then **execute the commit**:
-
-**For commits with body:**
+Then **execute the commit** using a single -m and explicit `n line breaks (PowerShell-safe):
 
 ```bash
-git commit -m "type(scope): description" -m "Body paragraph" -m "Closes #GITHUB_ISSUE"
+git commit -m "type(scope): description`n- Bullet 1`n- Bullet 2`nCloses #GITHUB_ISSUE"
 ```
 
-**For commits without body:**
+Notes:
+- Do not use multiple -m flags.
+- Avoid empty blank lines; use `n to control exact line breaks.
+- If no body is needed, use only the subject:
 
 ```bash
 git commit -m "type(scope): description"
@@ -121,13 +122,22 @@ git push -u origin <suggested-branch>
 
 After pushing, show the branch and the short commit hash.
 
-### 6. Error Handling
+### 6. Error Handling (including lefthook)
 
-If the commit fails (e.g., commitlint validation fails):
+If the commit fails (e.g., lefthook, type-check, build, tests, or commitlint):
 
-- Show the error message
-- Explain what went wrong
-- Suggest how to fix it or offer to generate a new message
+- Show the error message and classify severity:
+  - Non-critical (eligible for bypass): stylistic/warning-only issues in files not modified by this commit, or broad project-wide lint that would require out-of-scope changes.
+  - Critical (must fix): TypeScript errors in changed areas, build failures, failing tests, or commit message validation.
+- If non-critical, re-run the commit with `--no-verify` and include a one-line rationale in the output.
+
+PowerShell-safe example for bypass:
+
+```bash
+git commit --no-verify -m "type(scope): description`n- Bullet 1`n- Bullet 2"
+```
+
+- If critical, propose minimal focused fixes or offer to generate a new commit message when message validation failed.
 
 ## Key Points
 

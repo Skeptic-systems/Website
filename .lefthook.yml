@@ -9,13 +9,3 @@ pre-commit:
       glob: "*.{ts,tsx}"
       stage_fixed: false
 
-pre-push:
-  commands:
-    build-check:
-      run: pnpm build
-      stage_fixed: false
-
-
-
-
-

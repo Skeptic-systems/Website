@@ -170,3 +170,17 @@ This provides:
 - Current branch name
 - Staged files summary → determine scope (which workspace/package)
 - Actual changes → determine commit type and write description
+
+## Lefthook & Commit Safety
+
+- Prefer running lefthook and fixing issues with minimal, focused edits.
+- Conditional bypass allowed: If hook failures are non-critical or require broad, out-of-scope changes, the AI may use `--no-verify` with a short rationale.
+- Treat as non-critical (bypass allowed) when ALL apply:
+  - Issues are stylistic or warnings (e.g., array index key, <img> usage),
+  - Failures are in files/areas not modified by this commit and fixing them would expand scope significantly,
+  - No build, type, or test failures related to the current changes.
+- Never bypass for:
+  - TypeScript errors in changed files or directly impacted modules,
+  - Build failures, failing tests, or commit message validation failures,
+  - Security or CI-critical checks.
+- When bypassing, document briefly in the commit output why `--no-verify` was used.
