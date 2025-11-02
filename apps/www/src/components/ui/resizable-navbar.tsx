@@ -108,15 +108,24 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
     <motion.div
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        "pointer-events-none absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
+        "hidden flex-1 flex-row items-center justify-center gap-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex",
         className
       )}
     >
       {items.map((item, idx) => (
         <a
           onMouseEnter={() => setHovered(idx)}
-          onClick={onItemClick}
-          className="pointer-events-auto relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
+          onClick={(e) => {
+            if (item.link.startsWith("#")) {
+              e.preventDefault();
+              const el = document.querySelector(item.link);
+              if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }
+            onItemClick?.();
+          }}
+          className="relative inline-flex whitespace-nowrap px-4 py-2 text-neutral-600 dark:text-neutral-300"
           key={item.link}
           href={item.link}
         >

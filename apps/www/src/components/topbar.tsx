@@ -30,14 +30,17 @@ export function Topbar() {
   return (
     <Navbar className="top-0">
       <NavBody>
-        <NavItems items={navItems} />
-        <div className="ml-auto flex items-center gap-2">
-          <ThemeToggle />
-          <AccentToggle />
-          <LocaleToggle />
-          <NavbarButton href="/login" variant="primary">
-            {t("cta.login")}
-          </NavbarButton>
+        <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center">
+          <div />
+          <NavItems items={navItems} className="justify-self-center" />
+          <div className="flex shrink-0 items-center justify-self-end gap-2">
+            <ThemeToggle />
+            <AccentToggle />
+            <LocaleToggle />
+            <NavbarButton href="/login" variant="primary">
+              {t("cta.login")}
+            </NavbarButton>
+          </div>
         </div>
       </NavBody>
 
