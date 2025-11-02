@@ -1,0 +1,24 @@
+---
+description: Code style and architectural guidelines for Next.js (www) and Hono (api)
+alwaysApply: true
+---
+
+# Code Style
+
+- Comments in English only
+- Prefer functional programming over OOP
+- Use classes only for external clients/connectors; app logic stays functional
+- Write pure functions; never mutate inputs or global state
+- Make minimal, focused edits; follow DRY, KISS, YAGNI
+- Reuse existing logic; search before writing new code
+- Match existing file naming and folder conventions
+
+## React/Next
+- Use modern React (19) patterns; avoid unnecessary state and effects
+- Keep components small, typed, and colocate related UI under `src/components`
+- For UI primitives, place in `src/components/ui` (shadcn-style)
+- Respect the `@` alias → `./src/*`
+
+## Styling
+- TailwindCSS (v3 currently). Prefer utility classes; avoid deep custom CSS
+- Keep global CSS minimal in `src/app/globals.css`

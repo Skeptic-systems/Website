@@ -1,0 +1,25 @@
+---
+description: API patterns for Hono handlers and Drizzle usage in apps/api
+globs: apps/api/src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# API Patterns (Hono + Drizzle)
+
+## Handlers
+- Small, single-responsibility handlers; compose middleware for cross-cutting concerns
+- Parse and validate inputs early (query, params, body)
+- Return typed JSON payloads; keep shapes consistent across endpoints
+- Use appropriate HTTP status codes; include error details in a safe, actionable format
+
+## Data Access
+- Keep SQL/ORM logic in small, typed functions
+- Prefer parameterized queries via Drizzle; no raw string concatenation
+- Map DB rows to DTOs at the boundary; avoid leaking DB schema types outward
+
+## Errors
+- Fail fast on invalid input; return 400 with message
+- On unexpected exceptions, log context and return 500 with generic message
+
+## Misc
+- Read env via `process.env` with safe parsing; check presence at startup where possible

@@ -1,0 +1,21 @@
+---
+description: Monorepo structure and conventions (apps/www Next.js, apps/api Hono)
+alwaysApply: true
+---
+
+# Project Structure
+
+## Workspaces
+- `apps/www` – Next.js 16 (React 19), Tailwind v3, `@` → `./src/*`
+- `apps/api` – Hono server with Drizzle ORM (Postgres)
+
+## Paths
+- Web components in `apps/www/src/components`
+- UI primitives in `apps/www/src/components/ui`
+- Shared utils in `apps/www/src/lib`
+
+## Conventions
+- When renaming/moving files, update all imports accordingly
+- Delete obsolete code when replaced by new implementations
+- New files/folders use clear, English names aligned with current structure
+- Follow existing API and UI patterns before introducing new ones

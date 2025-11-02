@@ -1,0 +1,17 @@
+---
+description: Error handling principles for both frontend (www) and backend (api)
+alwaysApply: true
+---
+
+# Error Handling
+
+- Raise/throw explicit errors; never silently swallow failures
+- Use specific error types and actionable messages
+- No catch-all handlers that hide root causes
+- Do not add fallback flows that mask real issues
+- Surface exact failure context during debugging
+- Fix root causes, not symptoms
+
+## API
+- Return proper HTTP codes (2xx/4xx/5xx) with typed JSON bodies
+- Validate and sanitize input early; short-circuit on invalid input

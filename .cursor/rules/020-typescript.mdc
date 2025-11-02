@@ -1,0 +1,14 @@
+---
+description: TypeScript rules (strict typing, interfaces, no loose types)
+globs: apps/**/src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript
+
+- Enable and respect strict mode (already on). No `any`/`unknown`
+- Type function params and returns explicitly for exported APIs/components
+- Prefer `interface`/type aliases for structured data models
+- Avoid default parameter values; require explicit arguments
+- Derive types from sources when possible (e.g., `as const` objects → mapped types)
+- Never cast to force types; refactor to make types align

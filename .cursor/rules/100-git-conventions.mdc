@@ -1,0 +1,172 @@
+---
+description: Git conventions for commits, scopes, and branches in this monorepo
+alwaysApply: true
+---
+
+# Git Conventions
+
+## Commit Message Format
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) with a required bullet-point body style.
+
+### Structure
+
+```text
+<type>(<scope>): <subject>
+
+- Bullet 1 describing what changed and why.
+- Bullet 2 with key impacted areas or behaviors.
+- Bullet 3 for notable implementation notes if needed.
+```
+
+### Type
+
+The type must be one of the following:
+
+- `feat` - A new feature for the user
+- `fix` - A bug fix
+- `docs` - Documentation only changes
+- `style` - Changes that don't affect the meaning of code (white-space, formatting, etc.)
+- `refactor` - Code change that neither fixes a bug nor adds a feature
+- `perf` - Code change that improves performance
+- `test` - Adding missing tests or correcting existing tests
+- `build` - Changes that affect the build system or external dependencies
+- `ci` - Changes to CI configuration files and scripts
+- `chore` - Other changes that don't modify src or test files
+- `revert` - Reverts a previous commit
+
+### Scope
+
+Use the package/area name. For this monorepo keep scopes focused:
+
+- `www` – Web application (Next.js)
+- `api` – Backend API (Hono)
+- `repo` – Monorepo-level/tooling changes
+- `deps` – Dependency updates
+
+### Subject
+
+The subject contains a succinct description of the change:
+
+- Use the imperative, present tense: "change" not "changed" nor "changes"
+- Don't capitalize the first letter
+- No period (.) at the end
+- Keep it under 72 characters
+
+### Body
+
+- Use imperative, present tense
+- Keep bullets concise (wrap at ~72 chars)
+- Prefer 2–4 bullets explaining the change and impact
+
+### Footer (Optional)
+
+The footer should contain information about Breaking Changes and reference issues that this commit closes.
+
+**Breaking Changes** should start with `BREAKING CHANGE:` followed by a description.
+
+**Closes** references should be on a separate line and use the format: `Closes #123, #456`
+
+## Examples
+
+### Feature Addition
+
+```text
+feat(desktop): add mod conflict detection
+
+Implement visual indicators for mod conflicts and add conflict
+resolution suggestions to the UI.
+
+Closes #142
+```
+
+### Bug Fix
+
+```text
+fix(api): handle edge case in pagination
+
+Fix incorrect offset calculation when page size exceeds total items.
+This prevents API errors when requesting pages beyond available data.
+```
+
+### Breaking Change
+
+```text
+feat(api)!: remove deprecated v1 endpoints
+
+- Remove /v1/* endpoints in favor of /v2/*
+- Update clients to new pagination and filtering
+- BREAKING CHANGE: Old clients will fail against v2-only API
+```
+
+### Dependency Update
+
+```text
+chore(deps): update next and tailwind to latest minors
+```
+
+### Documentation
+
+```text
+docs(readme): clarify local dev setup
+```
+
+### Multiple Scopes
+
+```text
+refactor(www,api): align DTOs and validation across apps
+```
+
+### Simple Fix
+
+```text
+fix(www): correct button alignment on mobile
+```
+
+## Branch Naming Conventions
+
+### Branch Format
+
+```text
+<type>/<ticket-or-description>
+```
+
+### Types
+
+- `feature/` - New features
+- `bugfix/` - Bug fixes
+- `hotfix/` - Critical fixes that need immediate deployment
+- `refactor/` - Code refactoring
+- `chore/` - Maintenance tasks
+- `docs/` - Documentation updates
+
+### Branch Naming Rules
+
+- Use kebab-case for descriptions
+- Include ticket/issue numbers when applicable
+- Keep names descriptive but concise
+- Use lowercase letters
+
+### Branch Examples
+
+```bash
+feature/resizable-navbar
+bugfix/navbar-opacity-on-scroll
+refactor/extract-validation-logic
+chore/update-dependencies
+docs/update-readme
+```
+
+## Gathering Git Context
+
+Run this single command to gather all necessary information:
+
+```bash
+echo "=== BRANCH ==="; git rev-parse --abbrev-ref HEAD; echo "=== STAGED FILES ==="; git diff --staged --stat; echo "=== STAGED CHANGES ==="; git diff --staged
+```
+
+This provides:
+
+- Current branch name
+- Staged files summary → determine scope (which workspace/package)
+- Actual changes → determine commit type and write description

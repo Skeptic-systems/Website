@@ -1,0 +1,32 @@
+---
+description: Use when creating or updating *.mdc rule files
+globs: **/*.mdc
+alwaysApply: false
+---
+
+# MDC File Format Guide
+
+MDC files provide context-specific instructions to the AI.
+
+## Frontmatter
+
+```
+---
+description: Brief description of what the rule does
+globs: **/*.js, **/*.ts  # Optional: comma-separated list
+alwaysApply: false       # Set to true for global rules
+---
+```
+
+- `globs`: leave empty for highly specific rules loaded by intent; set `alwaysApply: true` for global ones
+
+## Content
+Use normal Markdown with headings and concise, actionable guidelines.
+
+## Best Practices
+- Number files by importance (e.g., `010-...`) to keep ordering clear
+- Split large topics; keep files focused
+- Reference other rules with `mdc:` links if needed
+
+## Renames/Removals
+- When adding/renaming/removing rules, keep numeric ordering coherent and filenames descriptive

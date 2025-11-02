@@ -1,0 +1,21 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      run: pnpm check
+      stage_fixed: true
+    type-check:
+      run: pnpm type-check
+      glob: "*.{ts,tsx}"
+      stage_fixed: false
+
+pre-push:
+  commands:
+    build-check:
+      run: pnpm build
+      stage_fixed: false
+
+
+
+
+
