@@ -132,17 +132,41 @@
     display: none;
     background-image: radial-gradient(
       1800px circle at 18% 22%,
-      hsl(var(--accent) / 0.16),
-      transparent 60%
+      hsl(var(--accent) / 0.22),
+      transparent 65%
     );
   }
   .dark .accent-glow-layer {
     background-image: radial-gradient(
       1800px circle at 18% 22%,
-      hsl(var(--accent) / 0.12),
-      transparent 55%
+      hsl(var(--accent) / 0.18),
+      transparent 60%
     );
-    filter: saturate(90%);
+    filter: saturate(100%);
+  }
+
+  /* Right-side variant for secondary sections (mirrored horizontally) */
+  .accent-glow-layer-right {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+    background-image: radial-gradient(
+      1800px circle at 82% 22%,
+      hsl(var(--accent) / 0.22),
+      transparent 65%
+    );
+  }
+  .dark .accent-glow-layer-right {
+    background-image: radial-gradient(
+      1800px circle at 82% 22%,
+      hsl(var(--accent) / 0.18),
+      transparent 60%
+    );
+    filter: saturate(100%);
+  }
+  :root[data-accent] .accent-glow-layer-right {
+    display: block;
   }
   :root[data-accent] .accent-glow-layer {
     display: block;
