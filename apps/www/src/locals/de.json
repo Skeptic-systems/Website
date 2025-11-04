@@ -44,6 +44,23 @@
   }
   ,
   "about": {
-    "title": "Über mich"
+    "title": "Über mich",
+    "tiles": {
+      "one": "Entwerfen",
+      "two": "Entwickeln",
+      "three": "Lernen",
+      "developer": {
+        "title": "Entwickler",
+        "body": "Ich bin Fullstack-Entwickler und arbeite an Frontend-, Backend- und Desktop-Apps mit Tauri 2.0. Meistens bewege ich mich in der TypeScript/JavaScript-Welt und lerne nebenbei Rust – einfach, um es interessant zu machen. Ich bin Open-Source-Enthusiast, und weiter unten auf der Seite findest du meine Projekte auf GitHub. Kurz gesagt: Ich arbeite gerne in allen Ebenen eines Projekts, statt nur in einer Ecke zu bleiben."
+      },
+      "integrator": {
+        "title": "Systemintegrator",
+        "body": "Ich arbeite auch auf der Ops-Seite: Ich richte komplette IT-Infrastrukturen ein und vernetze sie – von Windows-Office-Umgebungen mit Active Directory bis zu Linux-basierten Server-Backends in Rechenzentren. Ich kümmere mich um die Hardware, das Netzwerk und darum, dass alles reibungslos zusammenarbeitet."
+      },
+      "general": {
+        "title": "Allgemein",
+        "body": "Auf der Systemseite bin ich sowohl in der Windows- als auch in der Linux-Welt zu Hause, hauptsächlich mit Ubuntu und Debian. Ich arbeite mit gängigen Virtualisierungs-Stacks wie Hyper-V, VMware und Proxmox und deploye sowie verwalte Container mit Docker, Podman und Kubernetes. Für Sicherheit und Netzwerk übernehme ich Firewalls, Routing und Edge-Services mit Tools wie Securepoint, Cloudflare und nginx als Reverse Proxy."
+      }
+    }
   }
 }
