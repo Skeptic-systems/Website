@@ -63,4 +63,12 @@
       }
     }
   }
+  ,
+  "activity": {
+    "title": "Activity"
+  }
+  ,
+  "selfhosted": {
+    "title": "Selfhosted"
+  }
 }
