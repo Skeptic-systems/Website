@@ -65,7 +65,23 @@
   }
   ,
   "activity": {
-    "title": "Activity"
+    "title": "Activity",
+    "sections": {
+      "nowPlaying": "Now playing",
+      "nowPlayingAccent": "Live on Spotify",
+      "topTracks": "Top tracks",
+      "topTracksAccent": "Monthly favorites",
+      "presence": "Discord presence",
+      "presenceAccent": "What I'm up to"
+    },
+    "labels": {
+      "playInSpotify": "Play in Spotify"
+    },
+    "empty": {
+      "notPlaying": "Nothing is playing right now.",
+      "noActivities": "No other activity detected.",
+      "noTracks": "No favorite tracks found right now."
+    }
   }
   ,
   "selfhosted": {

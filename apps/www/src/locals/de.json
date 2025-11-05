@@ -65,7 +65,23 @@
   }
   ,
   "activity": {
-    "title": "Aktivität"
+    "title": "Aktivität",
+    "sections": {
+      "nowPlaying": "Gerade läuft",
+      "nowPlayingAccent": "Live auf Spotify",
+      "topTracks": "Top-Tracks",
+      "topTracksAccent": "Monatliche Favoriten",
+      "presence": "Discord-Präsenz",
+      "presenceAccent": "Woran ich gerade arbeite"
+    },
+    "labels": {
+      "playInSpotify": "In Spotify abspielen"
+    },
+    "empty": {
+      "notPlaying": "Aktuell läuft nichts.",
+      "noActivities": "Keine weitere Aktivität erkannt.",
+      "noTracks": "Derzeit keine Favoriten vorhanden."
+    }
   }
   ,
   "selfhosted": {

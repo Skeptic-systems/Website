@@ -2,6 +2,18 @@ const isRecord = (value) => value !== null && typeof value === "object" && !Arra
 
 const baseConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+      },
+    ],
+  },
   async rewrites() {
     return [
       { source: "/:locale(en|de)", destination: "/" },
