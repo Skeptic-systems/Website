@@ -80,7 +80,7 @@ export type SpotifyCurrentlyPlaying = {
 };
 
 const TOP_TRACKS_CACHE_TTL_MS = 5 * 60 * 1000;
-const CURRENTLY_PLAYING_CACHE_TTL_MS = 15 * 1000;
+const CURRENTLY_PLAYING_CACHE_TTL_MS = 5 * 1000;
 
 type CacheEntry<T> = {
   value: T;

@@ -2,7 +2,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
+import { discordRoutes } from "./routes/discord";
 import { spotifyRoutes } from "./routes/spotify";
+import { verifyDiscordConnection } from "./services/discord";
 import { verifySpotifyConnection } from "./services/spotify";
 
 const app = new Hono();
@@ -25,6 +27,7 @@ app.get("/health", (c) => {
 });
 
 app.route("/spotify", spotifyRoutes);
+app.route("/discord", discordRoutes);
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
@@ -36,6 +39,11 @@ const registeredRoutes = [
     method: "GET",
     path: "/spotify/currently-playing",
     description: "Spotify currently playing track",
+  },
+  {
+    method: "GET",
+    path: "/discord/presence",
+    description: "Discord presence",
   },
 ] as const;
 
@@ -67,6 +75,14 @@ const runStartupChecks = async (): Promise<void> => {
     console.error(`⚠️ Spotify connection check failed: ${message}`);
   } finally {
     logRegisteredRoutes(baseUrl);
+  }
+
+  try {
+    await verifyDiscordConnection();
+    console.log("🟣 Discord presence reachable");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Discord presence check failed: ${message}`);
   }
 };
 

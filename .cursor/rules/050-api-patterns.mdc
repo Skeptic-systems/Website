@@ -7,19 +7,27 @@ alwaysApply: false
 # API Patterns (Hono + Drizzle)
 
 ## Handlers
+
 - Small, single-responsibility handlers; compose middleware for cross-cutting concerns
 - Parse and validate inputs early (query, params, body)
 - Return typed JSON payloads; keep shapes consistent across endpoints
 - Use appropriate HTTP status codes; include error details in a safe, actionable format
 
 ## Data Access
+
 - Keep SQL/ORM logic in small, typed functions
 - Prefer parameterized queries via Drizzle; no raw string concatenation
 - Map DB rows to DTOs at the boundary; avoid leaking DB schema types outward
 
 ## Errors
+
 - Fail fast on invalid input; return 400 with message
 - On unexpected exceptions, log context and return 500 with generic message
 
 ## Misc
-- Read env via `process.env` with safe parsing; check presence at startup where possible
+
+- Read env via `process.env` with safe parsing; fail fast when required keys are missing
+- When adding an external service (e.g., Spotify, Discord), expose a `verify<Service>Connection` helper
+  - Run the verification during API startup alongside existing checks
+  - The helper must issue a real request that validates credentials/connectivity without exhausting rate limits
+  - Ensure the service route reuses shared fetch/caching logic and surfaces actionable errors in logs
