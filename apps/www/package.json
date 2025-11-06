@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenv -e ../../.env -- next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "start": "dotenv -e ../../.env -- next start",
+    "lint": "dotenv -e ../../.env -- next lint",
+    "type-check": "dotenv -e ../../.env -- tsc --noEmit"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
@@ -21,8 +21,10 @@
     "next-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "phosphor-react": "^1.4.1",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "dotenv-cli": "^7.4.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

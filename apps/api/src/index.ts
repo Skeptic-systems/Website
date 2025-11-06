@@ -2,6 +2,16 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
+import { appEnv } from "./config/env";
+import { discordRoutes } from "./routes/discord";
+import { pterodactylRoutes } from "./routes/pterodactyl";
+import { jellyfinRoutes } from "./routes/jellyfin";
+import { spotifyRoutes } from "./routes/spotify";
+import { verifyDiscordConnection } from "./services/discord";
+import { verifyPterodactylConnection } from "./services/pterodactyl";
+import { verifyJellyfinConnection } from "./services/jellyfin";
+import { verifySpotifyConnection } from "./services/spotify";
+
 const app = new Hono();
 
 app.use("*", logger());
@@ -21,9 +31,104 @@ app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.route("/spotify", spotifyRoutes);
+app.route("/discord", discordRoutes);
+app.route("/pterodactyl", pterodactylRoutes);
+app.route("/jellyfin", jellyfinRoutes);
+
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
-console.log(`Server running on http://localhost:${port}`);
+const registeredRoutes = [
+  { method: "GET", path: "/", description: "API status" },
+  { method: "GET", path: "/health", description: "Health check" },
+  { method: "GET", path: "/spotify/top-tracks", description: "Spotify top tracks" },
+  {
+    method: "GET",
+    path: "/spotify/currently-playing",
+    description: "Spotify currently playing track",
+  },
+  {
+    method: "GET",
+    path: "/discord/presence",
+    description: "Discord presence",
+  },
+  {
+    method: "GET",
+    path: "/pterodactyl/servers/:identifier/resources",
+    description: "Pterodactyl server resources",
+  },
+  {
+    method: "GET",
+    path: "/pterodactyl/active-server",
+    description: "Active Pterodactyl servers",
+  },
+  {
+    method: "GET",
+    path: "/pterodactyl/total-number",
+    description: "Total Pterodactyl servers",
+  },
+  {
+    method: "GET",
+    path: "/jellyfin/overview",
+    description: "Jellyfin overview statistics",
+  },
+  {
+    method: "GET",
+    path: "/jellyfin/active-sessions",
+    description: "Jellyfin active sessions",
+  },
+] as const;
+
+const getBaseUrl = (): string => appEnv.apiBaseUrl;
+
+const logRegisteredRoutes = (baseUrl: string): void => {
+  console.log("📚 Available endpoints:");
+  for (const route of registeredRoutes) {
+    console.log(`- [${route.method}] ${baseUrl}${route.path} (${route.description})`);
+  }
+};
+
+const runStartupChecks = async (): Promise<void> => {
+  const baseUrl = getBaseUrl();
+
+  try {
+    await verifySpotifyConnection();
+    console.log("🎧 Spotify connection verified");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Spotify connection check failed: ${message}`);
+  } finally {
+    logRegisteredRoutes(baseUrl);
+  }
+
+  try {
+    await verifyDiscordConnection();
+    console.log("🟣 Discord presence reachable");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Discord presence check failed: ${message}`);
+  }
+
+  try {
+    await verifyPterodactylConnection();
+    console.log("🟥 Pterodactyl panel reachable");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Pterodactyl connection check failed: ${message}`);
+  }
+
+  try {
+    await verifyJellyfinConnection();
+    console.log("🟦 Jellyfin server reachable");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Jellyfin connection check failed: ${message}`);
+  }
+};
+
+void runStartupChecks();
+
+console.log(`🚀 Server running on ${getBaseUrl()}`);
 
 export default {
   port,

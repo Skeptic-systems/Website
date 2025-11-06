@@ -44,6 +44,114 @@
   }
   ,
   "about": {
-    "title": "Über mich"
+    "title": "Über mich",
+    "tiles": {
+      "one": "Entwerfen",
+      "two": "Entwickeln",
+      "three": "Lernen",
+      "developer": {
+        "title": "Entwickler",
+        "body": "Ich bin Fullstack-Entwickler und arbeite an Frontend-, Backend- und Desktop-Apps mit Tauri 2.0. Meistens bewege ich mich in der TypeScript/JavaScript-Welt und lerne nebenbei Rust – einfach, um es interessant zu machen. Ich bin Open-Source-Enthusiast, und weiter unten auf der Seite findest du meine Projekte auf GitHub. Kurz gesagt: Ich arbeite gerne in allen Ebenen eines Projekts, statt nur in einer Ecke zu bleiben."
+      },
+      "integrator": {
+        "title": "Systemintegrator",
+        "body": "Ich arbeite auch auf der Ops-Seite: Ich richte komplette IT-Infrastrukturen ein und vernetze sie – von Windows-Office-Umgebungen mit Active Directory bis zu Linux-basierten Server-Backends in Rechenzentren. Ich kümmere mich um die Hardware, das Netzwerk und darum, dass alles reibungslos zusammenarbeitet."
+      },
+      "general": {
+        "title": "Allgemein",
+        "body": "Auf der Systemseite bin ich sowohl in der Windows- als auch in der Linux-Welt zu Hause, hauptsächlich mit Ubuntu und Debian. Ich arbeite mit gängigen Virtualisierungs-Stacks wie Hyper-V, VMware und Proxmox und deploye sowie verwalte Container mit Docker, Podman und Kubernetes. Für Sicherheit und Netzwerk übernehme ich Firewalls, Routing und Edge-Services mit Tools wie Securepoint, Cloudflare und nginx als Reverse Proxy."
+      }
+    }
+  }
+  ,
+  "activity": {
+    "title": "Aktivität",
+    "sections": {
+      "nowPlaying": "Gerade läuft",
+      "nowPlayingAccent": "Live auf Spotify",
+      "topTracks": "Top-Tracks",
+      "topTracksAccent": "Monatliche Favoriten",
+      "presence": "Präsenz",
+      "presenceAccent": "Woran ich gerade arbeite"
+    },
+    "labels": {
+      "playInSpotify": "In Spotify abspielen"
+    },
+    "empty": {
+      "notPlaying": "Aktuell läuft nichts.",
+      "noActivities": "Keine weitere Aktivität erkannt.",
+      "noTracks": "Derzeit keine Favoriten vorhanden."
+    }
+  }
+  ,
+  "selfhosted": {
+    "title": "Selfhosted",
+    "intro": {
+      "title": "Ich bewahre meine Daten gerne dort auf, wo sie hingehören: bei mir.",
+      "bodyOne": "Deshalb betreibe ich eine ganze Reihe von Diensten auf eigener Hardware – für Arbeit, Lernen und den Alltag.",
+      "bodyTwo": "Das ist ein Teil Privatsphäre, ein Teil Kontrolle und ein Teil „Mal sehen, was passiert, wenn ich es ausprobiere.“"
+    },
+    "common": {
+      "placeholder": "—"
+    },
+    "sections": {
+      "pterodactyl": {
+        "title": "Pterodactyl",
+        "accent": "Game-Server-Flotte",
+        "description": "Mit Pterodactyl und Wings starten meine Game-Server in Sekunden, mit abgestimmten Limits und automatisierten Wartungsjobs.",
+        "metrics": {
+          "total": "Server insgesamt",
+          "active": "Gerade aktiv",
+          "resources": "Genutzter Arbeitsspeicher",
+          "cpu": "Durchschnittliche CPU-Last"
+        },
+        "states": {
+          "error": "Die Pterodactyl-Server konnten gerade nicht geladen werden.",
+          "empty": "Momentan läuft kein Server."
+        },
+        "cards": {
+          "uptime": "Laufzeit",
+          "limits": {
+            "cpu": "CPU",
+            "memory": "Arbeitsspeicher",
+            "disk": "Speicherplatz",
+            "unlimited": "Unbegrenzt"
+          }
+        }
+      },
+      "jellyfin": {
+        "title": "Jellyfin",
+        "accent": "Medienzentrale",
+        "description": "Jellyfin streamt Filme, Serien und Musik direkt aus dem Homelab – mit Hardware-Transcoding und nahtlosem Gerätewechsel.",
+        "metrics": {
+          "active": "Aktive Sitzungen",
+          "transcoding": "Transcoding",
+          "users": "Benutzer",
+          "media": "Bibliothekseinträge"
+        },
+        "states": {
+          "error": "Die Jellyfin-Übersicht konnte gerade nicht geladen werden.",
+          "empty": "Zurzeit streamt niemand etwas."
+        },
+        "server": {
+          "heading": "Server",
+          "version": "Version",
+          "os": "Betriebssystem"
+        },
+        "sessions": {
+          "title": "Sitzungen",
+          "nowPlaying": "Wiedergabe",
+          "paused": "Pausiert",
+          "idle": "Inaktiv"
+        },
+        "library": {
+          "movies": "Filme",
+          "series": "Serien",
+          "episodes": "Episoden",
+          "songs": "Songs"
+        },
+        "generatedAt": "Zuletzt aktualisiert {timestamp}"
+      }
+    }
   }
 }
