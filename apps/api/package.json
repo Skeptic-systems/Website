@@ -17,6 +17,7 @@
     "hono": "^4.9.8",
     "postgres": "^3.4.5",
     "dotenv-cli": "^7.4.4",
+    "dotenv": "^16.6.1",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "zod": "^3.23.8",
     "@hono/zod-validator": "^0.2.1",

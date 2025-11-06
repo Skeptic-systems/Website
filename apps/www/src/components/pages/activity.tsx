@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
 import { geist } from "@/app/fonts";
+import { Button } from "@/components/ui/button";
+import { requestJson } from "@/lib/request";
 
 type SpotifyArtist = {
   id: string;
@@ -103,34 +104,14 @@ function SectionHeader({ accent, title }: { accent: string; title: string }): JS
   );
 }
 
-async function requestJson<T>(input: string, signal: AbortSignal | undefined): Promise<T | null> {
-  try {
-    const response = await fetch(input, {
-      signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    if (!response.ok) {
-      return null;
-    }
-    return (await response.json()) as T;
-  } catch (error) {
-    if (signal && error instanceof DOMException && error.name === "AbortError") {
-      return null;
-    }
-    if (error instanceof Error && error.name === "AbortError") {
-      return null;
-    }
-    console.error(error);
-    return null;
-  }
-}
-
 export function Activity() {
   const t = useTranslations("activity");
   const tCommon = useTranslations("common");
-  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiBase) {
+    throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
+  }
 
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
   const [isTopTracksLoading, setIsTopTracksLoading] = useState(true);
@@ -143,7 +124,7 @@ export function Activity() {
     let isMounted = true;
     const controller = new AbortController();
     setIsTopTracksLoading(true);
-    requestJson<TopTracksResponse>(`${apiBase}/spotify/top-tracks`, controller.signal)
+    requestJson<TopTracksResponse>(`${apiBase}/spotify/top-tracks`, { signal: controller.signal })
       .then((data) => {
         if (!isMounted) {
           return;
@@ -176,7 +157,9 @@ export function Activity() {
         controller.abort();
       }
       controller = new AbortController();
-      requestJson<CurrentlyPlayingResponse>(`${apiBase}/spotify/currently-playing`, controller.signal).then((data) => {
+      requestJson<CurrentlyPlayingResponse>(`${apiBase}/spotify/currently-playing`, {
+        signal: controller.signal,
+      }).then((data) => {
         if (!isMounted) {
           return;
         }
@@ -213,7 +196,7 @@ export function Activity() {
         controller.abort();
       }
       controller = new AbortController();
-      requestJson<DiscordPresenceResponse>(`${apiBase}/discord/presence`, controller.signal)
+      requestJson<DiscordPresenceResponse>(`${apiBase}/discord/presence`, { signal: controller.signal })
         .then((data) => {
           if (!isMounted) {
             return;
@@ -412,7 +395,7 @@ export function Activity() {
                             alt={track.album.name}
                             fill
                             sizes="(max-width:768px) 100vw, 20vw"
-                            className="pointer-events-none select-none object-cover opacity-70 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
+                            className="pointer-events-none select-none object-cover opacity-70 blur-sm transition duration-500 group-hover:scale-105 group-hover:opacity-90 group-hover:blur-none"
                           />
                         ) : null}
                         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70" />
@@ -431,7 +414,7 @@ export function Activity() {
                             <Button
                               asChild
                               size="sm"
-                              className="w-fit rounded-full bg-white/80 px-4 py-2 text-xs font-semibold tracking-wide text-neutral-900 transition hover:bg-white"
+                              className="w-fit rounded-full bg-emerald-500 px-4 py-2 text-xs font-semibold tracking-wide text-neutral-950 transition hover:bg-emerald-400"
                             >
                               <Link href={track.externalUrl} target="_blank" rel="noreferrer">
                                 {t("labels.playInSpotify")}

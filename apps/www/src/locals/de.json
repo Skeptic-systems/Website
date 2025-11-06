@@ -71,7 +71,7 @@
       "nowPlayingAccent": "Live auf Spotify",
       "topTracks": "Top-Tracks",
       "topTracksAccent": "Monatliche Favoriten",
-      "presence": "Discord-Präsenz",
+      "presence": "Präsenz",
       "presenceAccent": "Woran ich gerade arbeite"
     },
     "labels": {
@@ -85,6 +85,73 @@
   }
   ,
   "selfhosted": {
-    "title": "Selfhosted"
+    "title": "Selfhosted",
+    "intro": {
+      "title": "Ich bewahre meine Daten gerne dort auf, wo sie hingehören: bei mir.",
+      "bodyOne": "Deshalb betreibe ich eine ganze Reihe von Diensten auf eigener Hardware – für Arbeit, Lernen und den Alltag.",
+      "bodyTwo": "Das ist ein Teil Privatsphäre, ein Teil Kontrolle und ein Teil „Mal sehen, was passiert, wenn ich es ausprobiere.“"
+    },
+    "common": {
+      "placeholder": "—"
+    },
+    "sections": {
+      "pterodactyl": {
+        "title": "Pterodactyl",
+        "accent": "Game-Server-Flotte",
+        "description": "Mit Pterodactyl und Wings starten meine Game-Server in Sekunden, mit abgestimmten Limits und automatisierten Wartungsjobs.",
+        "metrics": {
+          "total": "Server insgesamt",
+          "active": "Gerade aktiv",
+          "resources": "Genutzter Arbeitsspeicher",
+          "cpu": "Durchschnittliche CPU-Last"
+        },
+        "states": {
+          "error": "Die Pterodactyl-Server konnten gerade nicht geladen werden.",
+          "empty": "Momentan läuft kein Server."
+        },
+        "cards": {
+          "uptime": "Laufzeit",
+          "limits": {
+            "cpu": "CPU",
+            "memory": "Arbeitsspeicher",
+            "disk": "Speicherplatz",
+            "unlimited": "Unbegrenzt"
+          }
+        }
+      },
+      "jellyfin": {
+        "title": "Jellyfin",
+        "accent": "Medienzentrale",
+        "description": "Jellyfin streamt Filme, Serien und Musik direkt aus dem Homelab – mit Hardware-Transcoding und nahtlosem Gerätewechsel.",
+        "metrics": {
+          "active": "Aktive Sitzungen",
+          "transcoding": "Transcoding",
+          "users": "Benutzer",
+          "media": "Bibliothekseinträge"
+        },
+        "states": {
+          "error": "Die Jellyfin-Übersicht konnte gerade nicht geladen werden.",
+          "empty": "Zurzeit streamt niemand etwas."
+        },
+        "server": {
+          "heading": "Server",
+          "version": "Version",
+          "os": "Betriebssystem"
+        },
+        "sessions": {
+          "title": "Sitzungen",
+          "nowPlaying": "Wiedergabe",
+          "paused": "Pausiert",
+          "idle": "Inaktiv"
+        },
+        "library": {
+          "movies": "Filme",
+          "series": "Serien",
+          "episodes": "Episoden",
+          "songs": "Songs"
+        },
+        "generatedAt": "Zuletzt aktualisiert {timestamp}"
+      }
+    }
   }
 }

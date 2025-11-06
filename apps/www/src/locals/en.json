@@ -71,7 +71,7 @@
       "nowPlayingAccent": "Live on Spotify",
       "topTracks": "Top tracks",
       "topTracksAccent": "Monthly favorites",
-      "presence": "Discord presence",
+      "presence": "Presence",
       "presenceAccent": "What I'm up to"
     },
     "labels": {
@@ -85,6 +85,73 @@
   }
   ,
   "selfhosted": {
-    "title": "Selfhosted"
+    "title": "Selfhosted",
+    "intro": {
+      "title": "I like to keep my data where it belongs: with me.",
+      "bodyOne": "So I run a bunch of services on my own hardware – for work, learning and everyday life.",
+      "bodyTwo": "It’s part privacy, part control, and part “let’s see what breaks if I try this.”"
+    },
+    "common": {
+      "placeholder": "—"
+    },
+    "sections": {
+      "pterodactyl": {
+        "title": "Pterodactyl",
+        "accent": "Game server fleet",
+        "description": "Powered by Pterodactyl and Wings, this cluster keeps game servers ready to spin up in seconds with tuned limits and automated housekeeping.",
+        "metrics": {
+          "total": "Total servers",
+          "active": "Active now",
+          "resources": "Memory in use",
+          "cpu": "Average CPU load"
+        },
+        "states": {
+          "error": "We couldn't load the Pterodactyl servers right now.",
+          "empty": "No servers are running at the moment."
+        },
+        "cards": {
+          "uptime": "Uptime",
+          "limits": {
+            "cpu": "CPU",
+            "memory": "Memory",
+            "disk": "Disk space",
+            "unlimited": "Unlimited"
+          }
+        }
+      },
+      "jellyfin": {
+        "title": "Jellyfin",
+        "accent": "Media hub",
+        "description": "My Jellyfin stack serves movies, series and music from the homelab with hardware transcoding and instant device hand-off.",
+        "metrics": {
+          "active": "Active sessions",
+          "transcoding": "Transcoding",
+          "users": "Users",
+          "media": "Library items"
+        },
+        "states": {
+          "error": "We couldn't load the Jellyfin overview right now.",
+          "empty": "No one is streaming anything at the moment."
+        },
+        "server": {
+          "heading": "Server",
+          "version": "Version",
+          "os": "Operating system"
+        },
+        "sessions": {
+          "title": "Sessions",
+          "nowPlaying": "Now playing",
+          "paused": "Paused",
+          "idle": "Idle"
+        },
+        "library": {
+          "movies": "Movies",
+          "series": "Series",
+          "episodes": "Episodes",
+          "songs": "Songs"
+        },
+        "generatedAt": "Last updated {timestamp}"
+      }
+    }
   }
 }
