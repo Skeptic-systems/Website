@@ -1,6 +1,13 @@
-import { redirect } from "next/navigation";
-import { routing } from "@/i18n/routing";
+import { Hero } from "@/components/pages/hero";
+import { SrSections } from "@/components/sr-sections";
+import { AboutMe } from "@/components/pages/aboutme";
 
-export default function RootRedirectPage() {
-  redirect(`/${routing.defaultLocale}`);
+export default function HomePage() {
+  return (
+    <main className="w-full">
+      <Hero />
+      <AboutMe />
+      <SrSections />
+    </main>
+  );
 }

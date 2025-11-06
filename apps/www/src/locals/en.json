@@ -6,6 +6,12 @@
   "hero": {
     "title": "Skeptic Systems"
   },
+  "home": {
+    "sections": {
+      "features": "Features section placeholder",
+      "contact": "Contact section placeholder"
+    }
+  },
   "navbar": {
     "links": {
       "about": "About",
@@ -35,5 +41,9 @@
         "de": "DE"
       }
     }
+  }
+  ,
+  "about": {
+    "title": "About me"
   }
 }

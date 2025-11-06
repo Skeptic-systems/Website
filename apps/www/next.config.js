@@ -1,11 +1,13 @@
-const createNextIntlPlugin = require("next-intl/plugin");
-
 const isRecord = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
-
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const baseConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      { source: "/:locale(en|de)", destination: "/" },
+      { source: "/:locale(en|de)/:path*", destination: "/:path*" },
+    ];
+  },
 };
 
 const mergeTurboIntoTurbopack = (config) => {
@@ -71,6 +73,4 @@ const mergeTurboIntoTurbopack = (config) => {
   return withoutExperimental;
 };
 
-const configWithIntl = withNextIntl(baseConfig);
-
-module.exports = mergeTurboIntoTurbopack(configWithIntl);
+module.exports = mergeTurboIntoTurbopack(baseConfig);

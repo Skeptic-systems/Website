@@ -6,6 +6,12 @@
   "hero": {
     "title": "Skeptic Systems"
   },
+  "home": {
+    "sections": {
+      "features": "Abschnitt Funktionen Platzhalter",
+      "contact": "Abschnitt Kontakt Platzhalter"
+    }
+  },
   "navbar": {
     "links": {
       "about": "Über uns",
@@ -35,5 +41,9 @@
         "de": "DE"
       }
     }
+  }
+  ,
+  "about": {
+    "title": "Über mich"
   }
 }
