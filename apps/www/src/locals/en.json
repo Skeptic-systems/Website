@@ -154,4 +154,41 @@
       }
     }
   }
+  ,
+  "projects": {
+    "title": "Projects",
+    "accent": "GitHub archive",
+    "subtitle": "Selected repositories",
+    "description": "Dive into my curated mix of experiments, client work, and open-source contributions.",
+    "states": {
+      "loading": "Loading repositories...",
+      "error": "We couldn't load the projects right now.",
+      "empty": "No repositories are available at the moment."
+    },
+    "card": {
+      "openExternal": "View on GitHub",
+      "homepage": "Open website",
+      "updated": "Updated {date}",
+      "stars": "{count, plural, one {# star} other {# stars}}",
+      "forks": "{count, plural, one {# fork} other {# forks}}",
+      "open": "Inspect project",
+      "topics": "Topics"
+    },
+    "detail": {
+      "empty": "Select a project to see its README and structure.",
+      "back": "Back to projects",
+      "readme": "README",
+      "structure": "Structure",
+      "retry": "Retry",
+      "loadingReadme": "Loading README...",
+      "errorReadme": "We couldn't load the README.",
+      "emptyReadme": "This project does not provide a README.",
+      "loadingStructure": "Loading folder...",
+      "errorStructure": "We couldn't load this folder.",
+      "emptyStructure": "This folder is empty.",
+      "notFoundAccent": "Missing repository",
+      "notFoundTitle": "We couldn't find that project.",
+      "notFoundBody": "The link may be outdated or the repository is no longer pinned. Return to the overview to browse available projects."
+    }
+  }
 }

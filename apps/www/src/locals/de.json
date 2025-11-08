@@ -154,4 +154,41 @@
       }
     }
   }
+  ,
+  "projects": {
+    "title": "Projekte",
+    "accent": "GitHub-Archiv",
+    "subtitle": "Ausgewählte Repositories",
+    "description": "Tauche ein in meine Mischung aus Experimenten, Kundenprojekten und Open-Source-Beiträgen.",
+    "states": {
+      "loading": "Repositories werden geladen...",
+      "error": "Die Projekte konnten gerade nicht geladen werden.",
+      "empty": "Derzeit sind keine Repositories verfügbar."
+    },
+    "card": {
+      "openExternal": "Auf GitHub ansehen",
+      "homepage": "Website öffnen",
+      "updated": "Aktualisiert am {date}",
+      "stars": "{count, plural, one {# Stern} other {# Sterne}}",
+      "forks": "{count, plural, one {# Fork} other {# Forks}}",
+      "open": "Projekt ansehen",
+      "topics": "Themen"
+    },
+    "detail": {
+      "empty": "Wähle ein Projekt, um README und Struktur zu sehen.",
+      "back": "Zur Projektliste",
+      "readme": "README",
+      "structure": "Struktur",
+      "retry": "Erneut versuchen",
+      "loadingReadme": "README wird geladen...",
+      "errorReadme": "Das README konnte nicht geladen werden.",
+      "emptyReadme": "Dieses Projekt stellt kein README bereit.",
+      "loadingStructure": "Ordner wird geladen...",
+      "errorStructure": "Dieser Ordner konnte nicht geladen werden.",
+      "emptyStructure": "Dieser Ordner ist leer.",
+      "notFoundAccent": "Repository fehlt",
+      "notFoundTitle": "Dieses Projekt konnten wir nicht finden.",
+      "notFoundBody": "Der Link ist vielleicht veraltet oder das Repository ist nicht mehr angepinnt. Kehre zur Übersicht zurück, um verfügbare Projekte zu durchstöbern."
+    }
+  }
 }
