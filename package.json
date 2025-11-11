@@ -14,12 +14,6 @@
     "api:dev": "pnpm --filter @website/api dev",
     "api:build": "pnpm --filter @website/api build",
     "api:start": "pnpm --filter @website/api start",
-    "docker:www:up": "docker compose up -d --no-deps www",
-    "docker:api:up": "docker compose up -d --no-deps api",
-    "docker:www:down": "docker compose down www",
-    "docker:api:down": "docker compose down api",
-    "db:push": "turbo run db:push",
-    "db:seed": "turbo run db:seed",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint:biome": "biome lint --write .",
@@ -28,7 +22,6 @@
     "check:ci": "biome check ."
   },
   "devDependencies": {
-    "dotenv-cli": "^7.4.2",
     "@biomejs/biome": "^2.3.2",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
