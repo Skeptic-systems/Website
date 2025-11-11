@@ -1,0 +1,10 @@
+node_modules
+apps/*/node_modules
+.git
+.turbo
+.next
+tmp
+.env
+.env.*
+Dockerfile
+

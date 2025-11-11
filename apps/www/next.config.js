@@ -13,6 +13,7 @@ const baseConfig = {
         hostname: "cdn.discordapp.com",
       },
     ],
+    unoptimized: true,
   },
   async rewrites() {
     return [

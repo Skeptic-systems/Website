@@ -14,10 +14,10 @@ const cacheBuster = (): RequestInit => ({
 const normalizeSlug = (value: string): string => decodeURIComponent(value).trim().toLowerCase();
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = process.env.NEXT_INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL;
 
   if (!apiBase) {
-    throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
+    throw new Error("Missing API base URL environment variable");
   }
 
   const { slug } = await params;

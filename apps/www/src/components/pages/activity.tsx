@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactElement } from "react";
 import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
@@ -93,7 +93,7 @@ function formatMsToTime(ms: number): string {
   return `${minutes}:${secondsLabel}`;
 }
 
-function SectionHeader({ accent, title }: { accent: string; title: string }): JSX.Element {
+function SectionHeader({ accent, title }: { accent: string; title: string }): ReactElement {
   return (
     <div className="space-y-2">
       <p className={`${geist.className} text-xs uppercase tracking-[0.32em] text-emerald-400/90`}>{accent}</p>
@@ -107,10 +107,13 @@ function SectionHeader({ accent, title }: { accent: string; title: string }): JS
 export function Activity() {
   const t = useTranslations("activity");
   const tCommon = useTranslations("common");
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase =
+    (typeof window === "undefined"
+      ? process.env.NEXT_INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL
+      : process.env.NEXT_PUBLIC_API_URL) ?? null;
 
   if (!apiBase) {
-    throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
+    throw new Error("Missing API base URL environment variable");
   }
 
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);

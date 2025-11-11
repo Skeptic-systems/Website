@@ -1,7 +1,12 @@
 {
   "common": {
     "welcome": "Willkommen",
-    "loading": "Lädt..."
+    "loading": "Lädt...",
+    "error": {
+      "title": "Etwas ist schiefgelaufen",
+      "description": "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen"
+    }
   },
   "hero": {
     "title": "Skeptic Systems"
@@ -60,6 +65,67 @@
       "general": {
         "title": "Allgemein",
         "body": "Auf der Systemseite bin ich sowohl in der Windows- als auch in der Linux-Welt zu Hause, hauptsächlich mit Ubuntu und Debian. Ich arbeite mit gängigen Virtualisierungs-Stacks wie Hyper-V, VMware und Proxmox und deploye sowie verwalte Container mit Docker, Podman und Kubernetes. Für Sicherheit und Netzwerk übernehme ich Firewalls, Routing und Edge-Services mit Tools wie Securepoint, Cloudflare und nginx als Reverse Proxy."
+      }
+    }
+  }
+  ,
+  "tools": {
+    "title": "Tools",
+    "accent": "",
+    "subtitle": "Der Stack, mit dem ich arbeite",
+    "description": "Eine kuratierte Übersicht der Sprachen, Frameworks, Werkzeuge und Betriebssysteme, auf die ich für zuverlässige Lösungen setze.",
+    "categories": {
+      "languages": {
+        "label": "Programmiersprachen",
+        "headline": "Sprachen, die ich täglich schreibe",
+        "description": "Typisiert, ausdrucksstark und erprobt für Frontend, Backend und Automatisierung.",
+        "items": {
+          "typescript": "TypeScript",
+          "javascript": "JavaScript",
+          "rust": "Rust",
+          "python": "Python",
+          "sql": "SQL",
+          "shell": "Shell & PowerShell"
+        }
+      },
+      "frameworks": {
+        "label": "Frameworks & Runtimes",
+        "headline": "Ebenen, auf denen ich aufbaue",
+        "description": "Moderne Frameworks und Runtimes für Interfaces, APIs und Desktop-Apps.",
+        "items": {
+          "nextjs": "Next.js",
+          "react": "React",
+          "node": "Node.js",
+          "tauri": "Tauri",
+          "drizzle": "Drizzle ORM",
+          "hono": "Hono"
+        }
+      },
+      "tooling": {
+        "label": "Werkzeuge",
+        "headline": "Produktivitäts-Booster",
+        "description": "Editoren, Plattformen und Services, die Tempo und Qualität sichern.",
+        "items": {
+          "vscode": "Visual Studio Code",
+          "git": "Git",
+          "docker": "Docker",
+          "github": "GitHub",
+          "figma": "Figma",
+          "cloudflare": "Cloudflare"
+        }
+      },
+      "operatingSystems": {
+        "label": "Betriebssysteme",
+        "headline": "Umgebungen, die ich betreue",
+        "description": "Desktop- und Server-Systeme, die ich konfiguriere, optimiere und warte.",
+        "items": {
+          "windows": "Windows",
+          "ubuntu": "Ubuntu",
+          "debian": "Debian",
+          "proxmox": "Proxmox VE",
+          "hyperv": "Hyper-V",
+          "vmware": "VMware ESXi"
+        }
       }
     }
   }

@@ -1,16 +1,61 @@
 services:
-  postgres:
-    image: postgres
+#  postgres:
+#    image: postgres
+#    restart: unless-stopped
+#    container_name: turborepo_postgres_website
+#    shm_size: 128mb
+#    ports:
+#      - "5436:5432"
+#    environment:
+#      POSTGRES_USER: turborepo
+#      POSTGRES_PASSWORD: 123456789
+#    volumes:
+#      - database:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/dockerfile
     restart: unless-stopped
-    container_name: turborepo_postgres_website
-    shm_size: 128mb
+    container_name: turborepo_api_website
     ports:
-      - "5436:5432"
+      - "3001:3001"
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: turborepo
-      POSTGRES_PASSWORD: 123456789
-    volumes:
-      - database:/var/lib/postgresql/data
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://turborepo:123456789@postgres:5432/turborepo}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - SPOTIFY_REFRESH_TOKEN=${SPOTIFY_REFRESH_TOKEN}
+      - DISCORD_USER_ID=${DISCORD_USER_ID}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_USERNAME=${GITHUB_USERNAME}
+      - PTERODACTYL_API_URL=${PTERODACTYL_API_URL}
+      - PTERODACTYL_API_KEY=${PTERODACTYL_API_KEY}
+      - PTERODACTYL_SITE_IDENTIFIER=${PTERODACTYL_SITE_IDENTIFIER:-}
+      - JELLYFIN_BASE_URL=${JELLYFIN_BASE_URL}
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+  www:
+    build:
+      context: .
+      dockerfile: apps/www/dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_INTERNAL_API_URL: ${NEXT_INTERNAL_API_URL:-http://api:3001}
+    restart: unless-stopped
+    container_name: turborepo_www_website
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_INTERNAL_API_URL=${NEXT_INTERNAL_API_URL:-http://api:3001}
+
 
 volumes:
   database:

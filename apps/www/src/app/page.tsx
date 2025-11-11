@@ -4,6 +4,7 @@ import { AboutMe } from "@/components/pages/aboutme";
 import { Activity } from "@/components/pages/activity";
 import { Selfhosted } from "@/components/pages/selfhosted";
 import { Projects } from "@/components/pages/projects";
+import { Tools } from "@/components/pages/tools";
 
 export default function HomePage() {
   return (
@@ -13,6 +14,7 @@ export default function HomePage() {
       <Activity />
       <Selfhosted />
       <Projects />
+      <Tools />
       <SrSections />
     </main>
   );

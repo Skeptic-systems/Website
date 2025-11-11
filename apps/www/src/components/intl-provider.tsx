@@ -1,17 +1,17 @@
 "use client";
 
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { NextIntlClientProvider } from "next-intl";
+import { NextIntlClientProvider, type AbstractIntlMessages } from "next-intl";
 
 type IntlProviderProps = {
   defaultLocale: string;
-  defaultMessages: Record<string, unknown>;
+  defaultMessages: AbstractIntlMessages;
   children: ReactNode;
 };
 
 export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlProviderProps) {
   const [locale, setLocale] = useState<string>(defaultLocale);
-  const [messages, setMessages] = useState<Record<string, unknown>>(defaultMessages);
+  const [messages, setMessages] = useState<AbstractIntlMessages>(defaultMessages);
   const timeZone = "Europe/Berlin";
   const STORAGE_KEY = "www-locale";
 
@@ -42,7 +42,8 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
     if (nextLocale !== locale) {
       import(`../locals/${nextLocale}.json`).then((mod) => {
         setLocale(nextLocale);
-        setMessages(mod.default as Record<string, unknown>);
+        setMessages(mod.default as AbstractIntlMessages);
+          setMessages(mod.default as AbstractIntlMessages);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,7 +55,7 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
         const nextLocale = event.newValue;
         import(`../locals/${nextLocale}.json`).then((mod) => {
           setLocale(nextLocale);
-          setMessages(mod.default as Record<string, unknown>);
+          setMessages(mod.default as AbstractIntlMessages);
           if (typeof document !== "undefined") {
             document.documentElement.lang = nextLocale;
           }
@@ -68,7 +69,7 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
       if (nextLocale && nextLocale !== locale) {
         import(`../locals/${nextLocale}.json`).then((mod) => {
           setLocale(nextLocale);
-          setMessages(mod.default as Record<string, unknown>);
+          setMessages(mod.default as AbstractIntlMessages);
           if (typeof document !== "undefined") {
             document.documentElement.lang = nextLocale;
           }

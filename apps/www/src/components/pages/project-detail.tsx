@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import ReactMarkdown, { type Components } from "react-markdown";
@@ -176,8 +177,9 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
           />
         );
       },
-      code: ({ inline, node, ...props }) =>
-        inline ? (
+      code: ({ node, ...props }) => {
+        const isInline = (node as { type?: string } | null | undefined)?.type === "inlineCode";
+        return isInline ? (
           <code
             className="rounded bg-neutral-100 px-1.5 py-0.5 text-[0.85em] font-semibold text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200"
             {...props}
@@ -187,7 +189,8 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
             className="block overflow-x-auto rounded-3xl bg-neutral-100 p-5 text-[0.9em] text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
             {...props}
           />
-        ),
+        );
+      },
       pre: ({ node, ...props }) => (
         <pre className="mt-8 overflow-x-auto rounded-3xl bg-neutral-100 p-5 dark:bg-neutral-900" {...props} />
       ),
@@ -201,13 +204,16 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
         />
       ),
       img: ({ node, src, alt, ...props }) => {
-        const resolved = resolveRelativeUrl(readmeBase, src ?? "");
+        const srcString = typeof src === "string" ? src : "";
+        const resolved = resolveRelativeUrl(readmeBase, srcString);
         return (
-          <img
-            {...props}
+          <Image
             src={resolved}
             alt={alt ?? ""}
-            className="mt-8 max-h-[480px] w-full rounded-3xl border border-neutral-200/70 object-cover dark:border-neutral-700/60"
+            unoptimized
+            width={1200}
+            height={700}
+            className="mt-8 h-auto w-full rounded-3xl border border-neutral-200/70 object-contain dark:border-neutral-700/60"
           />
         );
       },
@@ -316,7 +322,8 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
 
               return (
                 <li key={entry.sha}>
-                  <div
+                  <button
+                    type="button"
                     className={cn(
                       "flex items-center gap-2 rounded-3xl border border-transparent px-3 py-2 text-sm transition",
                       isDirectory
@@ -325,18 +332,6 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
                     )}
                     style={{ paddingLeft: `${depth * 18}px` }}
                     onClick={isDirectory ? () => handleTogglePath(entry) : undefined}
-                    role={isDirectory ? "button" : undefined}
-                    tabIndex={isDirectory ? 0 : -1}
-                    onKeyDown={
-                      isDirectory
-                        ? (event) => {
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              handleTogglePath(entry);
-                            }
-                          }
-                        : undefined
-                    }
                     aria-expanded={isDirectory ? isExpanded : undefined}
                   >
                     {isDirectory ? (
@@ -351,7 +346,7 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
                         <span>{entry.name}</span>
                       </span>
                     )}
-                  </div>
+                  </button>
                   {isDirectory && isExpanded ? (
                     <div className="pl-6">
                       {renderEntries(entry.path, childState, depth + 1)}
