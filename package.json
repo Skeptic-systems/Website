@@ -25,13 +25,11 @@
     "lint:biome": "biome lint --write .",
     "lint:biome:check": "biome lint .",
     "check": "biome check --write .",
-    "check:ci": "biome check .",
-    "prepare": "lefthook install"
+    "check:ci": "biome check ."
   },
   "devDependencies": {
     "dotenv-cli": "^7.4.2",
     "@biomejs/biome": "^2.3.2",
-    "lefthook": "^2.0.2",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
   },
