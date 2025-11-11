@@ -6,6 +6,8 @@ import { Topbar } from "@/components/topbar";
 import { IntlProvider } from "@/components/intl-provider";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Website",
   description: "Modern website",

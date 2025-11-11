@@ -1,7 +1,12 @@
 {
   "common": {
     "welcome": "Welcome",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "error": {
+      "title": "Something went wrong",
+      "description": "We hit an unexpected issue. Please try again.",
+      "retry": "Retry"
+    }
   },
   "hero": {
     "title": "Skeptic Systems"
@@ -60,6 +65,67 @@
       "general": {
         "title": "General",
         "body": "On the systems side, I’m at home in both Windows and Linux land, mainly with Ubuntu and Debian. I work with common virtualization stacks like Hyper-V, VMware, and Proxmox, and I deploy and manage containers using Docker, Podman, and Kubernetes. For security and networking, I handle firewalls, routing, and edge services with tools like Securepoint, Cloudflare, and nginx as a reverse proxy."
+      }
+    }
+  }
+  ,
+  "tools": {
+    "title": "Tools",
+    "accent": "",
+    "subtitle": "The stack I reach for",
+    "description": "A curated overview of the languages, frameworks, tooling, and operating systems I rely on to build resilient experiences.",
+    "categories": {
+      "languages": {
+        "label": "Programming languages",
+        "headline": "Languages I write daily",
+        "description": "Typed, expressive, and battle-tested across frontend, backend, and automation work.",
+        "items": {
+          "typescript": "TypeScript",
+          "javascript": "JavaScript",
+          "rust": "Rust",
+          "python": "Python",
+          "sql": "SQL",
+          "shell": "Shell & PowerShell"
+        }
+      },
+      "frameworks": {
+        "label": "Frameworks & runtimes",
+        "headline": "Build layers I rely on",
+        "description": "Modern frameworks and runtimes powering interfaces, APIs, and desktop apps.",
+        "items": {
+          "nextjs": "Next.js",
+          "react": "React",
+          "node": "Node.js",
+          "tauri": "Tauri",
+          "drizzle": "Drizzle ORM",
+          "hono": "Hono"
+        }
+      },
+      "tooling": {
+        "label": "Tooling",
+        "headline": "Productivity multipliers",
+        "description": "Editors, platforms, and services that keep delivery fast and reliable.",
+        "items": {
+          "vscode": "Visual Studio Code",
+          "git": "Git",
+          "docker": "Docker",
+          "github": "GitHub",
+          "figma": "Figma",
+          "cloudflare": "Cloudflare"
+        }
+      },
+      "operatingSystems": {
+        "label": "Operating systems",
+        "headline": "Environments I manage",
+        "description": "Desktop and server operating systems I configure, tune, and support.",
+        "items": {
+          "windows": "Windows",
+          "ubuntu": "Ubuntu",
+          "debian": "Debian",
+          "proxmox": "Proxmox VE",
+          "hyperv": "Hyper-V",
+          "vmware": "VMware ESXi"
+        }
       }
     }
   }
@@ -152,6 +218,43 @@
         },
         "generatedAt": "Last updated {timestamp}"
       }
+    }
+  }
+  ,
+  "projects": {
+    "title": "Projects",
+    "accent": "GitHub archive",
+    "subtitle": "Selected repositories",
+    "description": "Dive into my curated mix of experiments, client work, and open-source contributions.",
+    "states": {
+      "loading": "Loading repositories...",
+      "error": "We couldn't load the projects right now.",
+      "empty": "No repositories are available at the moment."
+    },
+    "card": {
+      "openExternal": "View on GitHub",
+      "homepage": "Open website",
+      "updated": "Updated {date}",
+      "stars": "{count, plural, one {# star} other {# stars}}",
+      "forks": "{count, plural, one {# fork} other {# forks}}",
+      "open": "Inspect project",
+      "topics": "Topics"
+    },
+    "detail": {
+      "empty": "Select a project to see its README and structure.",
+      "back": "Back to projects",
+      "readme": "README",
+      "structure": "Structure",
+      "retry": "Retry",
+      "loadingReadme": "Loading README...",
+      "errorReadme": "We couldn't load the README.",
+      "emptyReadme": "This project does not provide a README.",
+      "loadingStructure": "Loading folder...",
+      "errorStructure": "We couldn't load this folder.",
+      "emptyStructure": "This folder is empty.",
+      "notFoundAccent": "Missing repository",
+      "notFoundTitle": "We couldn't find that project.",
+      "notFoundBody": "The link may be outdated or the repository is no longer pinned. Return to the overview to browse available projects."
     }
   }
 }

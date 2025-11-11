@@ -2,6 +2,11 @@
 out/
 next-env.d.ts
 
+.pnpm-store
+
+
+
+
 
 
 

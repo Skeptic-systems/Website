@@ -57,6 +57,11 @@ export const jellyfinEnv = {
   appVersion: readOptionalEnv("JELLYFIN_APP_VERSION"),
 };
 
+export const githubEnv = {
+  token: readEnv("GITHUB_TOKEN"),
+  username: readEnv("GITHUB_USERNAME"),
+};
+
 export const appEnv = {
   apiBaseUrl: readEnv("NEXT_PUBLIC_API_URL"),
 };

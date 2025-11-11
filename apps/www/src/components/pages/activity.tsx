@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
@@ -45,6 +45,47 @@ type Playback = {
 type CurrentlyPlayingResponse = {
   playback: Playback | null;
 };
+
+const TOP_TRACKS_CACHE_KEY = "activity:top-tracks:v1";
+
+type CachedTopTracks = {
+  tracks: SpotifyTrack[];
+};
+
+function readCachedTopTracks(): SpotifyTrack[] | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const raw = window.sessionStorage.getItem(TOP_TRACKS_CACHE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw) as CachedTopTracks;
+    if (!parsed || !Array.isArray(parsed.tracks)) {
+      return null;
+    }
+    return parsed.tracks;
+  } catch {
+    try {
+      window.sessionStorage.removeItem(TOP_TRACKS_CACHE_KEY);
+    } catch {
+    }
+    return null;
+  }
+}
+
+function writeCachedTopTracks(tracks: SpotifyTrack[]): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    const payload: CachedTopTracks = { tracks };
+    window.sessionStorage.setItem(TOP_TRACKS_CACHE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("Failed to cache top tracks", error);
+  }
+}
 
 type DiscordActivityAsset = {
   key: string | null;
@@ -93,7 +134,7 @@ function formatMsToTime(ms: number): string {
   return `${minutes}:${secondsLabel}`;
 }
 
-function SectionHeader({ accent, title }: { accent: string; title: string }): JSX.Element {
+function SectionHeader({ accent, title }: { accent: string; title: string }): ReactElement {
   return (
     <div className="space-y-2">
       <p className={`${geist.className} text-xs uppercase tracking-[0.32em] text-emerald-400/90`}>{accent}</p>
@@ -107,10 +148,13 @@ function SectionHeader({ accent, title }: { accent: string; title: string }): JS
 export function Activity() {
   const t = useTranslations("activity");
   const tCommon = useTranslations("common");
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase =
+    (typeof window === "undefined"
+      ? process.env.NEXT_INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL
+      : process.env.NEXT_PUBLIC_API_URL) ?? null;
 
   if (!apiBase) {
-    throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
+    throw new Error("Missing API base URL environment variable");
   }
 
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
@@ -119,10 +163,22 @@ export function Activity() {
   const [isNowPlayingLoading, setIsNowPlayingLoading] = useState(true);
   const [activities, setActivities] = useState<DiscordActivity[]>([]);
   const [isPresenceLoading, setIsPresenceLoading] = useState(true);
+  const [displayProgressMs, setDisplayProgressMs] = useState<number | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
+    const cachedTracks = readCachedTopTracks();
+    if (cachedTracks && isMounted) {
+      setTopTracks(cachedTracks);
+      setIsTopTracksLoading(false);
+      return () => {
+        isMounted = false;
+        controller.abort();
+      };
+    }
     setIsTopTracksLoading(true);
     requestJson<TopTracksResponse>(`${apiBase}/spotify/top-tracks`, { signal: controller.signal })
       .then((data) => {
@@ -133,7 +189,9 @@ export function Activity() {
           setTopTracks([]);
           return;
         }
-        setTopTracks(data.tracks.slice(0, 5));
+        const limitedTracks = data.tracks.slice(0, 5);
+        setTopTracks(limitedTracks);
+        writeCachedTopTracks(limitedTracks);
       })
       .finally(() => {
         if (isMounted) {
@@ -165,16 +223,18 @@ export function Activity() {
         }
         if (!data || !data.playback) {
           setPlayback(null);
+          setDisplayProgressMs(null);
           setIsNowPlayingLoading(false);
           return;
         }
         setPlayback(data.playback);
+        setDisplayProgressMs(data.playback.progressMs ?? null);
         setIsNowPlayingLoading(false);
       });
     };
 
     run();
-    const interval = window.setInterval(run, 5000);
+    const interval = window.setInterval(run, 10000);
 
     return () => {
       isMounted = false;
@@ -184,6 +244,80 @@ export function Activity() {
       window.clearInterval(interval);
     };
   }, [apiBase]);
+
+  useEffect(() => {
+    if (!playback || playback.progressMs === null) {
+      setDisplayProgressMs(null);
+      return;
+    }
+    setDisplayProgressMs(playback.progressMs);
+  }, [playback]);
+
+  const showProgressBar = useMemo(() => {
+    if (!playback || !playback.isPlaying) {
+      return false;
+    }
+    if (!playback.track || playback.track.durationMs <= 0) {
+      return false;
+    }
+    return playback.progressMs !== null;
+  }, [playback]);
+
+  useEffect(() => {
+    if (!showProgressBar || !playback || !playback.isPlaying || playback.progressMs === null || !playback.track) {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      lastFrameRef.current = null;
+      return;
+    }
+
+    const duration = playback.track.durationMs;
+
+    const tick = (now: number) => {
+      if (lastFrameRef.current === null) {
+        lastFrameRef.current = now;
+      }
+      const elapsed = now - (lastFrameRef.current ?? now);
+      lastFrameRef.current = now;
+      let shouldContinue = true;
+
+      setDisplayProgressMs((prev) => {
+        if (prev === null) {
+          shouldContinue = false;
+          return prev;
+        }
+        if (duration <= 0) {
+          shouldContinue = false;
+          return prev;
+        }
+        const next = Math.min(prev + elapsed, duration);
+        if (next >= duration) {
+          shouldContinue = false;
+        }
+        return next;
+      });
+
+      if (!shouldContinue) {
+        animationFrameRef.current = null;
+        lastFrameRef.current = null;
+        return;
+      }
+
+      animationFrameRef.current = requestAnimationFrame(tick);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      lastFrameRef.current = null;
+    };
+  }, [playback, showProgressBar]);
 
   useEffect(() => {
     let isMounted = true;
@@ -224,21 +358,11 @@ export function Activity() {
     };
   }, [apiBase]);
 
-  const showProgressBar = useMemo(() => {
-    if (!playback || !playback.isPlaying) {
-      return false;
-    }
-    if (!playback.track || playback.track.durationMs <= 0) {
-      return false;
-    }
-    return playback.progressMs !== null;
-  }, [playback]);
-
   const progressPercent = useMemo(() => {
-    if (!showProgressBar || !playback || !playback.track) {
+    if (!showProgressBar || !playback || !playback.track || displayProgressMs === null) {
       return 0;
     }
-    const progress = playback.progressMs ?? 0;
+    const progress = displayProgressMs ?? 0;
     const duration = playback.track.durationMs;
     if (duration <= 0) {
       return 0;
@@ -251,20 +375,20 @@ export function Activity() {
       return 100;
     }
     return ratio;
-  }, [playback, showProgressBar]);
+  }, [displayProgressMs, playback, showProgressBar]);
 
   const progressLabel = useMemo(() => {
     if (!showProgressBar || !playback || !playback.track) {
       return null;
     }
-    if (playback.progressMs === null) {
+    if (displayProgressMs === null) {
       return null;
     }
     return {
-      current: formatMsToTime(playback.progressMs),
+      current: formatMsToTime(displayProgressMs),
       total: formatMsToTime(playback.track.durationMs),
     };
-  }, [playback, showProgressBar]);
+  }, [displayProgressMs, playback, showProgressBar]);
 
   const artistsLabel = (track: SpotifyTrack | null): string => {
     if (!track) {

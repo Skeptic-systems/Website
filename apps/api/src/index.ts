@@ -4,10 +4,12 @@ import { logger } from "hono/logger";
 
 import { appEnv } from "./config/env";
 import { discordRoutes } from "./routes/discord";
+import { githubRoutes } from "./routes/github";
 import { pterodactylRoutes } from "./routes/pterodactyl";
 import { jellyfinRoutes } from "./routes/jellyfin";
 import { spotifyRoutes } from "./routes/spotify";
 import { verifyDiscordConnection } from "./services/discord";
+import { verifyGitHubConnection } from "./services/github";
 import { verifyPterodactylConnection } from "./services/pterodactyl";
 import { verifyJellyfinConnection } from "./services/jellyfin";
 import { verifySpotifyConnection } from "./services/spotify";
@@ -15,10 +17,18 @@ import { verifySpotifyConnection } from "./services/spotify";
 const app = new Hono();
 
 app.use("*", logger());
+
+const allowedOrigins =
+  process.env.ALLOWED_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0) ?? ["http://localhost:3000"];
+
+const corsOrigin = allowedOrigins.includes("*") ? "*" : allowedOrigins;
+
 app.use(
   "*",
   cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3000"],
+    origin: corsOrigin,
     credentials: true,
   })
 );
@@ -31,6 +41,7 @@ app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.route("/github", githubRoutes);
 app.route("/spotify", spotifyRoutes);
 app.route("/discord", discordRoutes);
 app.route("/pterodactyl", pterodactylRoutes);
@@ -41,6 +52,22 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 const registeredRoutes = [
   { method: "GET", path: "/", description: "API status" },
   { method: "GET", path: "/health", description: "Health check" },
+  { method: "GET", path: "/github/pinned", description: "GitHub pinned repositories" },
+  {
+    method: "GET",
+    path: "/github/repos/:repo/contents",
+    description: "GitHub repository directory contents",
+  },
+  {
+    method: "GET",
+    path: "/github/repos/:repo/file",
+    description: "GitHub repository file content",
+  },
+  {
+    method: "GET",
+    path: "/github/repos/:repo/readme",
+    description: "GitHub repository README",
+  },
   { method: "GET", path: "/spotify/top-tracks", description: "Spotify top tracks" },
   {
     method: "GET",
@@ -90,6 +117,14 @@ const logRegisteredRoutes = (baseUrl: string): void => {
 
 const runStartupChecks = async (): Promise<void> => {
   const baseUrl = getBaseUrl();
+
+  try {
+    await verifyGitHubConnection();
+    console.log("🐙 GitHub connection verified");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ GitHub connection check failed: ${message}`);
+  }
 
   try {
     await verifySpotifyConnection();
