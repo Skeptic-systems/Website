@@ -1,10 +1,17 @@
 name: Build and Push Docker Images
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      target:
+        description: Select which image to build
+        required: true
+        default: both
+        type: choice
+        options:
+          - both
+          - website
+          - api
 
 env:
   REGISTRY: docker.io
@@ -12,22 +19,87 @@ env:
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
-  build-and-push:
+  prepare-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      next_version: ${{ steps.determine.outputs.next_version }}
+    steps:
+      - name: Verify Docker Hub credentials
+        run: |
+          if [ -z "${DOCKERHUB_USERNAME}" ] || [ -z "${DOCKERHUB_TOKEN}" ]; then
+            echo "::error::Missing Docker Hub credentials. Please set DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets."
+            exit 1
+          fi
+
+      - name: Determine next release version
+        id: determine
+        env:
+          DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          repos=("website" "website-api")
+          max_major=0
+          max_minor=0
+          max_patch=0
+          found=false
+          for repo in "${repos[@]}"; do
+            url="https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${repo}/tags?page_size=100"
+            response_file="$(mktemp)"
+            status_code="$(curl -sS -u "${DOCKERHUB_USERNAME}:${DOCKERHUB_TOKEN}" -w "%{http_code}" -o "${response_file}" "${url}")"
+            if [ "${status_code}" = "404" ]; then
+              echo "Repository ${DOCKERHUB_USERNAME}/${repo} not found; starting fresh."
+              rm -f "${response_file}"
+              continue
+            fi
+            if [ "${status_code}" != "200" ]; then
+              echo "::error::Failed to query tags for ${repo}. HTTP status ${status_code}."
+              cat "${response_file}"
+              rm -f "${response_file}"
+              exit 1
+            fi
+            names="$(jq -r '.results[].name' "${response_file}" || true)"
+            rm -f "${response_file}"
+            while IFS= read -r name; do
+              if [[ "${name}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                found=true
+                IFS='.' read -r major minor patch <<< "${name}"
+                if (( major > max_major )) || (( major == max_major && minor > max_minor )) || (( major == max_major && minor == max_minor && patch > max_patch )); then
+                  max_major="${major}"
+                  max_minor="${minor}"
+                  max_patch="${patch}"
+                fi
+              fi
+            done <<< "${names}"
+          done
+          if [ "${found}" = false ]; then
+            next_version="0.1.0"
+          else
+            next_minor=$((max_minor + 1))
+            next_version="${max_major}.${next_minor}.0"
+          fi
+          echo "next_version=${next_version}" >> "${GITHUB_OUTPUT}"
+
+  build-and-push:
+    needs: prepare-version
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
         include:
+          - id: website
+            context: .
+            dockerfile: apps/www/dockerfile
+            repository: website
           - id: api
             context: .
             dockerfile: apps/api/dockerfile
-            image_suffix: website-api
-          - id: www
-            context: .
-            dockerfile: apps/www/dockerfile
-            image_suffix: website-www
+            repository: website-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,26 +120,18 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-      - name: Extract container metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.DOCKERHUB_USERNAME }}/${{ matrix.image_suffix }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=sha,format=short
-            type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.source=${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-
       - name: Build and push ${{ matrix.id }} image
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.DOCKERHUB_USERNAME }}/${{ matrix.repository }}:${{ needs.prepare-version.outputs.next_version }}
+            ${{ env.REGISTRY }}/${{ env.DOCKERHUB_USERNAME }}/${{ matrix.repository }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.prepare-version.outputs.next_version }}
+
 
