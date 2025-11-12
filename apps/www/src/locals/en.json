@@ -70,15 +70,15 @@
   }
   ,
   "tools": {
-    "title": "Tools",
-    "accent": "",
-    "subtitle": "The stack I reach for",
-    "description": "A curated overview of the languages, frameworks, tooling, and operating systems I rely on to build resilient experiences.",
+    "title": "Language & Tools",
+    "accent": "STACK & WORKFLOW",
+    "subtitle": "How I build - typed languages, modern frameworks, and opinionated tooling.",
+    "description": "Each layer earns its place: languages for expressiveness, frameworks for velocity, tooling for focus, and operating systems I harden and maintain.",
     "categories": {
       "languages": {
         "label": "Programming languages",
-        "headline": "Languages I write daily",
-        "description": "Typed, expressive, and battle-tested across frontend, backend, and automation work.",
+        "headline": "Typed foundations",
+        "description": "Languages I rely on daily across automation, backend services, and ambitious interfaces.",
         "items": {
           "typescript": "TypeScript",
           "javascript": "JavaScript",
@@ -103,15 +103,20 @@
       },
       "tooling": {
         "label": "Tooling",
-        "headline": "Productivity multipliers",
-        "description": "Editors, platforms, and services that keep delivery fast and reliable.",
+        "headline": "Tools that keep delivery sharp",
+        "description": "Editors, terminals, data clients, and services that keep the feedback loop tight.",
         "items": {
           "vscode": "Visual Studio Code",
+          "cursor": "Cursor",
+          "tabby": "Tabby Terminal",
+          "podmanDesktop": "Podman Desktop",
+          "lmStudio": "LM Studio",
+          "beekeeperStudio": "Beekeeper Studio",
           "git": "Git",
           "docker": "Docker",
-          "github": "GitHub",
           "figma": "Figma",
-          "cloudflare": "Cloudflare"
+          "cloudflare": "Cloudflare",
+          "github": "GitHub"
         }
       },
       "operatingSystems": {
@@ -120,11 +125,11 @@
         "description": "Desktop and server operating systems I configure, tune, and support.",
         "items": {
           "windows": "Windows",
-          "ubuntu": "Ubuntu",
           "debian": "Debian",
           "proxmox": "Proxmox VE",
           "hyperv": "Hyper-V",
-          "vmware": "VMware ESXi"
+          "vmware": "VMware ESXi",
+          "kubernetes": "Kubernetes"
         }
       }
     }

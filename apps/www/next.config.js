@@ -12,6 +12,14 @@ const baseConfig = {
         protocol: "https",
         hostname: "cdn.discordapp.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.simpleicons.org",
+      },
     ],
     unoptimized: true,
   },

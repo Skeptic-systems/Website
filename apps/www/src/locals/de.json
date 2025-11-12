@@ -70,15 +70,15 @@
   }
   ,
   "tools": {
-    "title": "Tools",
-    "accent": "",
-    "subtitle": "Der Stack, mit dem ich arbeite",
-    "description": "Eine kuratierte Übersicht der Sprachen, Frameworks, Werkzeuge und Betriebssysteme, auf die ich für zuverlässige Lösungen setze.",
+    "title": "Sprachen & Tools",
+    "accent": "STACK & WORKFLOW",
+    "subtitle": "Wie ich arbeite - typisierte Sprachen, moderne Frameworks und fokussierte Tools.",
+    "description": "Jede Schicht hat ihren Platz: Sprachen für Ausdruck, Frameworks für Tempo, Tools für Fokus und Betriebssysteme, die ich härte und betreue.",
     "categories": {
       "languages": {
         "label": "Programmiersprachen",
-        "headline": "Sprachen, die ich täglich schreibe",
-        "description": "Typisiert, ausdrucksstark und erprobt für Frontend, Backend und Automatisierung.",
+        "headline": "Typisierte Grundlagen",
+        "description": "Sprachen, auf die ich täglich für Automatisierung, Backend-Services und anspruchsvolle Interfaces setze.",
         "items": {
           "typescript": "TypeScript",
           "javascript": "JavaScript",
@@ -103,15 +103,20 @@
       },
       "tooling": {
         "label": "Werkzeuge",
-        "headline": "Produktivitäts-Booster",
-        "description": "Editoren, Plattformen und Services, die Tempo und Qualität sichern.",
+        "headline": "Werkzeuge für präzise Auslieferung",
+        "description": "Editoren, Terminals, Daten-Clients und Services, die den Feedback-Loop kurz halten.",
         "items": {
           "vscode": "Visual Studio Code",
+          "cursor": "Cursor",
+          "tabby": "Tabby Terminal",
+          "podmanDesktop": "Podman Desktop",
+          "lmStudio": "LM Studio",
+          "beekeeperStudio": "Beekeeper Studio",
           "git": "Git",
           "docker": "Docker",
-          "github": "GitHub",
           "figma": "Figma",
-          "cloudflare": "Cloudflare"
+          "cloudflare": "Cloudflare",
+          "github": "GitHub"
         }
       },
       "operatingSystems": {
@@ -120,11 +125,11 @@
         "description": "Desktop- und Server-Systeme, die ich konfiguriere, optimiere und warte.",
         "items": {
           "windows": "Windows",
-          "ubuntu": "Ubuntu",
           "debian": "Debian",
           "proxmox": "Proxmox VE",
           "hyperv": "Hyper-V",
-          "vmware": "VMware ESXi"
+          "vmware": "VMware ESXi",
+          "kubernetes": "Kubernetes"
         }
       }
     }
