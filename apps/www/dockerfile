@@ -14,9 +14,7 @@ RUN git init && pnpm install --frozen-lockfile
 
 FROM deps AS build
 ARG NEXT_PUBLIC_API_URL
-ARG NEXT_INTERNAL_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-ENV NEXT_INTERNAL_API_URL=${NEXT_INTERNAL_API_URL}
 ENV NODE_ENV=production
 COPY apps/www ./apps/www
 WORKDIR /app/apps/www

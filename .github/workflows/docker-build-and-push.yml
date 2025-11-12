@@ -111,9 +111,16 @@ jobs:
 
       - name: Verify Docker Hub credentials
         if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
+        env:
+          MATRIX_ID: ${{ matrix.id }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: |
           if [ -z "${DOCKERHUB_USERNAME}" ] || [ -z "${DOCKERHUB_TOKEN}" ]; then
             echo "::error::Missing Docker Hub credentials. Please set DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets."
+            exit 1
+          fi
+          if [ "${MATRIX_ID}" = "website" ] && [ -z "${NEXT_PUBLIC_API_URL}" ]; then
+            echo "::error::Missing NEXT_PUBLIC_API_URL secret required for website build."
             exit 1
           fi
 
@@ -124,8 +131,26 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-      - name: Build and push ${{ matrix.id }} image
-        if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
+      - name: Build and push website image
+        if: ${{ (github.event.inputs.target == 'both' || github.event.inputs.target == 'website') && matrix.id == 'website' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          build-args: |
+            NODE_ENV=production
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.DOCKERHUB_USERNAME }}/${{ matrix.repository }}:${{ needs.prepare-version.outputs.next_version }}
+            ${{ env.REGISTRY }}/${{ env.DOCKERHUB_USERNAME }}/${{ matrix.repository }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.prepare-version.outputs.next_version }}
+
+      - name: Build and push api image
+        if: ${{ (github.event.inputs.target == 'both' || github.event.inputs.target == 'api') && matrix.id == 'api' }}
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
@@ -138,5 +163,3 @@ jobs:
             org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ needs.prepare-version.outputs.next_version }}
-
-
