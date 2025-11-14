@@ -66,6 +66,22 @@ const ICON_COMPONENTS = {
   fallback: IconApps,
 } as const satisfies Record<string, IconComponent>;
 
+const HOVER_GRADIENTS = {
+  amber: "from-amber-500/35 via-amber-500/18 to-amber-500/6 dark:from-amber-400/28 dark:via-amber-400/14 dark:to-amber-400/7",
+  blue: "from-blue-500/35 via-blue-500/18 to-blue-500/7 dark:from-blue-400/28 dark:via-blue-400/14 dark:to-blue-400/7",
+  emerald: "from-emerald-500/35 via-emerald-500/18 to-emerald-500/6 dark:from-emerald-400/28 dark:via-emerald-400/14 dark:to-emerald-400/6",
+  fuchsia: "from-fuchsia-500/35 via-fuchsia-500/18 to-fuchsia-500/7 dark:from-fuchsia-400/28 dark:via-fuchsia-400/14 dark:to-fuchsia-400/7",
+  indigo: "from-indigo-500/35 via-indigo-500/18 to-indigo-500/7 dark:from-indigo-400/28 dark:via-indigo-400/14 dark:to-indigo-400/7",
+  lime: "from-lime-500/35 via-lime-500/18 to-lime-500/6 dark:from-lime-400/26 dark:via-lime-400/13 dark:to-lime-400/6",
+  neutral: "from-neutral-500/30 via-neutral-500/15 to-neutral-500/6 dark:from-neutral-400/22 dark:via-neutral-400/12 dark:to-neutral-400/6",
+  orange: "from-orange-500/40 via-orange-500/20 to-orange-500/8 dark:from-orange-400/30 dark:via-orange-400/16 dark:to-orange-400/8",
+  purple: "from-purple-500/35 via-purple-500/18 to-purple-500/7 dark:from-purple-400/26 dark:via-purple-400/13 dark:to-purple-400/6",
+  rose: "from-rose-500/35 via-rose-500/18 to-rose-500/6 dark:from-rose-400/28 dark:via-rose-400/14 dark:to-rose-400/6",
+  sky: "from-sky-500/35 via-sky-500/18 to-sky-500/6 dark:from-sky-400/28 dark:via-sky-400/14 dark:to-sky-400/6",
+  slate: "from-slate-500/30 via-slate-500/15 to-slate-500/6 dark:from-slate-400/24 dark:via-slate-400/12 dark:to-slate-400/6",
+  violet: "from-violet-500/35 via-violet-500/18 to-violet-500/7 dark:from-violet-400/28 dark:via-violet-400/14 dark:to-violet-400/7",
+} as const satisfies Record<string, string>;
+
 type IconRegistryKey = keyof typeof ICON_COMPONENTS;
 type IconKey = Exclude<IconRegistryKey, "fallback">;
 type CategoryKey = "languages" | "frameworks" | "tooling" | "operatingSystems";
@@ -107,7 +123,7 @@ const TOOL_SECTIONS = [
           alt: "TypeScript",
         },
         href: "https://www.typescriptlang.org/",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "javascript",
@@ -116,7 +132,7 @@ const TOOL_SECTIONS = [
           alt: "JavaScript",
         },
         href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "rust",
@@ -125,7 +141,7 @@ const TOOL_SECTIONS = [
           alt: "Rust",
         },
         href: "https://www.rust-lang.org/",
-        accentClass: "from-orange-500/30 via-orange-500/15 to-transparent",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "python",
@@ -134,7 +150,7 @@ const TOOL_SECTIONS = [
           alt: "Python",
         },
         href: "https://www.python.org/",
-        accentClass: "from-indigo-500/25 via-indigo-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.indigo,
       },
       {
         key: "sql",
@@ -143,7 +159,7 @@ const TOOL_SECTIONS = [
           alt: "SQL",
         },
         href: "https://www.postgresql.org/",
-        accentClass: "from-emerald-500/25 via-emerald-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.emerald,
       },
       {
         key: "shell",
@@ -152,7 +168,7 @@ const TOOL_SECTIONS = [
           alt: "Shell & PowerShell",
         },
         href: "https://learn.microsoft.com/powershell/",
-        accentClass: "from-neutral-400/25 via-neutral-400/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.slate,
       },
     ],
   },
@@ -170,7 +186,7 @@ const TOOL_SECTIONS = [
           alt: "Next.js",
         },
         href: "https://nextjs.org/",
-        accentClass: "from-neutral-500/30 via-neutral-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.neutral,
       },
       {
         key: "react",
@@ -179,7 +195,7 @@ const TOOL_SECTIONS = [
           alt: "React",
         },
         href: "https://react.dev/",
-        accentClass: "from-sky-500/30 via-sky-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "node",
@@ -188,7 +204,7 @@ const TOOL_SECTIONS = [
           alt: "Node.js",
         },
         href: "https://nodejs.org/",
-        accentClass: "from-lime-500/25 via-lime-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.lime,
       },
       {
         key: "tauri",
@@ -197,7 +213,7 @@ const TOOL_SECTIONS = [
           alt: "Tauri",
         },
         href: "https://tauri.app/",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "drizzle",
@@ -206,7 +222,7 @@ const TOOL_SECTIONS = [
           alt: "Drizzle ORM",
         },
         href: "https://orm.drizzle.team/",
-        accentClass: "from-emerald-500/25 via-emerald-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.emerald,
       },
       {
         key: "hono",
@@ -215,7 +231,7 @@ const TOOL_SECTIONS = [
           alt: "Hono",
         },
         href: "https://hono.dev/",
-        accentClass: "from-orange-500/25 via-orange-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.orange,
       },
     ],
   },
@@ -233,37 +249,37 @@ const TOOL_SECTIONS = [
           alt: "Visual Studio Code",
         },
         href: "https://code.visualstudio.com/",
-        accentClass: "from-sky-500/24 via-sky-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "cursor",
         image: { src: "/asstes/tools/cursor.png", alt: "Cursor" },
         href: "https://www.cursor.com/",
-        accentClass: "from-violet-500/28 via-violet-500/12 to-transparent",
+            accentClass: HOVER_GRADIENTS.violet,
       },
       {
         key: "tabby",
         image: { src: "/asstes/tools/tabby.png", alt: "Tabby" },
         href: "https://tabby.sh/",
-        accentClass: "from-emerald-500/25 via-emerald-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.emerald,
       },
       {
         key: "podmanDesktop",
         image: { src: "/asstes/tools/podmandesktop.png", alt: "Podman Desktop" },
         href: "https://podman-desktop.io/",
-        accentClass: "from-blue-500/25 via-blue-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.blue,
       },
       {
         key: "lmStudio",
         image: { src: "/asstes/tools/lmstudio.png", alt: "LM Studio" },
         href: "https://lmstudio.ai/",
-        accentClass: "from-purple-500/28 via-purple-500/12 to-transparent",
+            accentClass: HOVER_GRADIENTS.purple,
       },
       {
         key: "beekeeperStudio",
         image: { src: "/asstes/tools/beekeeperstudio.png", alt: "Beekeeper Studio" },
         href: "https://www.beekeeperstudio.io/",
-        accentClass: "from-amber-500/28 via-amber-500/12 to-transparent",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "git",
@@ -272,7 +288,7 @@ const TOOL_SECTIONS = [
           alt: "Git",
         },
         href: "https://git-scm.com/",
-        accentClass: "from-rose-500/25 via-rose-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "docker",
@@ -281,7 +297,7 @@ const TOOL_SECTIONS = [
           alt: "Docker",
         },
         href: "https://www.docker.com/",
-        accentClass: "from-blue-500/25 via-blue-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.blue,
       },
       {
         key: "figma",
@@ -290,16 +306,16 @@ const TOOL_SECTIONS = [
           alt: "Figma",
         },
         href: "https://www.figma.com/",
-        accentClass: "from-fuchsia-500/25 via-fuchsia-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.fuchsia,
       },
       {
         key: "cloudflare",
         image: {
-          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-plain.svg",
+              src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg",
           alt: "Cloudflare",
         },
         href: "https://www.cloudflare.com/",
-        accentClass: "from-orange-500/30 via-orange-500/12 to-transparent",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "github",
@@ -308,7 +324,7 @@ const TOOL_SECTIONS = [
           alt: "GitHub",
         },
         href: "https://github.com/",
-        accentClass: "from-neutral-500/24 via-neutral-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.neutral,
       },
     ],
   },
@@ -326,7 +342,7 @@ const TOOL_SECTIONS = [
           alt: "Windows",
         },
         href: "https://www.microsoft.com/windows",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.blue,
       },
       {
         key: "debian",
@@ -335,7 +351,7 @@ const TOOL_SECTIONS = [
           alt: "Debian",
         },
         href: "https://www.debian.org/",
-        accentClass: "from-rose-500/25 via-rose-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.rose,
       },
       {
         key: "kubernetes",
@@ -344,7 +360,7 @@ const TOOL_SECTIONS = [
           alt: "Kubernetes",
         },
         href: "https://kubernetes.io/",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "proxmox",
@@ -353,7 +369,7 @@ const TOOL_SECTIONS = [
           alt: "Proxmox VE",
         },
         href: "https://www.proxmox.com/",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "hyperv",
@@ -362,7 +378,7 @@ const TOOL_SECTIONS = [
           alt: "Hyper-V",
         },
         href: "https://learn.microsoft.com/windows-server/virtualization/hyper-v/hyper-v-technology-overview",
-        accentClass: "from-indigo-500/25 via-indigo-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.indigo,
       },
       {
         key: "vmware",
@@ -371,7 +387,7 @@ const TOOL_SECTIONS = [
           alt: "VMware ESXi",
         },
         href: "https://www.vmware.com/products/esxi-and-esx.html",
-        accentClass: "from-blue-500/25 via-blue-500/10 to-transparent",
+            accentClass: HOVER_GRADIENTS.blue,
       },
     ],
   },
@@ -379,46 +395,36 @@ const TOOL_SECTIONS = [
 
 export function Tools() {
   const t = useTranslations("tools");
-  const accentLabel = t("accent");
-  const showAccentLabel = accentLabel.trim().length > 0;
 
   return (
-    <section id="tools" className="relative overflow-hidden py-24 sm:py-28 lg:py-36">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/65 to-white dark:from-neutral-950 dark:via-neutral-950/70 dark:to-neutral-950" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.12),transparent_55%),radial-gradient(circle_at_bottom,_rgba(16,185,129,0.1),transparent_55%)] dark:bg-[radial-gradient(circle_at_top,_rgba(147,197,253,0.12),transparent_55%),radial-gradient(circle_at_bottom,_rgba(52,211,153,0.1),transparent_55%)]" />
-        <div className="absolute inset-0 [background-image:radial-gradient(rgba(15,23,42,0.08)_1px,transparent_1px)] [background-size:34px_34px] dark:[background-image:radial-gradient(rgba(148,163,184,0.12)_1px,transparent_1px)]" />
-      </div>
+    <section id="tools" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden">
+      <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
+      <div className="accent-glow-layer-right" />
+      <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-6 text-center">
-        {showAccentLabel ? (
-          <p
-            className={cn(
-              geist.className,
-              "inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-50/60 px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-emerald-500/90 backdrop-blur-sm dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
-            )}
-          >
-            {accentLabel}
-          </p>
-        ) : null}
-        <div className="space-y-6">
+      <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
             className={cn(
               geist.className,
-              "text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl lg:text-[4.25rem] dark:text-neutral-50"
+              "mt-16 text-center text-5xl font-bold tracking-tight text-neutral-900 sm:mt-20 sm:text-6xl md:mt-24 md:text-7xl lg:text-8xl dark:text-neutral-50"
             )}
           >
             {t("title")}
           </h2>
-          <p className="mx-auto max-w-2xl text-base text-neutral-600 sm:text-lg dark:text-neutral-300">{t("subtitle")}</p>
-          <p className="mx-auto max-w-3xl text-sm text-neutral-500 sm:text-base dark:text-neutral-400">{t("description")}</p>
+          <div className="max-w-3xl space-y-2">
+            <p className="text-base leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-300">{t("subtitle")}</p>
+            <p className="text-base leading-relaxed text-neutral-500 sm:text-lg dark:text-neutral-400">{t("description")}</p>
+          </div>
         </div>
       </div>
 
-      <div className="relative mx-auto mt-20 flex w-full max-w-6xl flex-col gap-14 px-6 sm:gap-16 lg:gap-20">
-        {TOOL_SECTIONS.map((section, index) => (
-          <ToolSection key={section.key} section={section} index={index} t={t} />
-        ))}
+      <div className="relative z-10 px-6 pb-28 pt-10 sm:pt-16">
+        <div className="mx-auto w-full max-w-6xl space-y-16">
+          {TOOL_SECTIONS.map((section) => (
+            <ToolSection key={section.key} section={section} t={t} />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -426,21 +432,16 @@ export function Tools() {
 
 type ToolSectionProps = {
   section: ToolSectionDefinition;
-  index: number;
   t: ReturnType<typeof useTranslations>;
 };
 
-function ToolSection({ section, index, t }: ToolSectionProps) {
+function ToolSection({ section, t }: ToolSectionProps) {
   const label = t(`categories.${section.key}.label`);
   const headline = t(`categories.${section.key}.headline`);
   const description = t(`categories.${section.key}.description`);
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 48 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.9, delay: index * 0.08, ease: [0.2, 0.8, 0.2, 1] }}
+    <section
       className={cn(
         "group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/80 shadow-[0_50px_140px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-[0_60px_160px_-80px_rgba(15,23,42,0.7)] dark:border-neutral-800/70 dark:bg-neutral-950/40",
         section.borderClass
@@ -485,7 +486,7 @@ function ToolSection({ section, index, t }: ToolSectionProps) {
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -546,4 +547,5 @@ function renderIcon(iconKey: IconKey | undefined, className: string) {
   const IconComponent = ICON_COMPONENTS[registryKey];
   return <IconComponent className={className} stroke={1.6} />;
 }
+
 

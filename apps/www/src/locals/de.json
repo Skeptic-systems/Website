@@ -135,6 +135,29 @@
     }
   }
   ,
+  "terminal": {
+    "accent": "COMMUNITY FEED",
+    "title": "Community Terminal",
+    "description": "Teile eine Nachricht mit allen, die vorbeischauen. Dein Beitrag erscheint sofort für dich und wandert nach der Prüfung in den öffentlichen Stream.",
+    "windowTitle": "POWERSHELL",
+    "inputPlaceholder": "Schreibe eine Nachricht und drücke Enter...",
+    "inputAriaLabel": "Terminaleingabe für deine Nachricht",
+    "submit": "Senden",
+    "moderationHint": "Ein KI-Moderationsdienst prüft jeden Beitrag auf Beleidigungen, Hassrede und Spam, bevor er für alle sichtbar wird.",
+    "prompt": "PS C:\\\\Users\\\\Guest>",
+    "systemPrompt": "PS C:\\\\Users\\\\System>",
+    "welcomeLine": "Hallo und willkommen auf meiner Website",
+    "systemIntroLine": "Hinterlasse der Community eine Nachricht – nach der Moderation wird sie für alle sichtbar.",
+    "statuses": {
+      "pending": "Wartet auf Prüfung",
+      "published": "Freigegeben",
+      "error": "Fehlgeschlagen"
+    },
+    "messages": {
+      "emptyInput": "Bitte gib vor dem Senden etwas ein."
+    }
+  }
+  ,
   "activity": {
     "title": "Aktivität",
     "sections": {

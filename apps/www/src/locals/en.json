@@ -135,6 +135,29 @@
     }
   }
   ,
+  "terminal": {
+    "accent": "COMMUNITY FEED",
+    "title": "Community Terminal",
+    "description": "Share a note with everyone dropping by. Your message shows up instantly for you and moves to the public stream after review.",
+    "windowTitle": "POWERSHELL",
+    "inputPlaceholder": "Write a message and press Enter...",
+    "inputAriaLabel": "Terminal input for your message",
+    "submit": "Send",
+    "moderationHint": "An AI moderation service scans every entry for abuse, hate, or spam before it goes live for everyone.",
+    "prompt": "PS C:\\\\Users\\\\Guest>",
+    "systemPrompt": "PS C:\\\\Users\\\\System>",
+    "welcomeLine": "Hello and welcome to my website",
+    "systemIntroLine": "Leave a note for the community and it will go live after moderation.",
+    "statuses": {
+      "pending": "Awaiting review",
+      "published": "Visible",
+      "error": "Delivery failed"
+    },
+    "messages": {
+      "emptyInput": "Enter something before sending."
+    }
+  }
+  ,
   "activity": {
     "title": "Activity",
     "sections": {

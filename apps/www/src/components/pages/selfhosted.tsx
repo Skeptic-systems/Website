@@ -718,13 +718,13 @@ export function Selfhosted() {
                       return (
                         <div
                           key={server.identifier}
-                          className="relative flex gap-5 rounded-3xl border border-fuchsia-200/60 bg-white/75 p-6 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80"
+                          className="relative flex flex-col gap-5 rounded-3xl border border-fuchsia-200/60 bg-white/75 p-6 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start"
                         >
                           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500/20 via-fuchsia-400/20 to-sky-400/30 text-fuchsia-600 dark:from-fuchsia-500/20 dark:to-sky-400/20">
                             <HardDrives size={28} weight="fill" />
                           </div>
                           <div className="flex min-w-0 flex-1 flex-col gap-4">
-                            <div className="flex items-start justify-between gap-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                               <div className="min-w-0 space-y-1">
                                 <h4
                                   className={`${geist.className} truncate text-xl font-semibold text-neutral-900 dark:text-neutral-50`}
@@ -737,11 +737,11 @@ export function Selfhosted() {
                                   </p>
                                 ) : null}
                               </div>
-                              <span className="rounded-full border border-fuchsia-400/40 bg-fuchsia-100/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:border-fuchsia-500/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-200">
+                              <span className="inline-flex shrink-0 rounded-full border border-fuchsia-400/40 bg-fuchsia-100/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:border-fuchsia-500/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-200">
                                 {server.state}
                               </span>
                             </div>
-                            <div className="grid gap-3 sm:grid-cols-3">
+                            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                               <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
                                 <Cpu size={18} weight="bold" className="text-fuchsia-500" />
                                 <span>
@@ -760,7 +760,7 @@ export function Selfhosted() {
                                   {t("sections.pterodactyl.cards.uptime")}: {uptimeLabel}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300 sm:col-span-3">
+                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300 md:col-span-2 xl:col-span-3">
                                 <HardDrive size={18} weight="bold" className="text-fuchsia-500" />
                                 <span>
                                   {t("sections.pterodactyl.cards.limits.disk")}: {diskLabel}
