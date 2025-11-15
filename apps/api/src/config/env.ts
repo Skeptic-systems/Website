@@ -40,6 +40,30 @@ const parseBooleanEnv = (value: string | null): boolean => {
   return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
 };
 
+type CookieSameSite = "Strict" | "Lax" | "None";
+
+const parseCookieSameSite = (value: string | null): CookieSameSite | null => {
+  if (value === null) {
+    return null;
+  }
+
+  const normalized = value.trim().toLowerCase();
+
+  if (normalized === "strict") {
+    return "Strict";
+  }
+
+  if (normalized === "lax") {
+    return "Lax";
+  }
+
+  if (normalized === "none") {
+    return "None";
+  }
+
+  throw new Error(`Invalid SameSite directive: ${value}`);
+};
+
 const readNumericEnv = (key: string): number => {
   const rawValue = readEnv(key);
   const parsedValue = Number.parseInt(rawValue, 10);
@@ -72,6 +96,8 @@ export const terminalSessionEnv = {
   cookieName: readEnv("TERMINAL_SESSION_COOKIE_NAME"),
   ttlSeconds: readNumericEnv("TERMINAL_SESSION_TTL_SECONDS"),
   textLimit: readNumericEnv("TERMINAL_SESSION_TEXT_LIMIT"),
+  cookieDomain: readOptionalEnv("TERMINAL_SESSION_COOKIE_DOMAIN"),
+  cookieSameSite: parseCookieSameSite(readOptionalEnv("TERMINAL_SESSION_COOKIE_SAME_SITE")),
 };
 
 export const terminalModerationEnv = {
