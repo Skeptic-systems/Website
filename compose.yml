@@ -43,7 +43,7 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - DATABASE_URL=${DATABASE_URL:-postgresql://turborepo:123456789@postgres:5432/turborepo}
+      - DATABASE_URL=${DATABASE_URL_INTERNAL:-postgresql://turborepo:123456789@postgres:5432/turborepo}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
       - SPOTIFY_REFRESH_TOKEN=${SPOTIFY_REFRESH_TOKEN}
