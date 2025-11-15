@@ -1,6 +1,33 @@
 import { sql } from "drizzle-orm";
 import { db } from "../db";
 
+const DEFAULT_WAIT_RETRIES = 20;
+const DEFAULT_WAIT_DELAY_MS = 1_500;
+
+const pause = (duration: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+
+const waitForDatabaseAvailability = async (): Promise<void> => {
+  for (let attempt = 1; attempt <= DEFAULT_WAIT_RETRIES; attempt++) {
+    try {
+      await db.execute(sql`select 1;`);
+      return;
+    } catch (error) {
+      if (attempt === DEFAULT_WAIT_RETRIES) {
+        throw new Error("Database unavailable after repeated attempts");
+      }
+
+      const message = error instanceof Error ? error.message : "Unknown error";
+      console.warn(
+        `[database] Connection attempt ${attempt} failed: ${message}. Retrying in ${DEFAULT_WAIT_DELAY_MS}ms.`,
+      );
+      await pause(DEFAULT_WAIT_DELAY_MS);
+    }
+  }
+};
+
 const ensureUsersTable = async (): Promise<void> => {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS users (
@@ -58,6 +85,7 @@ export const ensureTerminalTables = async (): Promise<void> => {
 };
 
 export const initializeDatabase = async (): Promise<void> => {
+  await waitForDatabaseAvailability();
   await ensureUsersTable();
   await ensureAiModerationEntriesTable();
   await ensureTerminalTables();
