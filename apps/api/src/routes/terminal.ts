@@ -1,5 +1,6 @@
 import { Hono, type Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
+import type { CookieOptions } from "hono/utils/cookie";
 import { terminalSessionEnv, terminalModerationEnv } from "../config/env";
 import {
   ensureTerminalSession,
@@ -44,13 +45,22 @@ const toMessagePayload = (
 });
 
 const setSessionCookie = (c: Context, sessionId: string): void => {
-  setCookie(c, terminalSessionEnv.cookieName, sessionId, {
+  const resolvedSameSite = terminalSessionEnv.cookieSameSite ?? (secureCookies ? "None" : "Lax");
+  const enforceSecureFlag = resolvedSameSite === "None" || resolvedSameSite === "none";
+
+  const options: CookieOptions = {
     httpOnly: true,
-    secure: secureCookies,
-    sameSite: "Lax",
+    secure: enforceSecureFlag ? true : secureCookies,
+    sameSite: resolvedSameSite,
     path: "/",
     maxAge: terminalSessionEnv.ttlSeconds,
-  });
+  };
+
+  if (terminalSessionEnv.cookieDomain) {
+    options.domain = terminalSessionEnv.cookieDomain;
+  }
+
+  setCookie(c, terminalSessionEnv.cookieName, sessionId, options);
 };
 
 terminalRoutes.get("/session", async (c) => {

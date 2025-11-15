@@ -16,6 +16,7 @@ import { verifyJellyfinConnection } from "./services/jellyfin";
 import { verifySpotifyConnection } from "./services/spotify";
 import { verifyRedisConnection } from "./services/redis";
 import { initializeTerminalPersistence } from "./services/terminal-persistence";
+import { initializeDatabase } from "./services/database";
 
 const app = new Hono();
 
@@ -188,8 +189,25 @@ const runStartupChecks = async (): Promise<void> => {
   }
 };
 
-void runStartupChecks();
-void initializeTerminalPersistence();
+const bootstrap = async (): Promise<void> => {
+  try {
+    await initializeDatabase();
+    console.log("[bootstrap] Database schema ensured");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[bootstrap] Database initialization failed: ${message}`);
+    throw error;
+  }
+
+  await initializeTerminalPersistence();
+  void runStartupChecks();
+};
+
+void bootstrap().catch((error) => {
+  const message = error instanceof Error ? error.message : "Unknown error";
+  console.error(`[bootstrap] API startup failed: ${message}`);
+  process.exit(1);
+});
 
 console.log(`🚀 Server running on ${getBaseUrl()}`);
 
