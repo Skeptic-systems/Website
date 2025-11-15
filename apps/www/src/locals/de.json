@@ -146,6 +146,14 @@
     "moderationHint": "Ein KI-Moderationsdienst prüft jeden Beitrag auf Beleidigungen, Hassrede und Spam, bevor er für alle sichtbar wird.",
     "prompt": "PS C:\\\\Users\\\\Guest>",
     "systemPrompt": "PS C:\\\\Users\\\\System>",
+    "communityPrompt": "PS C:\\\\Users\\\\Community>",
+    "languageLabel": "Anzeigesprache",
+    "languageOptions": {
+      "default": "Original",
+      "de": "Deutsch",
+      "en": "Englisch"
+    },
+    "sessionUsage": "{used} / {limit} Nachrichten heute",
     "welcomeLine": "Hallo und willkommen auf meiner Website",
     "systemIntroLine": "Hinterlasse der Community eine Nachricht – nach der Moderation wird sie für alle sichtbar.",
     "statuses": {
@@ -154,7 +162,12 @@
       "error": "Fehlgeschlagen"
     },
     "messages": {
-      "emptyInput": "Bitte gib vor dem Senden etwas ein."
+      "emptyInput": "Bitte gib vor dem Senden etwas ein.",
+      "rateLimited": "Du hast das Tageslimit erreicht. Bitte versuche es später erneut.",
+      "submitFailed": "Deine Nachricht konnte nicht gesendet werden. Versuche es gleich noch einmal.",
+      "rejected": "Die Moderation hat deine Nachricht abgelehnt: {reason}",
+      "approved": "Die Moderation hat deine Nachricht freigegeben: {reason}",
+      "unauthorized": "Keine Sitzung gefunden. Lade die Seite neu, um eine neue Terminal-Sitzung zu starten."
     }
   }
   ,

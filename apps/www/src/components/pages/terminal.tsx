@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
 import { cn } from "@/lib/utils";
+import { requestJson } from "@/lib/request";
 
 type TerminalEntryStatus = "pending" | "published" | "error";
 
@@ -16,13 +17,64 @@ type TerminalEntry = {
   createdAt: number;
 };
 
+type TerminalMessage = {
+  id: string;
+  textDefault: string;
+  textEn: string;
+  textDe: string;
+  createdAt: string;
+};
+
+type LanguageKey = "default" | "en" | "de";
+
+type TerminalSessionResponse = {
+  id: string;
+  textCount: number;
+  textLimit: number;
+  createdAt: string;
+  expiresAt: string;
+};
+
 type StatusDictionary = {
   pending: string;
   published: string;
   error: string;
 };
 
+type LanguageOptions = {
+  default: string;
+  en: string;
+  de: string;
+};
+
+type PostMessageProcessed = {
+  status: "processed";
+  reason: string;
+  message: TerminalMessage;
+};
+
+type PostMessageRejected = {
+  status: "rejected";
+  reason: string;
+};
+
+type PostMessageQueued = {
+  status: "queued";
+};
+
+type PostMessageError = {
+  error: string;
+  reason?: string;
+};
+
+type PostMessageEnvelope =
+  | (PostMessageProcessed & { session: TerminalSessionResponse })
+  | (PostMessageRejected & { session: TerminalSessionResponse })
+  | (PostMessageQueued & { session: TerminalSessionResponse })
+  | (PostMessageError & { session?: TerminalSessionResponse });
+
 const TERMINAL_SCROLL_OFFSET = 24;
+const languageOrder: LanguageKey[] = ["default", "de", "en"];
 
 const createEntryId = (index: number): string => {
   const stamp = Date.now().toString(36);
@@ -33,14 +85,110 @@ const createEntryId = (index: number): string => {
 export function Terminal() {
   const t = useTranslations("terminal");
   const [entries, setEntries] = useState<TerminalEntry[]>([]);
+  const [publishedMessages, setPublishedMessages] = useState<TerminalMessage[]>([]);
+  const [sessionInfo, setSessionInfo] = useState<TerminalSessionResponse | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ tone: "error" | "success"; text: string } | null>(null);
+  const [feedLanguage, setFeedLanguage] = useState<LanguageKey>("default");
   const logRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const statusLabels = useMemo(() => {
     return t.raw("statuses") as StatusDictionary;
   }, [t]);
+
+  const languageOptions = useMemo(() => {
+    return t.raw("languageOptions") as LanguageOptions;
+  }, [t]);
+
+  const isRateLimited = useMemo(() => {
+    if (!sessionInfo) {
+      return false;
+    }
+
+    return sessionInfo.textCount >= sessionInfo.textLimit;
+  }, [sessionInfo]);
+
+  useEffect(() => {
+    if (!sessionInfo) {
+      return;
+    }
+
+    const atLimit = sessionInfo.textCount >= sessionInfo.textLimit;
+
+    setFeedback((previous) => {
+      const isRateLimitFeedback =
+        previous?.tone === "error" && previous.text === t("messages.rateLimited");
+
+      if (atLimit) {
+        if (isRateLimitFeedback) {
+          return previous;
+        }
+        return { tone: "error", text: t("messages.rateLimited") };
+      }
+
+      if (isRateLimitFeedback) {
+        return null;
+      }
+
+      return previous;
+    });
+  }, [sessionInfo, t]);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiBase) {
+      console.error("Missing NEXT_PUBLIC_API_URL environment variable");
+      return;
+    }
+
+    const abortController = new AbortController();
+
+    void (async () => {
+      const session = await requestJson<TerminalSessionResponse>(`${apiBase}/terminal/session`, {
+        credentials: "include",
+        signal: abortController.signal,
+      });
+
+      if (!session) {
+        console.error("Failed to initialize terminal session");
+        return;
+      }
+
+      setSessionInfo(session);
+    })();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiBase) {
+      return;
+    }
+
+    const abortController = new AbortController();
+
+    void (async () => {
+      const feed = await requestJson<{ items: TerminalMessage[] }>(`${apiBase}/terminal/messages?limit=50`, {
+        credentials: "include",
+        signal: abortController.signal,
+      });
+
+      if (feed?.items) {
+        const ordered = [...feed.items].reverse();
+        setPublishedMessages(ordered);
+      }
+    })();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -64,30 +212,130 @@ export function Terminal() {
     });
   }, [entryCount]);
 
-  const queueSubmission = useCallback(async (entry: TerminalEntry) => {
-    try {
-      await Promise.resolve();
-      setEntries((previous) =>
-        previous.map((item) =>
-          item.id === entry.id ? { ...item, status: "pending" } : item,
-        ),
-      );
-    } catch {
-      setEntries((previous) =>
-        previous.map((item) =>
-          item.id === entry.id ? { ...item, status: "error" } : item,
-        ),
-      );
-    }
+  const updateEntryStatus = useCallback((entryId: string, status: TerminalEntryStatus) => {
+    setEntries((previous) =>
+      previous.map((item) => (item.id === entryId ? { ...item, status } : item)),
+    );
   }, []);
+
+  const removeEntry = useCallback((entryId: string) => {
+    setEntries((previous) => previous.filter((item) => item.id !== entryId));
+  }, []);
+
+  const queueSubmission = useCallback(
+    async (entry: TerminalEntry) => {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
+      if (!apiBase) {
+        updateEntryStatus(entry.id, "error");
+        setFeedback({ tone: "error", text: t("messages.submitFailed") });
+        return;
+      }
+
+      if (sessionInfo && sessionInfo.textCount >= sessionInfo.textLimit) {
+        updateEntryStatus(entry.id, "error");
+        setFeedback({ tone: "error", text: t("messages.rateLimited") });
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/terminal/message`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: entry.message }),
+        });
+
+        const payload = (await response.json().catch(() => null)) as PostMessageEnvelope | null;
+
+        if (payload && "session" in payload && payload.session) {
+          setSessionInfo(payload.session);
+        }
+
+        if (response.status === 429) {
+          updateEntryStatus(entry.id, "error");
+          setFeedback({ tone: "error", text: t("messages.rateLimited") });
+          return;
+        }
+
+        if (response.status === 401) {
+          updateEntryStatus(entry.id, "error");
+          setSessionInfo(null);
+          setFeedback({ tone: "error", text: t("messages.unauthorized") });
+          return;
+        }
+
+        if (payload && "status" in payload) {
+          const reachedLimit = payload.session.textCount >= payload.session.textLimit;
+
+          if (payload.status === "processed") {
+          removeEntry(entry.id);
+            setPublishedMessages((previous) => {
+              const filtered = previous.filter((item) => item.id !== payload.message.id);
+              return [...filtered, payload.message];
+            });
+            setFeedback(
+              reachedLimit
+                ? { tone: "error", text: t("messages.rateLimited") }
+                : { tone: "success", text: t("messages.approved", { reason: payload.reason }) },
+            );
+            return;
+          }
+
+          if (payload.status === "rejected") {
+          removeEntry(entry.id);
+            setFeedback(
+              reachedLimit
+                ? { tone: "error", text: t("messages.rateLimited") }
+                : { tone: "error", text: t("messages.rejected", { reason: payload.reason }) },
+            );
+            return;
+          }
+
+          updateEntryStatus(entry.id, "pending");
+          return;
+        }
+
+        if (!payload || !response.ok) {
+          updateEntryStatus(entry.id, "error");
+          setFeedback({ tone: "error", text: t("messages.submitFailed") });
+          return;
+        }
+
+        if (payload && "error" in payload) {
+          updateEntryStatus(entry.id, "error");
+          console.error("Terminal submission failed", payload);
+          setFeedback({ tone: "error", text: t("messages.submitFailed") });
+          return;
+        }
+
+        updateEntryStatus(entry.id, "pending");
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+
+        updateEntryStatus(entry.id, "error");
+        setFeedback({ tone: "error", text: t("messages.submitFailed") });
+      }
+    },
+    [removeEntry, sessionInfo, t, updateEntryStatus],
+  );
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      if (isRateLimited) {
+        setFeedback({ tone: "error", text: t("messages.rateLimited") });
+        return;
+      }
       const trimmed = inputValue.trim();
 
       if (trimmed.length === 0) {
-        setErrorMessage(t("messages.emptyInput"));
+        setFeedback({ tone: "error", text: t("messages.emptyInput") });
         return;
       }
 
@@ -100,21 +348,66 @@ export function Terminal() {
 
       setEntries((previous) => [...previous, nextEntry]);
       setInputValue("");
-      setErrorMessage(null);
+      setFeedback(null);
 
       await queueSubmission(nextEntry);
     },
-    [entryCount, inputValue, queueSubmission, t],
+    [entryCount, inputValue, isRateLimited, queueSubmission, t],
   );
 
   const promptLabel = t("prompt");
   const systemPromptLabel = t("systemPrompt");
+  const communityPromptLabel = t("communityPrompt");
+  const languageLabel = t("languageLabel");
+  const sessionUsageText = sessionInfo
+    ? t("sessionUsage", { used: sessionInfo.textCount, limit: sessionInfo.textLimit })
+    : null;
   const welcomeLine = t("welcomeLine");
   const systemIntroLine = t("systemIntroLine");
 
+  const selectFeedText = useCallback(
+    (message: TerminalMessage): string => {
+      const sanitized = message.textDefault.trim();
+
+      if (feedLanguage === "de") {
+        const german = message.textDe.trim();
+        return german.length > 0 ? german : sanitized;
+      }
+
+      if (feedLanguage === "en") {
+        const english = message.textEn.trim();
+        return english.length > 0 ? english : sanitized;
+      }
+
+      return sanitized;
+    },
+    [feedLanguage],
+  );
+
   const renderedEntries = useMemo(
-    () =>
-      [
+    () => {
+      const feedEntries = publishedMessages
+        .slice()
+        .sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        )
+        .map((message) => ({
+          id: `feed-${message.id}`,
+          prompt: communityPromptLabel,
+          content: selectFeedText(message),
+          status: "published" as const,
+          withPrompt: true,
+        }));
+
+      const userEntries = entries.map((entry) => ({
+        id: entry.id,
+        prompt: promptLabel,
+        content: entry.message,
+        status: entry.status,
+        withPrompt: true,
+      }));
+
+      return [
         {
           id: "system-intro",
           prompt: systemPromptLabel,
@@ -122,21 +415,17 @@ export function Terminal() {
           status: "published" as const,
           withPrompt: true,
         },
-        ...entries.map((entry) => ({
-          id: entry.id,
-          prompt: promptLabel,
-          content: entry.message,
-          status: entry.status,
-          withPrompt: true,
-        })),
+        ...feedEntries,
+        ...userEntries,
       ] satisfies Array<{
         id: string;
         prompt: string;
         content: string;
         status: TerminalEntryStatus;
         withPrompt: boolean;
-      }>,
-    [entries, promptLabel, systemIntroLine, systemPromptLabel],
+      }>;
+    },
+    [communityPromptLabel, entries, promptLabel, publishedMessages, selectFeedText, systemIntroLine, systemPromptLabel],
   );
 
   return (
@@ -191,6 +480,31 @@ export function Terminal() {
                 {t("windowTitle")}
               </span>
             </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800/60 bg-neutral-900/80 px-5 py-3">
+              <span className="text-xs text-neutral-500">
+                {sessionUsageText ?? " "}
+              </span>
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="terminal-language"
+                  className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400"
+                >
+                  {languageLabel}
+                </label>
+                <select
+                  id="terminal-language"
+                  value={feedLanguage}
+                  onChange={(event) => setFeedLanguage(event.target.value as LanguageKey)}
+                  className="rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1 text-xs font-medium text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70"
+                >
+                  {languageOrder.map((language) => (
+                    <option key={language} value={language}>
+                      {languageOptions[language]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
             <div className="flex max-h-[380px] flex-col gap-3 overflow-y-auto px-5 py-6 font-mono text-[0.82rem] leading-relaxed text-neutral-100 sm:text-sm" ref={logRef}>
               {renderedEntries.map((entry) => (
@@ -217,17 +531,27 @@ export function Terminal() {
                 placeholder={t("inputPlaceholder")}
                 className="flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
                 aria-label={t("inputAriaLabel")}
+                disabled={isRateLimited}
               />
               <button
                 type="submit"
-                className="rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+                className={cn(
+                  "rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition",
+                  "hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
+                  isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/10" : undefined,
+                )}
+                disabled={isRateLimited}
               >
                 {t("submit")}
               </button>
             </form>
           </div>
-          {errorMessage ? (
-            <p className="mt-3 text-center text-sm text-rose-500">{errorMessage}</p>
+          {feedback ? (
+            <p
+              className={cn("mt-3 text-center text-sm", feedback.tone === "success" ? "text-emerald-500" : "text-rose-500")}
+            >
+              {feedback.text}
+            </p>
           ) : null}
           <p className="mt-4 text-center text-xs text-neutral-500 dark:text-neutral-400">
             {t("moderationHint")}

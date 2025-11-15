@@ -146,6 +146,14 @@
     "moderationHint": "An AI moderation service scans every entry for abuse, hate, or spam before it goes live for everyone.",
     "prompt": "PS C:\\\\Users\\\\Guest>",
     "systemPrompt": "PS C:\\\\Users\\\\System>",
+    "communityPrompt": "PS C:\\\\Users\\\\Community>",
+    "languageLabel": "Display language",
+    "languageOptions": {
+      "default": "Original",
+      "de": "German",
+      "en": "English"
+    },
+    "sessionUsage": "{used} / {limit} messages today",
     "welcomeLine": "Hello and welcome to my website",
     "systemIntroLine": "Leave a note for the community and it will go live after moderation.",
     "statuses": {
@@ -154,7 +162,12 @@
       "error": "Delivery failed"
     },
     "messages": {
-      "emptyInput": "Enter something before sending."
+      "emptyInput": "Enter something before sending.",
+      "rateLimited": "You've reached the limit for today. Please try again later.",
+      "submitFailed": "We couldn't send your message. Try again in a moment.",
+      "rejected": "Moderation rejected your message: {reason}",
+      "approved": "Moderation approved your message: {reason}",
+      "unauthorized": "Session missing. Reload the page to start a new terminal session."
     }
   }
   ,

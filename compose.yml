@@ -1,16 +1,31 @@
 services:
-#  postgres:
-#    image: postgres
-#    restart: unless-stopped
-#    container_name: turborepo_postgres_website
-#    shm_size: 128mb
-#    ports:
-#      - "5436:5432"
-#    environment:
-#      POSTGRES_USER: turborepo
-#      POSTGRES_PASSWORD: 123456789
-#    volumes:
-#      - database:/var/lib/postgresql/data
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    container_name: turborepo_postgres_website
+    env_file:
+      - .env
+    shm_size: 128mb
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-turborepo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456789}
+      POSTGRES_DB: ${POSTGRES_DB:-turborepo}
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    container_name: turborepo_redis_website
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_password} --appendonly yes
+    ports:
+      - "6380:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
+    volumes:
+      - redis_data:/data
 
   api:
     build:
@@ -18,6 +33,9 @@ services:
       dockerfile: apps/api/dockerfile
     restart: unless-stopped
     container_name: turborepo_api_website
+    depends_on:
+      - postgres
+      - redis
     ports:
       - "3001:3001"
     env_file:
@@ -38,6 +56,12 @@ services:
       - JELLYFIN_BASE_URL=${JELLYFIN_BASE_URL}
       - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+      - REDIS_HOST=${REDIS_HOST_INTERNAL:-redis}
+      - REDIS_PORT=${REDIS_PORT_INTERNAL:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+      - TERMINAL_SESSION_COOKIE_NAME=${TERMINAL_SESSION_COOKIE_NAME}
+      - TERMINAL_SESSION_TTL_SECONDS=${TERMINAL_SESSION_TTL_SECONDS}
+      - TERMINAL_SESSION_TEXT_LIMIT=${TERMINAL_SESSION_TEXT_LIMIT}
   www:
     build:
       context: .

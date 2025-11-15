@@ -15,6 +15,9 @@
     "type-check": {
       "dependsOn": ["^type-check"]
     },
+    "db:push": {
+      "cache": false
+    },
     "start": {
       "cache": false,
       "persistent": true

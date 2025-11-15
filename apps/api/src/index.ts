@@ -8,11 +8,14 @@ import { githubRoutes } from "./routes/github";
 import { pterodactylRoutes } from "./routes/pterodactyl";
 import { jellyfinRoutes } from "./routes/jellyfin";
 import { spotifyRoutes } from "./routes/spotify";
+import { terminalRoutes } from "./routes/terminal";
 import { verifyDiscordConnection } from "./services/discord";
 import { verifyGitHubConnection } from "./services/github";
 import { verifyPterodactylConnection } from "./services/pterodactyl";
 import { verifyJellyfinConnection } from "./services/jellyfin";
 import { verifySpotifyConnection } from "./services/spotify";
+import { verifyRedisConnection } from "./services/redis";
+import { initializeTerminalPersistence } from "./services/terminal-persistence";
 
 const app = new Hono();
 
@@ -46,6 +49,7 @@ app.route("/spotify", spotifyRoutes);
 app.route("/discord", discordRoutes);
 app.route("/pterodactyl", pterodactylRoutes);
 app.route("/jellyfin", jellyfinRoutes);
+app.route("/terminal", terminalRoutes);
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
@@ -104,6 +108,21 @@ const registeredRoutes = [
     path: "/jellyfin/active-sessions",
     description: "Jellyfin active sessions",
   },
+  {
+    method: "GET",
+    path: "/terminal/session",
+    description: "Ensure terminal session cookie",
+  },
+  {
+    method: "POST",
+    path: "/terminal/message",
+    description: "Submit terminal message for moderation",
+  },
+  {
+    method: "GET",
+    path: "/terminal/messages",
+    description: "Fetch recent terminal messages",
+  },
 ] as const;
 
 const getBaseUrl = (): string => appEnv.apiBaseUrl;
@@ -137,6 +156,14 @@ const runStartupChecks = async (): Promise<void> => {
   }
 
   try {
+    await verifyRedisConnection();
+    console.log("🟥 Redis cache reachable");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`⚠️ Redis connection check failed: ${message}`);
+  }
+
+  try {
     await verifyDiscordConnection();
     console.log("🟣 Discord presence reachable");
   } catch (error) {
@@ -162,6 +189,7 @@ const runStartupChecks = async (): Promise<void> => {
 };
 
 void runStartupChecks();
+void initializeTerminalPersistence();
 
 console.log(`🚀 Server running on ${getBaseUrl()}`);
 

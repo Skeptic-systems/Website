@@ -1,16 +1,17 @@
 type FetchJsonOptions = {
   signal?: AbortSignal;
+  credentials?: RequestCredentials;
+  headers?: Record<string, string>;
 };
 
-export async function requestJson<T>(
-  input: string,
-  options?: FetchJsonOptions
-): Promise<T | null> {
+export async function requestJson<T>(input: string, options?: FetchJsonOptions): Promise<T | null> {
   try {
     const response = await fetch(input, {
       signal: options?.signal,
+      credentials: options?.credentials,
       headers: {
         Accept: "application/json",
+        ...(options?.headers ?? {}),
       },
     });
 
@@ -32,9 +33,3 @@ export async function requestJson<T>(
     return null;
   }
 }
-
-
-
-
-
-
