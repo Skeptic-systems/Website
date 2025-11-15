@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="drizzle-bg" x1="12" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34D399"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="drizzle-drop" x1="32" y1="14" x2="32" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECFDF3"/>
+      <stop offset="1" stop-color="#D1FAE5"/>
+    </linearGradient>
+    <linearGradient id="drizzle-arc" x1="22" y1="24" x2="46" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BBF7D0" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#86EFAC" stop-opacity="0.85"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#drizzle-bg)"/>
+  <path d="M32 14C24.4 24 21 29.6 21 35.2C21 41.9 26.4 47 32 47C37.6 47 43 41.9 43 35.2C43 29.6 39.6 24 32 14Z" fill="url(#drizzle-drop)"/>
+  <path d="M24.5 36C24.5 29.9 29.2 25.2 35.3 25.2C38.4 25.2 41 26.5 43 28.6C42 24 38.1 20.1 33.2 20.1C26.9 20.1 21.8 25.4 21.8 31.9C21.8 39.8 28 45 34.9 45C38.7 45 42.1 43.5 44.6 41C41.8 44.9 37.4 47.4 32.5 47.4C27.4 47.4 24.5 42.6 24.5 36Z" fill="url(#drizzle-arc)"/>
+</svg>
+

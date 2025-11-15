@@ -70,15 +70,15 @@
   }
   ,
   "tools": {
-    "title": "Tools",
-    "accent": "",
-    "subtitle": "The stack I reach for",
-    "description": "A curated overview of the languages, frameworks, tooling, and operating systems I rely on to build resilient experiences.",
+    "title": "Language & Tools",
+    "accent": "STACK & WORKFLOW",
+    "subtitle": "How I build - typed languages, modern frameworks, and opinionated tooling.",
+    "description": "Each layer earns its place: languages for expressiveness, frameworks for velocity, tooling for focus, and operating systems I harden and maintain.",
     "categories": {
       "languages": {
         "label": "Programming languages",
-        "headline": "Languages I write daily",
-        "description": "Typed, expressive, and battle-tested across frontend, backend, and automation work.",
+        "headline": "Typed foundations",
+        "description": "Languages I rely on daily across automation, backend services, and ambitious interfaces.",
         "items": {
           "typescript": "TypeScript",
           "javascript": "JavaScript",
@@ -103,15 +103,20 @@
       },
       "tooling": {
         "label": "Tooling",
-        "headline": "Productivity multipliers",
-        "description": "Editors, platforms, and services that keep delivery fast and reliable.",
+        "headline": "Tools that keep delivery sharp",
+        "description": "Editors, terminals, data clients, and services that keep the feedback loop tight.",
         "items": {
           "vscode": "Visual Studio Code",
+          "cursor": "Cursor",
+          "tabby": "Tabby Terminal",
+          "podmanDesktop": "Podman Desktop",
+          "lmStudio": "LM Studio",
+          "beekeeperStudio": "Beekeeper Studio",
           "git": "Git",
           "docker": "Docker",
-          "github": "GitHub",
           "figma": "Figma",
-          "cloudflare": "Cloudflare"
+          "cloudflare": "Cloudflare",
+          "github": "GitHub"
         }
       },
       "operatingSystems": {
@@ -120,13 +125,49 @@
         "description": "Desktop and server operating systems I configure, tune, and support.",
         "items": {
           "windows": "Windows",
-          "ubuntu": "Ubuntu",
           "debian": "Debian",
           "proxmox": "Proxmox VE",
           "hyperv": "Hyper-V",
-          "vmware": "VMware ESXi"
+          "vmware": "VMware ESXi",
+          "kubernetes": "Kubernetes"
         }
       }
+    }
+  }
+  ,
+  "terminal": {
+    "accent": "COMMUNITY FEED",
+    "title": "Community Terminal",
+    "description": "Share a note with everyone dropping by. Your message shows up instantly for you and moves to the public stream after review.",
+    "windowTitle": "POWERSHELL",
+    "inputPlaceholder": "Write a message and press Enter...",
+    "inputAriaLabel": "Terminal input for your message",
+    "submit": "Send",
+    "moderationHint": "An AI moderation service scans every entry for abuse, hate, or spam before it goes live for everyone.",
+    "prompt": "PS C:\\\\Users\\\\Guest>",
+    "systemPrompt": "PS C:\\\\Users\\\\System>",
+    "communityPrompt": "PS C:\\\\Users\\\\Community>",
+    "languageLabel": "Display language",
+    "languageOptions": {
+      "default": "Original",
+      "de": "German",
+      "en": "English"
+    },
+    "sessionUsage": "{used} / {limit} messages today",
+    "welcomeLine": "Hello and welcome to my website",
+    "systemIntroLine": "Leave a note for the community and it will go live after moderation.",
+    "statuses": {
+      "pending": "Awaiting review",
+      "published": "Visible",
+      "error": "Delivery failed"
+    },
+    "messages": {
+      "emptyInput": "Enter something before sending.",
+      "rateLimited": "You've reached the limit for today. Please try again later.",
+      "submitFailed": "We couldn't send your message. Try again in a moment.",
+      "rejected": "Moderation rejected your message: {reason}",
+      "approved": "Moderation approved your message: {reason}",
+      "unauthorized": "Session missing. Reload the page to start a new terminal session."
     }
   }
   ,

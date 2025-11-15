@@ -1,0 +1,23 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hyperv-bg" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="hyperv-bars" x1="20" y1="20" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#BAE6FD"/>
+    </linearGradient>
+    <linearGradient id="hyperv-corner" x1="22" y1="22" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CFFAFE"/>
+      <stop offset="1" stop-color="#A5F3FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#hyperv-bg)"/>
+  <path d="M18 20C18 18.9 18.9 18 20 18H44C45.1 18 46 18.9 46 20V44C46 45.1 45.1 46 44 46H20C18.9 46 18 45.1 18 44V20Z" fill="url(#hyperv-bars)"/>
+  <path d="M24 24H39C40.1 24 41 24.9 41 26V39C41 40.1 40.1 41 39 41H24C22.9 41 22 40.1 22 39V26C22 24.9 22.9 24 24 24Z" fill="url(#hyperv-corner)"/>
+  <path d="M24 27H28V37H24V27Z" fill="#0EA5E9"/>
+  <path d="M35 27H39V37H35V27Z" fill="#0284C7"/>
+  <path d="M29 32H34V37H29V32Z" fill="#0F172A" fill-opacity="0.35"/>
+</svg>
+

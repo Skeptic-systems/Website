@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import type { ComponentType } from "react";
@@ -65,6 +66,22 @@ const ICON_COMPONENTS = {
   fallback: IconApps,
 } as const satisfies Record<string, IconComponent>;
 
+const HOVER_GRADIENTS = {
+  amber: "from-amber-500/35 via-amber-500/18 to-amber-500/6 dark:from-amber-400/28 dark:via-amber-400/14 dark:to-amber-400/7",
+  blue: "from-blue-500/35 via-blue-500/18 to-blue-500/7 dark:from-blue-400/28 dark:via-blue-400/14 dark:to-blue-400/7",
+  emerald: "from-emerald-500/35 via-emerald-500/18 to-emerald-500/6 dark:from-emerald-400/28 dark:via-emerald-400/14 dark:to-emerald-400/6",
+  fuchsia: "from-fuchsia-500/35 via-fuchsia-500/18 to-fuchsia-500/7 dark:from-fuchsia-400/28 dark:via-fuchsia-400/14 dark:to-fuchsia-400/7",
+  indigo: "from-indigo-500/35 via-indigo-500/18 to-indigo-500/7 dark:from-indigo-400/28 dark:via-indigo-400/14 dark:to-indigo-400/7",
+  lime: "from-lime-500/35 via-lime-500/18 to-lime-500/6 dark:from-lime-400/26 dark:via-lime-400/13 dark:to-lime-400/6",
+  neutral: "from-neutral-500/30 via-neutral-500/15 to-neutral-500/6 dark:from-neutral-400/22 dark:via-neutral-400/12 dark:to-neutral-400/6",
+  orange: "from-orange-500/40 via-orange-500/20 to-orange-500/8 dark:from-orange-400/30 dark:via-orange-400/16 dark:to-orange-400/8",
+  purple: "from-purple-500/35 via-purple-500/18 to-purple-500/7 dark:from-purple-400/26 dark:via-purple-400/13 dark:to-purple-400/6",
+  rose: "from-rose-500/35 via-rose-500/18 to-rose-500/6 dark:from-rose-400/28 dark:via-rose-400/14 dark:to-rose-400/6",
+  sky: "from-sky-500/35 via-sky-500/18 to-sky-500/6 dark:from-sky-400/28 dark:via-sky-400/14 dark:to-sky-400/6",
+  slate: "from-slate-500/30 via-slate-500/15 to-slate-500/6 dark:from-slate-400/24 dark:via-slate-400/12 dark:to-slate-400/6",
+  violet: "from-violet-500/35 via-violet-500/18 to-violet-500/7 dark:from-violet-400/28 dark:via-violet-400/14 dark:to-violet-400/7",
+} as const satisfies Record<string, string>;
+
 type IconRegistryKey = keyof typeof ICON_COMPONENTS;
 type IconKey = Exclude<IconRegistryKey, "fallback">;
 type CategoryKey = "languages" | "frameworks" | "tooling" | "operatingSystems";
@@ -78,326 +95,450 @@ type ToolItemDefinition = {
   key: string;
   icon?: IconKey;
   image?: ToolImage;
+  href: string;
   accentClass: string;
 };
 
-type ToolCategoryDefinition = {
+type ToolSectionDefinition = {
   key: CategoryKey;
   accentClass: string;
-  gradientClass: string;
-  glowClass: string;
+  backgroundClass: string;
+  haloClass: string;
+  borderClass: string;
   items: readonly ToolItemDefinition[];
 };
 
-const TOOL_CATEGORIES = [
+const TOOL_SECTIONS = [
   {
     key: "languages",
-    accentClass: "text-emerald-500 dark:text-emerald-400",
-    gradientClass: "from-emerald-400/35 via-emerald-400/10 to-transparent",
-    glowClass: "bg-emerald-400/30",
+    accentClass: "text-emerald-500 dark:text-emerald-300",
+    backgroundClass: "from-emerald-500/14 via-emerald-500/6 to-transparent",
+    haloClass: "bg-emerald-400/18",
+    borderClass: "border-emerald-400/30 dark:border-emerald-400/25",
     items: [
       {
         key: "typescript",
-        icon: "typescript",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-plain.svg",
+          alt: "TypeScript",
+        },
+        href: "https://www.typescriptlang.org/",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "javascript",
-        icon: "javascript",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-plain.svg",
+          alt: "JavaScript",
+        },
+        href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "rust",
-        icon: "rust",
-        accentClass: "from-orange-500/30 via-orange-500/15 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg",
+          alt: "Rust",
+        },
+        href: "https://www.rust-lang.org/",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "python",
-        icon: "python",
-        accentClass: "from-indigo-500/25 via-indigo-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-plain.svg",
+          alt: "Python",
+        },
+        href: "https://www.python.org/",
+            accentClass: HOVER_GRADIENTS.indigo,
       },
       {
         key: "sql",
-        icon: "database",
-        accentClass: "from-emerald-500/25 via-emerald-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-plain.svg",
+          alt: "SQL",
+        },
+        href: "https://www.postgresql.org/",
+            accentClass: HOVER_GRADIENTS.emerald,
       },
       {
         key: "shell",
-        icon: "terminal",
-        accentClass: "from-neutral-500/25 via-neutral-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/powershell/powershell-original.svg",
+          alt: "Shell & PowerShell",
+        },
+        href: "https://learn.microsoft.com/powershell/",
+            accentClass: HOVER_GRADIENTS.slate,
       },
     ],
   },
   {
     key: "frameworks",
-    accentClass: "text-sky-500 dark:text-sky-400",
-    gradientClass: "from-sky-400/35 via-sky-400/10 to-transparent",
-    glowClass: "bg-sky-400/30",
+    accentClass: "text-sky-500 dark:text-sky-300",
+    backgroundClass: "from-sky-500/16 via-sky-500/7 to-transparent",
+    haloClass: "bg-sky-400/18",
+    borderClass: "border-sky-400/30 dark:border-sky-400/25",
     items: [
       {
         key: "nextjs",
-        icon: "nextjs",
-        accentClass: "from-neutral-500/30 via-neutral-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+          alt: "Next.js",
+        },
+        href: "https://nextjs.org/",
+            accentClass: HOVER_GRADIENTS.neutral,
       },
       {
         key: "react",
-        icon: "react",
-        accentClass: "from-sky-500/30 via-sky-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+          alt: "React",
+        },
+        href: "https://react.dev/",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "node",
-        icon: "node",
-        accentClass: "from-lime-500/25 via-lime-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-plain.svg",
+          alt: "Node.js",
+        },
+        href: "https://nodejs.org/",
+            accentClass: HOVER_GRADIENTS.lime,
       },
       {
         key: "tauri",
-        icon: "tauri",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+        image: {
+          src: "/asstes/tools/tauri.png",
+          alt: "Tauri",
+        },
+        href: "https://tauri.app/",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "drizzle",
-        icon: "drizzle",
-        accentClass: "from-emerald-500/25 via-emerald-500/10 to-transparent",
+        image: {
+          src: "/asstes/tools/drizzle.svg",
+          alt: "Drizzle ORM",
+        },
+        href: "https://orm.drizzle.team/",
+            accentClass: HOVER_GRADIENTS.emerald,
       },
       {
         key: "hono",
-        icon: "hono",
-        accentClass: "from-orange-500/25 via-orange-500/10 to-transparent",
+        image: {
+          src: "/asstes/tools/hono.svg",
+          alt: "Hono",
+        },
+        href: "https://hono.dev/",
+            accentClass: HOVER_GRADIENTS.orange,
       },
     ],
   },
   {
     key: "tooling",
-    accentClass: "text-amber-500 dark:text-amber-400",
-    gradientClass: "from-amber-400/35 via-amber-400/10 to-transparent",
-    glowClass: "bg-amber-400/30",
+    accentClass: "text-amber-500 dark:text-amber-300",
+    backgroundClass: "from-amber-500/16 via-amber-500/7 to-transparent",
+    haloClass: "bg-amber-400/20",
+    borderClass: "border-amber-400/30 dark:border-amber-400/25",
     items: [
       {
         key: "vscode",
-        icon: "vscode",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
+          alt: "Visual Studio Code",
+        },
+        href: "https://code.visualstudio.com/",
+            accentClass: HOVER_GRADIENTS.sky,
+      },
+      {
+        key: "cursor",
+        image: { src: "/asstes/tools/cursor.png", alt: "Cursor" },
+        href: "https://www.cursor.com/",
+            accentClass: HOVER_GRADIENTS.violet,
+      },
+      {
+        key: "tabby",
+        image: { src: "/asstes/tools/tabby.png", alt: "Tabby" },
+        href: "https://tabby.sh/",
+            accentClass: HOVER_GRADIENTS.emerald,
+      },
+      {
+        key: "podmanDesktop",
+        image: { src: "/asstes/tools/podmandesktop.png", alt: "Podman Desktop" },
+        href: "https://podman-desktop.io/",
+            accentClass: HOVER_GRADIENTS.blue,
+      },
+      {
+        key: "lmStudio",
+        image: { src: "/asstes/tools/lmstudio.png", alt: "LM Studio" },
+        href: "https://lmstudio.ai/",
+            accentClass: HOVER_GRADIENTS.purple,
+      },
+      {
+        key: "beekeeperStudio",
+        image: { src: "/asstes/tools/beekeeperstudio.png", alt: "Beekeeper Studio" },
+        href: "https://www.beekeeperstudio.io/",
+            accentClass: HOVER_GRADIENTS.amber,
       },
       {
         key: "git",
-        icon: "git",
-        accentClass: "from-rose-500/25 via-rose-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-plain.svg",
+          alt: "Git",
+        },
+        href: "https://git-scm.com/",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "docker",
-        icon: "docker",
-        accentClass: "from-blue-500/25 via-blue-500/10 to-transparent",
-      },
-      {
-        key: "github",
-        icon: "github",
-        accentClass: "from-neutral-500/25 via-neutral-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-plain.svg",
+          alt: "Docker",
+        },
+        href: "https://www.docker.com/",
+            accentClass: HOVER_GRADIENTS.blue,
       },
       {
         key: "figma",
-        icon: "figma",
-        accentClass: "from-purple-500/25 via-purple-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+          alt: "Figma",
+        },
+        href: "https://www.figma.com/",
+            accentClass: HOVER_GRADIENTS.fuchsia,
       },
       {
         key: "cloudflare",
-        icon: "cloud",
-        accentClass: "from-orange-500/25 via-orange-500/10 to-transparent",
+        image: {
+              src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg",
+          alt: "Cloudflare",
+        },
+        href: "https://www.cloudflare.com/",
+            accentClass: HOVER_GRADIENTS.orange,
+      },
+      {
+        key: "github",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+          alt: "GitHub",
+        },
+        href: "https://github.com/",
+            accentClass: HOVER_GRADIENTS.neutral,
       },
     ],
   },
   {
     key: "operatingSystems",
-    accentClass: "text-violet-500 dark:text-violet-400",
-    gradientClass: "from-violet-400/35 via-violet-400/10 to-transparent",
-    glowClass: "bg-violet-400/30",
+    accentClass: "text-violet-500 dark:text-violet-300",
+    backgroundClass: "from-violet-500/15 via-violet-500/6 to-transparent",
+    haloClass: "bg-violet-400/20",
+    borderClass: "border-violet-400/30 dark:border-violet-400/25",
     items: [
       {
         key: "windows",
-        icon: "windows",
-        accentClass: "from-sky-500/25 via-sky-500/10 to-transparent",
-      },
-      {
-        key: "ubuntu",
-        icon: "ubuntu",
-        accentClass: "from-orange-500/25 via-orange-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",
+          alt: "Windows",
+        },
+        href: "https://www.microsoft.com/windows",
+            accentClass: HOVER_GRADIENTS.blue,
       },
       {
         key: "debian",
-        icon: "debian",
-        accentClass: "from-rose-500/25 via-rose-500/10 to-transparent",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/debian/debian-plain.svg",
+          alt: "Debian",
+        },
+        href: "https://www.debian.org/",
+            accentClass: HOVER_GRADIENTS.rose,
+      },
+      {
+        key: "kubernetes",
+        image: {
+          src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+          alt: "Kubernetes",
+        },
+        href: "https://kubernetes.io/",
+            accentClass: HOVER_GRADIENTS.sky,
       },
       {
         key: "proxmox",
-        icon: "proxmox",
-        accentClass: "from-amber-500/25 via-amber-500/10 to-transparent",
+        image: {
+          src: "https://cdn.simpleicons.org/proxmox/F15A24",
+          alt: "Proxmox VE",
+        },
+        href: "https://www.proxmox.com/",
+            accentClass: HOVER_GRADIENTS.orange,
       },
       {
         key: "hyperv",
-        icon: "hyperv",
-        accentClass: "from-indigo-500/25 via-indigo-500/10 to-transparent",
+        image: {
+          src: "/asstes/tools/hyperv.svg",
+          alt: "Hyper-V",
+        },
+        href: "https://learn.microsoft.com/windows-server/virtualization/hyper-v/hyper-v-technology-overview",
+            accentClass: HOVER_GRADIENTS.indigo,
       },
       {
         key: "vmware",
-        icon: "vmware",
-        accentClass: "from-blue-500/25 via-blue-500/10 to-transparent",
+        image: {
+          src: "https://cdn.simpleicons.org/vmware/607078",
+          alt: "VMware ESXi",
+        },
+        href: "https://www.vmware.com/products/esxi-and-esx.html",
+            accentClass: HOVER_GRADIENTS.blue,
       },
     ],
   },
-] satisfies readonly ToolCategoryDefinition[];
+] satisfies readonly ToolSectionDefinition[];
 
 export function Tools() {
   const t = useTranslations("tools");
-  const accentLabel = t("accent");
-  const showAccentLabel = accentLabel.trim().length > 0;
 
   return (
-    <section id="tools" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 [background-size:36px_36px] [background-image:linear-gradient(to_right,rgba(212,212,216,0.35)_1px,transparent_1px),linear-gradient(to_bottom,rgba(212,212,216,0.35)_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,rgba(63,63,70,0.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,63,70,0.6)_1px,transparent_1px)]" />
-        <div className="accent-glow-layer-right" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white via-white/60 to-white dark:from-neutral-950 dark:via-neutral-950/60 dark:to-neutral-950 [mask-image:radial-gradient(ellipse_at_center,transparent_18%,black)]" />
-        <div className="pointer-events-none absolute left-[-10%] top-[15%] h-[420px] w-[420px] rounded-full bg-emerald-400/20 blur-[140px] dark:bg-emerald-500/10" />
-        <div className="pointer-events-none absolute right-[-12%] bottom-[12%] h-[380px] w-[380px] rounded-full bg-sky-400/20 blur-[140px] dark:bg-sky-500/10" />
-      </div>
+    <section id="tools" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden">
+      <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
+      <div className="accent-glow-layer-right" />
+      <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
-        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-6 px-6 text-center">
-          {showAccentLabel ? (
-            <p
-              className={cn(
-                geist.className,
-                "text-[0.65rem] uppercase tracking-[0.3em] text-emerald-500/80 dark:text-emerald-400/80 mt-20 sm:mt-24 md:mt-28"
-              )}
-            >
-              {accentLabel}
-            </p>
-          ) : (
-            <div className="mt-20 sm:mt-24 md:mt-28" />
-          )}
+        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
             className={cn(
               geist.className,
-              "text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50"
+              "mt-16 text-center text-5xl font-bold tracking-tight text-neutral-900 sm:mt-20 sm:text-6xl md:mt-24 md:text-7xl lg:text-8xl dark:text-neutral-50"
             )}
           >
             {t("title")}
           </h2>
-          <p className="max-w-2xl text-sm sm:text-base text-neutral-600 dark:text-neutral-300">{t("subtitle")}</p>
+          <div className="max-w-3xl space-y-2">
+            <p className="text-base leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-300">{t("subtitle")}</p>
+            <p className="text-base leading-relaxed text-neutral-500 sm:text-lg dark:text-neutral-400">{t("description")}</p>
+          </div>
         </div>
       </div>
 
-      <div className="relative z-10 px-6 -mt-12 sm:-mt-16 md:-mt-24 pb-24">
-        <div className="mx-auto w-full max-w-7xl space-y-12">
-          <p className="mx-auto max-w-3xl text-center text-sm text-neutral-600 dark:text-neutral-300">{t("description")}</p>
-          <div className="grid gap-8 lg:grid-cols-2">
-            {TOOL_CATEGORIES.map((category, index) => (
-              <ToolCategoryCard key={category.key} category={category} index={index} t={t} />
-            ))}
-          </div>
+      <div className="relative z-10 px-6 pb-28 pt-10 sm:pt-16">
+        <div className="mx-auto w-full max-w-6xl space-y-16">
+          {TOOL_SECTIONS.map((section) => (
+            <ToolSection key={section.key} section={section} t={t} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-type ToolCategoryCardProps = {
-  category: ToolCategoryDefinition;
-  index: number;
+type ToolSectionProps = {
+  section: ToolSectionDefinition;
   t: ReturnType<typeof useTranslations>;
 };
 
-function ToolCategoryCard({ category, index, t }: ToolCategoryCardProps) {
-  const label = t(`categories.${category.key}.label`);
-  const headline = t(`categories.${category.key}.headline`);
-  const description = t(`categories.${category.key}.description`);
+function ToolSection({ section, t }: ToolSectionProps) {
+  const label = t(`categories.${section.key}.label`);
+  const headline = t(`categories.${section.key}.headline`);
+  const description = t(`categories.${section.key}.description`);
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.35 }}
-      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6 }}
-      className="group relative overflow-hidden rounded-[32px] border border-neutral-200/70 bg-white/80 shadow-[0_40px_120px_-60px_rgba(15,23,42,0.55)] backdrop-blur-xl transition hover:shadow-[0_50px_140px_-60px_rgba(15,23,42,0.65)] dark:border-neutral-800/80 dark:bg-neutral-900/60"
+    <section
+      className={cn(
+        "group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/80 shadow-[0_50px_140px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-[0_60px_160px_-80px_rgba(15,23,42,0.7)] dark:border-neutral-800/70 dark:bg-neutral-950/40",
+        section.borderClass
+      )}
     >
-      <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60", category.gradientClass)} />
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-x-[-10%] top-[-35%] h-[70%] rounded-full opacity-0 blur-3xl transition duration-700 group-hover:opacity-70",
-          category.glowClass
-        )}
-      />
-      <div className="pointer-events-none absolute inset-0 rounded-[32px] border border-white/20 dark:border-white/5" />
-      <div className="relative flex flex-col gap-8 p-8 sm:p-10">
-        <header className="space-y-4">
-          <p
+      <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-90", section.backgroundClass)} />
+      <div className="pointer-events-none absolute inset-0">
+        <div className={cn("absolute -left-24 top-[-30%] h-72 w-72 rounded-full blur-[140px]", section.haloClass)} />
+        <div className={cn("absolute -right-16 bottom-[-35%] h-72 w-72 rounded-full blur-[160px]", section.haloClass)} />
+      </div>
+      <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/20 dark:border-white/10" />
+
+      <div className="relative grid gap-10 px-8 py-12 sm:px-12 lg:grid-cols-[minmax(0,0.78fr)_1fr] xl:grid-cols-[minmax(0,0.72fr)_1fr]">
+        <header className="flex flex-col gap-4 text-left">
+          <span
             className={cn(
               geist.className,
-              "text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
-              category.accentClass
+              "inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
+              section.accentClass
             )}
           >
             {label}
-          </p>
+          </span>
           <h3
             className={cn(
               geist.className,
-              "text-2xl sm:text-[1.7rem] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50"
+              "text-3xl font-semibold tracking-tight text-neutral-900 sm:text-[2.1rem] dark:text-neutral-50"
             )}
           >
             {headline}
           </h3>
-          <p className="max-w-lg text-sm text-neutral-600 dark:text-neutral-300">{description}</p>
+          <p className="max-w-xl text-sm text-neutral-600 sm:text-base dark:text-neutral-300">{description}</p>
         </header>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {category.items.map((item) => (
-            <SkillBadge key={`${category.key}-${item.key}`} item={item} label={t(`categories.${category.key}.items.${item.key}`)} />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          {section.items.map((item) => (
+            <ToolLinkCard
+              key={`${section.key}-${item.key}`}
+              item={item}
+              label={t(`categories.${section.key}.items.${item.key}`)}
+            />
           ))}
         </div>
       </div>
-    </motion.article>
+    </section>
   );
 }
 
-type SkillBadgeProps = {
+type ToolLinkCardProps = {
   item: ToolItemDefinition;
   label: string;
 };
 
-function SkillBadge({ item, label }: SkillBadgeProps) {
+function ToolLinkCard({ item, label }: ToolLinkCardProps) {
+  const isPlaceholder = item.href.trim().length === 0 || item.href === "#";
+
   return (
-    <motion.div
-      whileHover={{ scale: 1.03, y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="group relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-4 text-center shadow-sm backdrop-blur-md transition dark:border-neutral-800/70 dark:bg-neutral-950/60"
+    <Link
+      href={item.href}
+      prefetch={false}
+      target={isPlaceholder ? undefined : "_blank"}
+      rel={isPlaceholder ? undefined : "noreferrer noopener"}
+      className="group/card relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-neutral-100/60 dark:focus-visible:ring-offset-neutral-950"
     >
-      <div className="pointer-events-none absolute inset-0 rounded-2xl border border-white/30 dark:border-white/10" />
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition duration-500 group-hover:opacity-100",
-          item.accentClass
-        )}
-      />
-      <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-lg ring-1 ring-white/15 transition group-hover:-translate-y-0.5 dark:bg-white/10 dark:text-white">
-        {item.image ? (
-          <Image
-            src={item.image.src}
-            alt={item.image.alt ?? label}
-            width={48}
-            height={48}
-            loading="lazy"
-            className="h-6 w-6 object-contain"
-            draggable={false}
-          />
-        ) : (
-          renderIcon(item.icon, "h-6 w-6")
-        )}
-      </div>
-      <span className="relative text-sm font-medium text-neutral-700 transition group-hover:text-neutral-900 dark:text-neutral-200 dark:group-hover:text-neutral-50">
-        {label}
-      </span>
-    </motion.div>
+      <motion.div
+        whileHover={{ y: -3, scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        transition={{ type: "spring", stiffness: 320, damping: 26 }}
+        className="relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/85 p-4 text-center shadow-sm backdrop-blur-md transition dark:border-neutral-800/60 dark:bg-neutral-900/60"
+      >
+        <div className="pointer-events-none absolute inset-0 rounded-2xl border border-white/25 dark:border-white/10" />
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition duration-500 group-hover/card:opacity-100",
+            item.accentClass
+          )}
+        />
+        <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-lg ring-1 ring-white/20 transition group-hover/card:-translate-y-0.5 dark:bg-white/10 dark:text-white">
+          {item.image ? (
+            <Image
+              src={item.image.src}
+              alt={item.image.alt ?? label}
+              width={48}
+              height={48}
+              loading="lazy"
+              className="h-8 w-8 object-contain"
+              draggable={false}
+            />
+          ) : (
+            renderIcon(item.icon, "h-6 w-6")
+          )}
+        </div>
+        <span className="text-sm font-medium text-neutral-700 transition group-hover/card:text-neutral-900 dark:text-neutral-200 dark:group-hover/card:text-neutral-50">
+          {label}
+        </span>
+      </motion.div>
+    </Link>
   );
 }
 
@@ -406,4 +547,5 @@ function renderIcon(iconKey: IconKey | undefined, className: string) {
   const IconComponent = ICON_COMPONENTS[registryKey];
   return <IconComponent className={className} stroke={1.6} />;
 }
+
 

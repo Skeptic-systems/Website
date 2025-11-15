@@ -31,6 +31,59 @@ const readOptionalEnv = (key: string): string | null => {
   return value;
 };
 
+const parseBooleanEnv = (value: string | null): boolean => {
+  if (value === null) {
+    return false;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
+};
+
+const readNumericEnv = (key: string): number => {
+  const rawValue = readEnv(key);
+  const parsedValue = Number.parseInt(rawValue, 10);
+
+  if (Number.isNaN(parsedValue)) {
+    throw new Error(`Environment variable ${key} must be a number`);
+  }
+
+  return parsedValue;
+};
+
+export const databaseEnv = {
+  connectionString: readEnv("DATABASE_URL"),
+  host: readEnv("DATABASE_HOST"),
+  internalHost: readEnv("DATABASE_HOST_INTERNAL"),
+  port: readNumericEnv("DATABASE_PORT"),
+  internalPort: readNumericEnv("DATABASE_PORT_INTERNAL"),
+  name: readEnv("DATABASE_NAME"),
+  user: readEnv("DATABASE_USER"),
+  password: readEnv("DATABASE_PASSWORD"),
+};
+
+export const redisEnv = {
+  host: readEnv("REDIS_HOST"),
+  port: readNumericEnv("REDIS_PORT"),
+  password: readOptionalEnv("REDIS_PASSWORD"),
+};
+
+export const terminalSessionEnv = {
+  cookieName: readEnv("TERMINAL_SESSION_COOKIE_NAME"),
+  ttlSeconds: readNumericEnv("TERMINAL_SESSION_TTL_SECONDS"),
+  textLimit: readNumericEnv("TERMINAL_SESSION_TEXT_LIMIT"),
+};
+
+export const terminalModerationEnv = {
+  openAIApiKey: readEnv("OPENAI_API_KEY"),
+  model: readEnv("TERMINAL_OPENAI_MODEL"),
+  debugVerbose: parseBooleanEnv(readOptionalEnv("TERMINAL_AI_DEBUG")),
+};
+
+export const terminalRetentionEnv = {
+  retentionDays: readNumericEnv("TERMINAL_RETENTION_DAYS"),
+};
+
 export const spotifyEnv = {
   clientId: readEnv("SPOTIFY_CLIENT_ID"),
   clientSecret: readEnv("SPOTIFY_CLIENT_SECRET"),
