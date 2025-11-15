@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "dotenv -e ../../.env -- bun run src/index.ts",
     "build": "tsdown",
+    "postbuild": "node scripts/copy-terminal-context.mjs",
     "start": "dotenv -e ../../.env -- bun dist/index.mjs",
     "type-check": "tsc --noEmit",
     "db:generate": "dotenv -e ../../.env -- drizzle-kit generate:pg",
