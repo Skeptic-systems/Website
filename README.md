@@ -68,49 +68,80 @@ The terminal is a core feature that mixes UX polish with backend automation:
 </p>
 
 ## Screenshots
-Every screenshot from `docs/assets` is included below to illustrate the major flows.
+<details>
+  <summary>Show gallery</summary>
+  <p>Every screenshot from <code>docs/assets</code> is included below to illustrate the major flows.</p>
 
-### Hero Preview
-<img src="docs/assets/hero-preview.png" alt="Hero section with accent glow" width="880" />
+  <figure>
+    <img src="docs/assets/hero-preview.png" alt="Hero section with accent glow" width="880" />
+    <figcaption>Hero Preview</figcaption>
+  </figure>
 
-### Accent Color Controls
-<img src="docs/assets/accent-color.png" alt="Accent selector and glow states" width="880" />
+  <figure>
+    <img src="docs/assets/accent-color.png" alt="Accent selector and glow states" width="880" />
+    <figcaption>Accent Color Controls</figcaption>
+  </figure>
 
-### Activity Feed
-<img src="docs/assets/activity.png" alt="Activity section with charts and cards" width="880" />
+  <figure>
+    <img src="docs/assets/activity.png" alt="Activity section with charts and cards" width="880" />
+    <figcaption>Activity Feed</figcaption>
+  </figure>
 
-### Projects Overview
-<img src="docs/assets/projects.png" alt="Projects grid with hover states" width="880" />
+  <figure>
+    <img src="docs/assets/projects.png" alt="Projects grid with hover states" width="880" />
+    <figcaption>Projects Overview</figcaption>
+  </figure>
 
-### Self-Hosted Services
-<img src="docs/assets/selfhosted-pt.png" alt="Self-hosted infrastructure cards" width="880" />
+  <figure>
+    <img src="docs/assets/selfhosted-pt.png" alt="Self-hosted infrastructure cards" width="880" />
+    <figcaption>Self-Hosted Services</figcaption>
+  </figure>
 
-### Language Switcher
-<img src="docs/assets/i18n-switch.png" alt="Language toggle for German and English" width="880" />
+    <figure>
+    <img src="docs/assets/i18n-switch.png" alt="Language toggle for German and English" width="880" />
+    <figcaption>Language Switcher</figcaption>
+  </figure>
 
-### Terminal Message Entry
-<img src="docs/assets/terminal-message.png" alt="Terminal input with system prompts" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-message.png" alt="Terminal input with system prompts" width="880" />
+    <figcaption>Terminal Message Entry</figcaption>
+  </figure>
 
-### Terminal Approval State
-<img src="docs/assets/terminal-approve.png" alt="Message approved notification" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-approve.png" alt="Message approved notification" width="880" />
+    <figcaption>Terminal Approval State</figcaption>
+  </figure>
 
-### Terminal Awaiting Review
-<img src="docs/assets/terminal-await-review.png" alt="Message queued for moderation" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-await-review.png" alt="Message queued for moderation" width="880" />
+    <figcaption>Terminal Awaiting Review</figcaption>
+  </figure>
 
-### Terminal Rate Limit
-<img src="docs/assets/terminal-limit.png" alt="Terminal rate limiting feedback" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-limit.png" alt="Terminal rate limiting feedback" width="880" />
+    <figcaption>Terminal Rate Limit</figcaption>
+  </figure>
 
-### Terminal Rejection
-<img src="docs/assets/terminal-reject.png" alt="Rejected message feedback" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-reject.png" alt="Rejected message feedback" width="880" />
+    <figcaption>Terminal Rejection</figcaption>
+  </figure>
 
-### Terminal IBAN Preview
-<img src="docs/assets/terminal-iban.png" alt="Terminal IBAN masking preview" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-iban.png" alt="Terminal IBAN masking preview" width="880" />
+    <figcaption>Terminal IBAN Preview</figcaption>
+  </figure>
 
-### Terminal IBAN Rejection
-<img src="docs/assets/terminal-iban-reject.png" alt="Rejected IBAN entry message" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-iban-reject.png" alt="Rejected IBAN entry message" width="880" />
+    <figcaption>Terminal IBAN Rejection</figcaption>
+  </figure>
 
-### Terminal Language Feed
-<img src="docs/assets/terminal-language-switch.png" alt="Feed language toggle across locales" width="880" />
+  <figure>
+    <img src="docs/assets/terminal-language-switch.png" alt="Feed language toggle across locales" width="880" />
+    <figcaption>Terminal Language Feed</figcaption>
+  </figure>
+</details>
 
 ## Getting Started
 
