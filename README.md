@@ -1,131 +1,231 @@
-# Website
+<a id="readme-top"></a>
 
-Modern website built with Next.js, Hono API, and Turborepo.
+<h1 align="center">Portfolio Website</h1>
 
-## Tech Stack
+<p align="center">
+  Personal website showcasing projects, self-hosted services, and an AI-assisted visitor terminal.<br/>
+  Delivered as a TypeScript monorepo that pairs a Next.js 16 frontend with a Hono API backend.
+</p>
 
-### Frontend (apps/www)
-- Next.js 16 with App Router
-- React 19
-- shadcn/ui components
-- next-intl for internationalization
-- Tailwind CSS
-- TypeScript
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-3-38B2AC?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/next--intl-localized-blue" alt="next-intl" />
+  <img src="https://img.shields.io/badge/Hono-API-orange" alt="Hono API" />
+  <img src="https://img.shields.io/badge/Drizzle%20ORM-PostgreSQL-0f172a" alt="Drizzle ORM + PostgreSQL" />
+  <img src="https://img.shields.io/badge/Turborepo-monorepo-FF6B6B" alt="Turborepo" />
+  <img src="https://img.shields.io/badge/pnpm-10.20-4a4a4a?logo=pnpm&logoColor=white" alt="pnpm" />
+</div>
 
-### Backend (apps/api)
-- Hono framework
-- Bun runtime
-- PostgreSQL database
-- Drizzle ORM
+<br />
 
-### Infrastructure
-- Turborepo for monorepo management
-- pnpm for package management
-- Docker Compose for local development
-- Biome for code formatting and linting
-- Lefthook for Git hooks
+<p align="center">
+  <img src="docs/assets/hero-preview.png" alt="Portfolio website hero preview" width="880" />
+</p>
+
+<br />
+
+## Table of Contents
+- [Overview](#overview)
+- [Highlights](#highlights)
+- [Architecture](#architecture)
+- [Terminal Experience](#terminal-experience)
+- [Screenshots](#screenshots)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Production Deployment](#production-deployment)
+- [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
+- [Maintainer](#maintainer)
+
+## Overview
+The website blends storytelling with real-time integrations. Visitors can explore professional highlights, current activity, curated tooling, and an interactive terminal that moderates and publishes community messages. All user-facing copy supports German and English through `next-intl`.
+
+## Highlights
+- **Interactive terminal**: Submit moderated messages that flow into a multilingual message feed with rate limiting and session persistence.
+- **Live data integrations**: Background jobs pull from GitHub, Spotify, Jellyfin, and other services for the activity and self-hosted sections.
+- **Two-language experience**: Server and client components read from `apps/www/src/locals`, offering a consistent bilingual UI.
+- **Dynamic accent system**: Visitors can switch the accent palette, driving a site-wide glow theme showcased in the tools section.
+- **Self-hosted showcase**: Dedicated section for infrastructure projects, powered by the same API that operates the terminal.
+
+## Architecture
+- **Monorepo** managed by Turborepo with shared TypeScript config and Biome formatting.
+- **Web app** (`apps/www`): Next.js 16, Tailwind CSS, motion animations, server actions for data fetching, and localized content.
+- **API** (`apps/api`): Hono server with Drizzle ORM, PostgreSQL for persistence, Redis for terminal session state, and OpenAI-powered moderation.
+- **Infrastructure**: `compose.yml` provisions PostgreSQL, Redis, the API, and the web frontend as separate services.
+- **Shared tooling**: pnpm workspaces, Turbo pipelines, and a centralized environment file simplify local and production setup.
+
+## Terminal Experience
+The terminal is a core feature that mixes UX polish with backend automation:
+
+- Each visitor receives a signed cookie-backed session with configurable quotas.
+- Messages pass through an OpenAI moderation step before persisting to PostgreSQL.
+- Redis tracks rate limits, and the API returns translated content for the live feed.
+- The plan below summarizes the moderation and publishing flow implemented in `apps/api/src/services/terminal-*`:
+
+<p align="center">
+  <img src="docs/plan/terminal-plan.png" alt="Terminal moderation and publication flow" width="880" />
+</p>
+
+## Screenshots
+Every screenshot from `docs/assets` is included below to illustrate the major flows.
+
+### Hero Preview
+<img src="docs/assets/hero-preview.png" alt="Hero section with accent glow" width="880" />
+
+### Accent Color Controls
+<img src="docs/assets/accent-color.png" alt="Accent selector and glow states" width="880" />
+
+### Activity Feed
+<img src="docs/assets/activity.png" alt="Activity section with charts and cards" width="880" />
+
+### Projects Overview
+<img src="docs/assets/projects.png" alt="Projects grid with hover states" width="880" />
+
+### Self-Hosted Services
+<img src="docs/assets/selfhosted-pt.png" alt="Self-hosted infrastructure cards" width="880" />
+
+### Language Switcher
+<img src="docs/assets/i18n-switch.png" alt="Language toggle for German and English" width="880" />
+
+### Terminal Message Entry
+<img src="docs/assets/terminal-message.png" alt="Terminal input with system prompts" width="880" />
+
+### Terminal Approval State
+<img src="docs/assets/terminal-approve.png" alt="Message approved notification" width="880" />
+
+### Terminal Awaiting Review
+<img src="docs/assets/terminal-await-review.png" alt="Message queued for moderation" width="880" />
+
+### Terminal Rate Limit
+<img src="docs/assets/terminal-limit.png" alt="Terminal rate limiting feedback" width="880" />
+
+### Terminal Rejection
+<img src="docs/assets/terminal-reject.png" alt="Rejected message feedback" width="880" />
+
+### Terminal IBAN Preview
+<img src="docs/assets/terminal-iban.png" alt="Terminal IBAN masking preview" width="880" />
+
+### Terminal IBAN Rejection
+<img src="docs/assets/terminal-iban-reject.png" alt="Rejected IBAN entry message" width="880" />
+
+### Terminal Language Feed
+<img src="docs/assets/terminal-language-switch.png" alt="Feed language toggle across locales" width="880" />
 
 ## Getting Started
 
 ### Prerequisites
-- pnpm >= 10.0.0
-- Bun >= 1.2.0
-- Node.js >= 20.0.0
-- Docker and Docker Compose
+- Node.js >= 20
+- pnpm >= 10 (declared in `package.json`)
+- Docker (optional, required for running PostgreSQL and Redis locally via Compose)
 
 ### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd Website
-```
-
-2. Install dependencies:
 ```bash
 pnpm install
 ```
 
-3. Start PostgreSQL with Docker Compose:
+### Local Development
+- Run both apps concurrently:
+  ```bash
+  pnpm dev
+  ```
+- Start the frontend only:
+  ```bash
+  pnpm www:dev
+  ```
+- Start the API only:
+  ```bash
+  pnpm api:dev
+  ```
+
+Additional scripts for linting, formatting, and database tasks live in the root `package.json`.
+
+## Environment Variables
+Copy the template and fill in your secrets before running any service:
+
 ```bash
-docker compose up -d
+# macOS / Linux
+cp env.example .env
+
+# Windows PowerShell
+Copy-Item env.example .env
 ```
 
-4. Set up environment variables:
-```bash
-cp .env.example .env
+Key variables for production are documented in `env.example`. The snippet below shows the syntax expected by the Docker services:
+
+```env
+# Core URLs
+NEXT_PUBLIC_API_URL=https://example.com/api
+NEXT_INTERNAL_API_URL=http://api:3001
+
+# Database
+DATABASE_URL=postgresql://turborepo:password@localhost:5436/turborepo
+DATABASE_URL_INTERNAL=postgresql://turborepo:password@postgres:5432/turborepo
+
+# Redis
+REDIS_HOST=localhost
+REDIS_HOST_INTERNAL=redis
+REDIS_PASSWORD=redis_password
+
+# Integrations
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+DISCORD_USER_ID=
+GITHUB_TOKEN=
+PTERODACTYL_API_URL=
+PTERODACTYL_API_KEY=
+JELLYFIN_BASE_URL=
+JELLYFIN_API_KEY=
+
+# Terminal
+TERMINAL_SESSION_COOKIE_NAME=user_id
+TERMINAL_SESSION_TTL_SECONDS=86400
+TERMINAL_SESSION_TEXT_LIMIT=3
+TERMINAL_SESSION_COOKIE_DOMAIN=
+TERMINAL_SESSION_COOKIE_SAME_SITE=None
+OPENAI_API_KEY=
+TERMINAL_OPENAI_MODEL=gpt-4.1-mini
 ```
 
-5. Run database migrations:
-```bash
-cd apps/api
-pnpm db:generate
-pnpm db:migrate
-```
+## Production Deployment
+The repository ships with a Docker Compose workflow tailored for production:
 
-6. Start development servers:
-```bash
-# From root
-pnpm dev
-```
+1. Fill `.env` with production-ready secrets and correct public URLs.
+2. Build and start the stack:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Services exposed by `compose.yml`:
+   - `postgres` on port `5436` (maps to `5432` inside the container)
+   - `redis` on port `6380`
+   - `api` on port `3001`
+   - `www` on port `3000`
+4. Configure your reverse proxy or platform with:
+   - `NEXT_PUBLIC_API_URL` pointing to the public API host (e.g. `https://api.example.com`)
+   - `NEXT_INTERNAL_API_URL` referencing the internal Docker network URL (`http://api:3001`)
 
-This will start:
-- Next.js app on http://localhost:3000
-- Hono API on http://localhost:3001
+For upgrades, pull the latest code, rebuild the images, and rerun `docker compose up -d --build`.
 
 ## Project Structure
 
-```
-.
-├── apps/
-│   ├── www/          # Next.js frontend
-│   └── api/           # Hono API backend
-├── .github/           # GitHub templates
-├── .cursor/           # Cursor AI rules
-└── compose.yml        # Docker Compose configuration
-```
-
-## Available Scripts
-
-### All Apps
-From root:
-- `pnpm dev` - Start all apps in development mode
-- `pnpm build` - Build all apps
-- `pnpm lint` - Lint all apps
-- `pnpm type-check` - Type check all apps
-
-### Individual Apps
-- `pnpm www:dev` - Start Next.js app only
-- `pnpm www:build` - Build Next.js app only
-- `pnpm www:start` - Start Next.js production server
-- `pnpm api:dev` - Start Hono API only
-- `pnpm api:build` - Build Hono API only
-- `pnpm api:start` - Start Hono API production server
-
-### Code Quality
-- `pnpm format` - Format code with Biome
-- `pnpm format:check` - Check code formatting
-- `pnpm lint:biome` - Lint and fix with Biome
-- `pnpm check` - Run all Biome checks and fixes
-- `pnpm check:ci` - Run Biome checks in CI mode (no fixes)
-
-## Database
-
-PostgreSQL is managed through Docker Compose. The database connection string should be set in your `.env` file:
-
-```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/website
+```text
+apps/
+  api/        # Hono API with Drizzle ORM and Redis-powered services
+  www/        # Next.js frontend with motion-enhanced sections and i18n
+docs/
+  assets/     # Marketing and product screenshots
+  plan/       # Terminal moderation diagram
+env.example   # Environment variable template
+compose.yml   # Production-ready Docker Compose stack
 ```
 
-### Database Commands
+## Tech Stack
+- **Frontend**: Next.js 16, React 19, Tailwind CSS, motion/react, next-intl.
+- **Backend**: Hono, Drizzle ORM, PostgreSQL, Redis, OpenAI moderation.
+- **Tooling**: Turborepo, pnpm workspaces, Biome formatter, TypeScript strict mode.
+- **Infrastructure**: Docker Compose, multi-stage Dockerfiles under `apps/www` and `apps/api`.
 
-```bash
-cd apps/api
-pnpm db:generate    # Generate migrations from schema
-pnpm db:migrate     # Run migrations
-pnpm db:studio      # Open Drizzle Studio
-```
+## Maintainer
+Built and maintained by Jonas. Reach out through the repository issue tracker for questions or feedback.
 
-## License
-
-Private project.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
