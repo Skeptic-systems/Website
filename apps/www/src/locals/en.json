@@ -13,15 +13,15 @@
   },
   "home": {
     "sections": {
-      "features": "Features section placeholder",
-      "contact": "Contact section placeholder"
+      "tools": "Tools section placeholder",
+      "selfhosted": "Selfhosted section placeholder"
     }
   },
   "navbar": {
     "links": {
       "about": "About",
-      "features": "Features",
-      "contact": "Contact"
+      "tools": "Tools",
+      "selfhosted": "Selfhosted"
     },
     "cta": {
       "login": "Login"
@@ -296,6 +296,50 @@
       "notFoundAccent": "Missing repository",
       "notFoundTitle": "We couldn't find that project.",
       "notFoundBody": "The link may be outdated or the repository is no longer pinned. Return to the overview to browse available projects."
+    }
+  }
+  ,
+  "footer": {
+    "badge": "GROUND CONTROL",
+    "heading": "Build calm infrastructure, one system at a time.",
+    "description": "Reach out, connect across platforms, or review the legal bits. Everything routes through this footer hub.",
+    "navigation": {
+      "title": "Connect",
+      "links": {
+        "contact": {
+          "label": "Contact",
+          "href": "#contact"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "href": ""
+        },
+        "github": {
+          "label": "GitHub",
+          "href": ""
+        },
+        "coffee": {
+          "label": "Buy me a coffee",
+          "href": ""
+        }
+      }
+    },
+    "legal": {
+      "title": "Legal",
+      "links": {
+        "privacy": {
+          "label": "Privacy Policy",
+          "href": ""
+        },
+        "imprint": {
+          "label": "Imprint",
+          "href": ""
+        }
+      }
+    },
+    "meta": {
+      "madeWith": "Made with \u2665\uFE0F by Skeptic",
+      "copyright": "\u00A9 Skeptic Systems {start} - {end}"
     }
   }
 }

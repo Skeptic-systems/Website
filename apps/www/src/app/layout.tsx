@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PathNormalizer } from "@/components/path-normalizer";
+import { ScrollReset } from "@/components/scroll-reset";
 import { Topbar } from "@/components/topbar";
 import { IntlProvider } from "@/components/intl-provider";
 import "./globals.css";
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <IntlProvider defaultLocale={locale} defaultMessages={messages}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
             <PathNormalizer />
+            <ScrollReset />
             <Topbar />
             {children}
           </ThemeProvider>

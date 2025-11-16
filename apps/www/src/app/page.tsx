@@ -2,10 +2,11 @@ import { Hero } from "@/components/pages/hero";
 import { SrSections } from "@/components/sr-sections";
 import { AboutMe } from "@/components/pages/aboutme";
 import { Activity } from "@/components/pages/activity";
-import { Selfhosted } from "@/components/pages/selfhosted";
-import { Projects } from "@/components/pages/projects";
-import { Tools } from "@/components/pages/tools";
 import { Terminal } from "@/components/pages/terminal";
+import { Tools } from "@/components/pages/tools";
+import { Projects } from "@/components/pages/projects";
+import { Selfhosted } from "@/components/pages/selfhosted";
+import { Footer } from "@/components/footer";
 
 export default function HomePage() {
   return (
@@ -13,10 +14,11 @@ export default function HomePage() {
       <Hero />
       <AboutMe />
       <Activity />
-      <Selfhosted />
-      <Projects />
-      <Tools />
       <Terminal />
+      <Tools />
+      <Projects />
+      <Selfhosted />
+      <Footer />
       <SrSections />
     </main>
   );

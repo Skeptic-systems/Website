@@ -26,7 +26,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen flex items-center justify-center bg-white dark:bg-black">
+    <section className="relative w-full min-h-screen flex items-center justify-center bg-white dark:bg-black">
       <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -39,7 +39,7 @@ export function Hero() {
           {words.map((word, wordIdx) => (
             <div key={`${word}-${wordIdx}`} className={`overflow-hidden`}>
               <span
-                className={`block align-baseline text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-5xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[8rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
+                className={`block align-baseline text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[5.5rem] sm:text-8xl md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8.5rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
               >
                 {word.split("").map((ch, i) => (
                   <span

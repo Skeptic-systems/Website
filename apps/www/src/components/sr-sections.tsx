@@ -7,8 +7,8 @@ export function SrSections() {
 
   return (
     <>
-      <section id="features" className="sr-only">{t("features")}</section>
-      <section id="contact" className="sr-only">{t("contact")}</section>
+      <section id="tools" className="sr-only">{t("tools")}</section>
+      <section id="selfhosted" className="sr-only">{t("selfhosted")}</section>
     </>
   );
 }

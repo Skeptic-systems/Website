@@ -398,8 +398,9 @@ export function Tools() {
 
   return (
     <section id="tools" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden">
-      <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
+      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer-right" />
+      <div className="accent-glow-layer-left-lower" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
@@ -407,7 +408,7 @@ export function Tools() {
           <h2
             className={cn(
               geist.className,
-              "mt-16 text-center text-5xl font-bold tracking-tight text-neutral-900 sm:mt-20 sm:text-6xl md:mt-24 md:text-7xl lg:text-8xl dark:text-neutral-50"
+              "mt-16 text-center text-[2.6rem] font-bold tracking-tight text-neutral-900 sm:mt-20 sm:text-[3.4rem] md:mt-24 md:text-7xl lg:text-8xl dark:text-neutral-50"
             )}
           >
             {t("title")}
