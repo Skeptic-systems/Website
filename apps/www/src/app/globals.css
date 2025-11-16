@@ -165,10 +165,32 @@
     );
     filter: saturate(100%);
   }
+  .accent-glow-layer-left-lower {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+    background-image: radial-gradient(
+      2000px circle at 18% 70%,
+      hsl(var(--accent) / 0.22),
+      transparent 68%
+    );
+  }
+  .dark .accent-glow-layer-left-lower {
+    background-image: radial-gradient(
+      2000px circle at 18% 70%,
+      hsl(var(--accent) / 0.17),
+      transparent 63%
+    );
+    filter: saturate(100%);
+  }
   :root[data-accent] .accent-glow-layer-right {
     display: block;
   }
   :root[data-accent] .accent-glow-layer {
+    display: block;
+  }
+  :root[data-accent] .accent-glow-layer-left-lower {
     display: block;
   }
 }

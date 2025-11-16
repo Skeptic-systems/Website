@@ -21,8 +21,8 @@ export function Topbar() {
 
   const navItems: { name: string; link: string }[] = [
     { name: t("links.about"), link: "#about" },
-    { name: t("links.features"), link: "#features" },
-    { name: t("links.contact"), link: "#contact" },
+    { name: t("links.tools"), link: "#tools" },
+    { name: t("links.selfhosted"), link: "#selfhosted" },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

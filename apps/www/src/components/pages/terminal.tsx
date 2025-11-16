@@ -191,9 +191,28 @@ export function Terminal() {
   }, []);
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (typeof window === "undefined") {
+      return;
     }
+
+    const focusInput = () => {
+      inputRef.current?.focus();
+    };
+
+    if (window.location.hash === "#terminal") {
+      focusInput();
+    }
+
+    const handleHashChange = () => {
+      if (window.location.hash === "#terminal") {
+        focusInput();
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
   const entryCount = entries.length;
@@ -451,7 +470,7 @@ export function Terminal() {
           <h2
             className={cn(
               geist.className,
-              "mt-4 text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl dark:text-neutral-50",
+              "mt-4 text-[2.5rem] font-bold tracking-tight text-neutral-900 sm:text-[3.2rem] md:text-6xl dark:text-neutral-50",
             )}
           >
             {t("title")}
@@ -520,23 +539,23 @@ export function Terminal() {
             </div>
 
             <form
-              className="flex items-center gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100"
+              className="flex flex-wrap items-center gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100 sm:flex-nowrap"
               onSubmit={handleSubmit}
             >
-              <span className="whitespace-nowrap text-sky-300">{promptLabel}</span>
+              <span className="flex-shrink-0 whitespace-pre text-xs text-sky-300 sm:text-sm sm:whitespace-nowrap">{promptLabel}</span>
               <input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder={t("inputPlaceholder")}
-                className="flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
+                className="min-w-0 flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
                 aria-label={t("inputAriaLabel")}
                 disabled={isRateLimited}
               />
               <button
                 type="submit"
                 className={cn(
-                  "rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition",
+                  "w-full rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition sm:w-auto sm:py-1",
                   "hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
                   isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/10" : undefined,
                 )}
@@ -576,7 +595,7 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
     status !== "published" ? (
       <span
         className={cn(
-          "justify-self-end rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em]",
+          "justify-self-start rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] sm:justify-self-end",
           status === "pending"
             ? "bg-amber-500/10 text-amber-300"
             : "bg-rose-500/10 text-rose-300",
@@ -589,14 +608,18 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
     );
 
   return (
-    <div className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-1">
-      <span className={cn("whitespace-nowrap text-sky-300 transition-opacity", showPrompt)} aria-hidden={!withPrompt}>
+    <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-baseline">
+      <span
+        className={cn(
+          "whitespace-pre-wrap break-words text-xs text-sky-300 transition-opacity sm:text-sm sm:whitespace-nowrap",
+          showPrompt,
+        )}
+        aria-hidden={!withPrompt}
+      >
         {prompt}
       </span>
-      <span className="text-neutral-100">{content}</span>
+      <span className="min-w-0 break-words text-neutral-100">{content}</span>
       {statusBadge}
     </div>
   );
 }
-
-

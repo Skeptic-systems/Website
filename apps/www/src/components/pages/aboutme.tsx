@@ -17,7 +17,7 @@ export function AboutMe() {
       {/* top area keeps original height so tiles stay at same vertical position */}
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full items-center justify-center px-6">
-          <h2 className={`${geist.className} text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}>
+          <h2 className={`${geist.className} text-[2.9rem] sm:text-[3.8rem] md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}>
             {t("title")}
           </h2>
         </div>
