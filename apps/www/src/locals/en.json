@@ -167,7 +167,8 @@
       "submitFailed": "We couldn't send your message. Try again in a moment.",
       "rejected": "Moderation rejected your message: {reason}",
       "approved": "Moderation approved your message: {reason}",
-      "unauthorized": "Session missing. Reload the page to start a new terminal session."
+      "unauthorized": "Session missing. Reload the page to start a new terminal session.",
+      "sessionInitFailed": "We couldn't initialize your terminal session. Reload the page or try again later."
     }
   }
   ,
@@ -299,6 +300,137 @@
     }
   }
   ,
+  "privacy": {
+    "meta": {
+      "title": "Privacy Policy",
+      "tagline": "How this website handles technical data and community submissions.",
+      "updated": "Last updated: 16 November 2025",
+      "contactLabel": "Privacy contact",
+      "contactEmail": "mail@jonas-vieth.de"
+    },
+    "actions": {
+      "back": "Back to home"
+    },
+    "links": {
+      "terminalPolicy": {
+        "label": "Terminal moderation policy",
+        "href": "https://github.com/Skeptic-systems/Website/blob/main/apps/api/src/config/terminal-context.md",
+        "external": true
+      }
+    },
+    "sections": [
+      {
+        "title": "No personal tracking",
+        "paragraphs": [
+          "This personal portfolio website is operated in line with the GDPR (DSGVO). We do not deploy analytics suites, advertising pixels, or third-party tracking."
+        ]
+      },
+      {
+        "title": "Essential technical storage",
+        "paragraphs": [
+          "Only the data that is strictly required to operate interactive features is stored.",
+          "The following items are purely technical and remain on your device or within the moderated terminal service."
+        ],
+        "list": [
+          "Session cookie \"user_id\" to keep terminal sessions, enforce rate limits, and prevent spam.",
+          "Local storage entries for accent selection, language preference, theme choice, and terminal UI state."
+        ],
+        "footer": "Legal basis: Art. 6(1)(f) GDPR together with \u00A7 25 Abs. 1 TDDDG/TTDSG for storage that is strictly necessary for providing this service. No separate consent banner is required."
+      },
+      {
+        "title": "Terminal content and liability",
+        "paragraphs": [
+          "Messages submitted through the terminal are filtered automatically for insults, hate speech, and personal data. The moderation policy is documented in the public repository.",
+          "Despite best efforts, visitors remain responsible for the statements they publish. Entries are reviewed periodically and may be removed manually."
+        ],
+        "link": "terminalPolicy"
+      },
+      {
+        "title": "AI processing notice",
+        "paragraphs": [
+          "Terminal submissions are processed by AI services to moderate, translate, and classify messages. A notice inside the terminal highlights this processing.",
+          "Content is not used for profiling, advertising, or training unrelated models."
+        ]
+      },
+      {
+        "title": "Your rights",
+        "paragraphs": [
+          "You may request information, correction, or deletion of data according to GDPR. Contact us and we will handle the request promptly.",
+          "Technical data or terminal contributions are removed when legally required or once the session expires."
+        ],
+        "footer": "For privacy inquiries, contact mail@jonas-vieth.de."
+      }
+    ]
+  },
+  "imprint": {
+    "meta": {
+      "title": "Imprint",
+      "tagline": "Legal disclosure pursuant to \u00A7 5 DDG and \u00A7 18 MStV.",
+      "updated": "Last updated: 16 November 2025"
+    },
+    "actions": {
+      "back": "Back to home"
+    },
+    "operator": {
+      "heading": "Site operator",
+      "name": "Jonas Vieth",
+      "address": [
+        "Wienerstra\u00DFe 25",
+        "91056 Erlangen",
+        "Bavaria, Germany"
+      ],
+      "emailLabel": "Email (preferred)",
+      "email": "mail@jonas-vieth.de",
+      "phoneLabel": "Phone",
+      "phone": "+49 9131 991991"
+    },
+    "links": {
+      "terminalPolicy": {
+        "label": "Terminal moderation policy",
+        "href": "https://github.com/Skeptic-systems/Website/blob/main/apps/api/src/config/terminal-context.md",
+        "external": true
+      },
+      "privacy": {
+        "label": "Privacy Policy",
+        "href": "/privacy"
+      }
+    },
+    "sections": [
+      {
+        "title": "Editorial responsibility",
+        "paragraphs": [
+          "Responsible under \u00A7 18 Abs. 2 MStV: Jonas Vieth, address as listed above."
+        ]
+      },
+      {
+        "title": "Liability for terminal content",
+        "paragraphs": [
+          "The community terminal is moderated automatically in accordance with the published policy. Insults, hate speech, or personal data are filtered to the best of our knowledge.",
+          "Visitors remain liable for their own posts. Submissions are checked automatically and reviewed periodically; entries may be removed manually."
+        ],
+        "link": "terminalPolicy"
+      },
+      {
+        "title": "External links",
+        "paragraphs": [
+          "This website contains references to external content. We have no influence on the availability or accuracy of external pages and therefore accept no liability for them."
+        ]
+      },
+      {
+        "title": "Dispute resolution",
+        "paragraphs": [
+          "We are neither willing nor obligated to participate in dispute resolution proceedings before a consumer arbitration board."
+        ]
+      },
+      {
+        "title": "Data protection",
+        "paragraphs": [
+          "Data protection is handled in accordance with the GDPR to the best of our knowledge and ability. Details are available in the Privacy Policy."
+        ],
+        "link": "privacy"
+      }
+    ]
+  },
   "footer": {
     "badge": "GROUND CONTROL",
     "heading": "Build calm infrastructure, one system at a time.",
@@ -308,19 +440,19 @@
       "links": {
         "contact": {
           "label": "Contact",
-          "href": "#contact"
+          "href": "mailto:mail@jonas-vieth.de"
         },
         "linkedin": {
           "label": "LinkedIn",
-          "href": ""
+          "href": "https://www.linkedin.com/in/jonas-vieth-ab26452a4/"
         },
         "github": {
           "label": "GitHub",
-          "href": ""
+          "href": "https://github.com/Skeptic-systems"
         },
         "coffee": {
           "label": "Buy me a coffee",
-          "href": ""
+          "href": "https://www.paypal.com/paypalme/Jonasvieth123"
         }
       }
     },
@@ -329,11 +461,11 @@
       "links": {
         "privacy": {
           "label": "Privacy Policy",
-          "href": ""
+          "href": "/privacy"
         },
         "imprint": {
           "label": "Imprint",
-          "href": ""
+          "href": "/imprint"
         }
       }
     },

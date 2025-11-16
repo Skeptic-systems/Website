@@ -167,7 +167,8 @@
       "submitFailed": "Deine Nachricht konnte nicht gesendet werden. Versuche es gleich noch einmal.",
       "rejected": "Die Moderation hat deine Nachricht abgelehnt: {reason}",
       "approved": "Die Moderation hat deine Nachricht freigegeben: {reason}",
-      "unauthorized": "Keine Sitzung gefunden. Lade die Seite neu, um eine neue Terminal-Sitzung zu starten."
+      "unauthorized": "Keine Sitzung gefunden. Lade die Seite neu, um eine neue Terminal-Sitzung zu starten.",
+      "sessionInitFailed": "Die Terminal-Sitzung konnte nicht initialisiert werden. Bitte die Seite neu laden oder später erneut versuchen."
     }
   }
   ,
@@ -299,6 +300,137 @@
     }
   }
   ,
+  "privacy": {
+    "meta": {
+      "title": "Datenschutzerklärung",
+      "tagline": "Wie diese Website technische Daten und Community-Beiträge verarbeitet.",
+      "updated": "Stand: 16. November 2025",
+      "contactLabel": "Datenschutzkontakt",
+      "contactEmail": "mail@jonas-vieth.de"
+    },
+    "actions": {
+      "back": "Zurück zur Startseite"
+    },
+    "links": {
+      "terminalPolicy": {
+        "label": "Moderationsrichtlinie für das Terminal",
+        "href": "https://github.com/Skeptic-systems/Website/blob/main/apps/api/src/config/terminal-context.md",
+        "external": true
+      }
+    },
+    "sections": [
+      {
+        "title": "Kein Tracking personenbezogener Daten",
+        "paragraphs": [
+          "Diese persönliche Portfolio-Website wird im Einklang mit der DSGVO betrieben. Es kommen keine Analyse-Tools, Werbe-Pixel oder sonstiges Drittanbieter-Tracking zum Einsatz."
+        ]
+      },
+      {
+        "title": "Technisch notwendige Speicherung",
+        "paragraphs": [
+          "Es werden ausschließlich Daten gespeichert, die für den Betrieb interaktiver Funktionen zwingend erforderlich sind.",
+          "Die folgenden Elemente sind rein technischer Natur und verbleiben auf Ihrem Endgerät oder innerhalb des moderierten Terminaldienstes."
+        ],
+        "list": [
+          "Session-Cookie \"user_id\" zur Aufrechterhaltung der Terminal-Sitzung, zur Durchsetzung von Limits und zum Schutz vor Spam.",
+          "Local-Storage-Einträge für Akzentwahl, Sprache, Theme-Einstellung und Terminal-Oberflächenzustand."
+        ],
+        "footer": "Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO in Verbindung mit \u00A7 25 Abs. 1 TDDDG/TTDSG für zwingend erforderliche Speicherung. Ein gesondertes Einwilligungs-Banner ist daher nicht notwendig."
+      },
+      {
+        "title": "Haftung für Terminal-Inhalte",
+        "paragraphs": [
+          "Nachrichten im Terminal werden automatisiert auf Beleidigungen, Hassrede und personenbezogene Daten geprüft. Die Moderationsrichtlinie ist im Repository dokumentiert.",
+          "Trotz größtmöglicher Sorgfalt bleiben Besucher*innen für ihre Beiträge verantwortlich. Einträge werden regelmäßig kontrolliert und bei Bedarf manuell entfernt."
+        ],
+        "link": "terminalPolicy"
+      },
+      {
+        "title": "Hinweis auf KI-Verarbeitung",
+        "paragraphs": [
+          "Terminal-Beiträge werden durch KI-Dienste moderiert, übersetzt und klassifiziert. Ein Hinweis innerhalb des Terminals macht auf diese Verarbeitung aufmerksam.",
+          "Die Inhalte werden nicht für Profiling, Werbung oder fachfremde Trainings verwendet."
+        ]
+      },
+      {
+        "title": "Ihre Rechte",
+        "paragraphs": [
+          "Sie können Auskunft, Berichtigung oder Löschung gemäß DSGVO verlangen. Kontaktieren Sie uns, wir bearbeiten Ihr Anliegen zeitnah.",
+          "Technische Daten oder Terminal-Beiträge werden entfernt, sobald dies rechtlich erforderlich ist oder die Sitzung endet."
+        ],
+        "footer": "Bei Datenschutzanfragen wenden Sie sich an mail@jonas-vieth.de."
+      }
+    ]
+  },
+  "imprint": {
+    "meta": {
+      "title": "Impressum",
+      "tagline": "Angaben gemäß \u00A7 5 DDG und \u00A7 18 MStV.",
+      "updated": "Stand: 16. November 2025"
+    },
+    "actions": {
+      "back": "Zurück zur Startseite"
+    },
+    "operator": {
+      "heading": "Betreiber der Website",
+      "name": "Jonas Vieth",
+      "address": [
+        "Wienerstraße 25",
+        "91056 Erlangen",
+        "Bayern, Deutschland"
+      ],
+      "emailLabel": "E-Mail (bevorzugt)",
+      "email": "mail@jonas-vieth.de",
+      "phoneLabel": "Telefon",
+      "phone": "+49 9131 991991"
+    },
+    "links": {
+      "terminalPolicy": {
+        "label": "Moderationsrichtlinie für das Terminal",
+        "href": "https://github.com/Skeptic-systems/Website/blob/main/apps/api/src/config/terminal-context.md",
+        "external": true
+      },
+      "privacy": {
+        "label": "Datenschutzerklärung",
+        "href": "/privacy"
+      }
+    },
+    "sections": [
+      {
+        "title": "Verantwortlich für den Inhalt",
+        "paragraphs": [
+          "Verantwortlich im Sinne des \u00A7 18 Abs. 2 MStV: Jonas Vieth, Anschrift wie oben."
+        ]
+      },
+      {
+        "title": "Haftung für Terminal-Inhalte",
+        "paragraphs": [
+          "Das Community-Terminal wird automatisiert nach der veröffentlichten Richtlinie moderiert. Beleidigungen, Hassrede oder personenbezogene Daten werden nach bestem Wissen herausgefiltert.",
+          "Besucher*innen haften dennoch für ihre Beiträge. Einsendungen werden regelmäßig geprüft und bei Bedarf manuell entfernt."
+        ],
+        "link": "terminalPolicy"
+      },
+      {
+        "title": "Haftung für externe Links",
+        "paragraphs": [
+          "Diese Website enthält Verweise auf externe Inhalte. Auf deren Verfügbarkeit und Richtigkeit haben wir keinen Einfluss und übernehmen daher keine Haftung."
+        ]
+      },
+      {
+        "title": "Streitbeilegung",
+        "paragraphs": [
+          "Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+        ]
+      },
+      {
+        "title": "Datenschutz",
+        "paragraphs": [
+          "Der Datenschutz wird nach bestem Wissen und Gewissen entsprechend der DSGVO umgesetzt. Einzelheiten finden Sie in der Datenschutzerklärung."
+        ],
+        "link": "privacy"
+      }
+    ]
+  },
   "footer": {
     "badge": "MISSION CONTROL",
     "heading": "Infrastruktur in Ruhe aufbauen.",
@@ -308,19 +440,19 @@
       "links": {
         "contact": {
           "label": "Kontakt",
-          "href": "#contact"
+          "href": "mailto:mail@jonas-vieth.de"
         },
         "linkedin": {
           "label": "LinkedIn",
-          "href": ""
+          "href": "https://www.linkedin.com/in/jonas-vieth-ab26452a4/"
         },
         "github": {
           "label": "GitHub",
-          "href": ""
+          "href": "https://github.com/Skeptic-systems"
         },
         "coffee": {
           "label": "Buy me a coffee",
-          "href": ""
+          "href": "https://www.paypal.com/paypalme/Jonasvieth123"
         }
       }
     },
@@ -329,11 +461,11 @@
       "links": {
         "privacy": {
           "label": "Datenschutz",
-          "href": ""
+          "href": "/privacy"
         },
         "imprint": {
           "label": "Impressum",
-          "href": ""
+          "href": "/imprint"
         }
       }
     },

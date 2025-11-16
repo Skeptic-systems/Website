@@ -144,25 +144,44 @@ export function Terminal() {
     }
 
     const abortController = new AbortController();
+    let isActive = true;
 
-    void (async () => {
+    const attemptSessionInitialization = async (attempt: number): Promise<void> => {
       const session = await requestJson<TerminalSessionResponse>(`${apiBase}/terminal/session`, {
         credentials: "include",
         signal: abortController.signal,
       });
 
-      if (!session) {
-        console.error("Failed to initialize terminal session");
+      if (!isActive || abortController.signal.aborted) {
         return;
       }
 
-      setSessionInfo(session);
-    })();
+      if (session) {
+        setSessionInfo(session);
+        return;
+      }
+
+      if (attempt < 3) {
+        const delay = 400 * attempt;
+        window.setTimeout(() => {
+          if (!abortController.signal.aborted) {
+            void attemptSessionInitialization(attempt + 1);
+          }
+        }, delay);
+        return;
+      }
+
+      console.warn("Terminal session initialization failed after multiple attempts");
+      setFeedback({ tone: "error", text: t("messages.sessionInitFailed") });
+    };
+
+    void attemptSessionInitialization(1);
 
     return () => {
+      isActive = false;
       abortController.abort();
     };
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const apiBase = process.env.NEXT_PUBLIC_API_URL;
