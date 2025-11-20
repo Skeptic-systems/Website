@@ -24,7 +24,15 @@
       "selfhosted": "Selfhosted"
     },
     "cta": {
-      "login": "Login"
+      "login": "Login",
+      "logout": "Logout"
+    },
+    "session": {
+      "greeting": "Hi, {name}",
+      "anonymous": "friend",
+      "signOutSuccess": "Signed out",
+      "signOutError": "Sign out failed",
+      "signingOut": "Signing out..."
     },
     "theme": {
       "label": "Toggle theme"
@@ -46,8 +54,40 @@
         "de": "DE"
       }
     }
-  }
-  ,
+  },
+  "auth": {
+    "login": {
+      "accent": "ACCOUNT",
+      "title": "Sign in",
+      "titleAuthenticated": "You're already signed in",
+      "description": "Access your account to manage preferences and community participation.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "you@example.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Your password"
+        }
+      },
+      "actions": {
+        "submit": "Sign in",
+        "submitting": "Signing in...",
+        "signOut": "Sign out",
+        "signingOut": "Signing out..."
+      },
+      "signedInDescription": "You can sign out below if you want to switch accounts.",
+      "feedback": {
+        "required": "Enter both email and password to continue.",
+        "invalid": "That combination didn't match. Check your details and try again.",
+        "error": "We couldn't sign you in right now. Try again shortly.",
+        "success": "Signed in successfully.",
+        "signOutError": "Sign out failed. Please retry.",
+        "signOutSuccess": "Signed out."
+      }
+    }
+  },
   "about": {
     "title": "About me",
     "tiles": {

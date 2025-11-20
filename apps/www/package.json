@@ -12,6 +12,11 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
     "@tabler/icons-react": "^3.35.0",
+    "@tanstack/react-devtools": "^0.7.0",
+    "@tanstack/react-form": "^1.23.0",
+    "@tanstack/react-query": "^5.89.0",
+    "@tanstack/react-router": "^1.136.8",
+    "better-auth": "^1.3.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "motion": "^12.23.24",
@@ -29,6 +34,9 @@
     "dotenv-cli": "^7.4.4"
   },
   "devDependencies": {
+    "@tanstack/nitro-v2-vite-plugin": "^1.133.19",
+    "@tanstack/react-query-devtools": "^5.89.0",
+    "@tanstack/router-devtools": "^1.136.8",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

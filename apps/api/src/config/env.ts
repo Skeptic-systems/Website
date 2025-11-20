@@ -145,3 +145,7 @@ export const appEnv = {
   apiBaseUrl: readEnv("NEXT_PUBLIC_API_URL"),
 };
 
+export const authEnv = {
+  secret: readEnv("BETTER_AUTH_SECRET"),
+};
+

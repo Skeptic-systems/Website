@@ -151,7 +151,7 @@ function SectionHeading({
         {accent}
       </p>
       <h3
-        className={`${geist.className} text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50`}
+        className={`${geist.className} text-[clamp(1.9rem,6vw,2.8rem)] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50 sm:text-4xl`}
       >
         {title}
       </h3>
@@ -169,7 +169,7 @@ function StatCard({ label, value, tone }: StatCardProps): ReactElement {
       : "border-sky-200/70 bg-white/80 text-neutral-900 dark:border-sky-500/30 dark:bg-neutral-900/70 dark:text-neutral-50";
   return (
     <div
-      className={`rounded-3xl border px-6 py-5 shadow-sm backdrop-blur-md sm:px-7 sm:py-6 ${toneClasses}`}
+      className={`w-full rounded-3xl border px-5 py-5 shadow-sm backdrop-blur-md sm:px-7 sm:py-6 ${toneClasses}`}
     >
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-neutral-500 dark:text-neutral-400">
         {label}
@@ -583,7 +583,7 @@ export function Selfhosted() {
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
-            className={`${geist.className} text-[2.8rem] sm:text-[3.6rem] md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}
+            className={`${geist.className} mt-16 text-[clamp(2.1rem,9vw,2.9rem)] font-bold tracking-tight sm:mt-20 sm:text-[3.4rem] md:mt-24 md:text-7xl lg:text-8xl`}
           >
             {t("title")}
           </h2>
@@ -601,7 +601,7 @@ export function Selfhosted() {
         </div>
       </div>
 
-      <div className="relative z-10 px-6 pb-24 pt-10 sm:pt-16">
+      <div className="relative z-10 px-4 pb-24 pt-10 sm:px-6 sm:pt-16">
         <div className="mx-auto w-full max-w-7xl space-y-24">
           <div className="relative overflow-hidden rounded-[36px] border border-fuchsia-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-fuchsia-500/30 dark:bg-neutral-900/80 sm:p-10">
             <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/10" />
@@ -681,7 +681,7 @@ export function Selfhosted() {
                 ) : null}
 
                 {!isPterodactylLoading && !pterodactylError && pterodactylServers.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
                     {pterodactylServers.map((server) => {
                       const resources = pterodactylResources[server.identifier] ?? null;
                       const uptimeSeconds = resources?.uptime ?? server.uptime ?? null;
@@ -719,7 +719,7 @@ export function Selfhosted() {
                       return (
                         <div
                           key={server.identifier}
-                          className="relative flex flex-col gap-5 rounded-3xl border border-fuchsia-200/60 bg-white/75 p-6 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start"
+                          className="relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-3xl border border-fuchsia-200/60 bg-white/75 p-5 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start sm:p-6"
                         >
                           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500/20 via-fuchsia-400/20 to-sky-400/30 text-fuchsia-600 dark:from-fuchsia-500/20 dark:to-sky-400/20">
                             <HardDrives size={28} weight="fill" />
@@ -851,7 +851,7 @@ export function Selfhosted() {
 
               {!isJellyfinLoading && !jellyfinError && jellyfinOverview ? (
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                  <div className="flex flex-col gap-6 rounded-3xl border border-sky-200/60 bg-white/75 p-6 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80">
+                  <div className="flex w-full min-w-0 flex-col gap-6 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
                     <div className="flex items-center gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 via-blue-400/20 to-violet-400/30 text-sky-600 dark:from-sky-500/20 dark:to-violet-500/20">
                         <FilmSlate size={28} weight="fill" />
@@ -938,7 +938,7 @@ export function Selfhosted() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4 rounded-3xl border border-sky-200/60 bg-white/75 p-6 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80">
+                  <div className="flex w-full min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
                         <UsersThree size={24} weight="fill" />

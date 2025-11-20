@@ -505,24 +505,24 @@ export function Terminal() {
           className="mx-auto mt-16 w-full max-w-4xl rounded-[28px] border border-neutral-200/70 bg-white/90 p-6 shadow-[0_40px_130px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl dark:border-neutral-800/70 dark:bg-neutral-900/80 dark:shadow-[0_50px_140px_-80px_rgba(15,23,42,0.75)]"
         >
           <div className="rounded-2xl border border-neutral-200/80 bg-neutral-900 text-neutral-100 shadow-inner dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="flex items-center rounded-t-2xl border-b border-neutral-800/60 bg-neutral-900 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-t-2xl border-b border-neutral-800/60 bg-neutral-900 px-4 py-3 sm:flex-nowrap">
               <div className="flex items-center gap-2">
                 <span className="inline-flex h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-amber-400/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-emerald-500/80" />
               </div>
-              <div className="flex flex-1 items-center justify-center">
-                <span className="font-mono text-[0.7rem] text-neutral-400">{welcomeLine}</span>
-              </div>
-              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-400">
+              <span className="order-3 w-full font-mono text-[0.7rem] text-neutral-400 sm:order-none sm:flex-1 sm:text-center">
+                {welcomeLine}
+              </span>
+              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-400 sm:text-right">
                 {t("windowTitle")}
               </span>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800/60 bg-neutral-900/80 px-5 py-3">
-              <span className="text-xs text-neutral-500">
+            <div className="flex flex-col gap-3 border-b border-neutral-800/60 bg-neutral-900/80 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-xs text-neutral-500 sm:text-left">
                 {sessionUsageText ?? " "}
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
                 <label
                   htmlFor="terminal-language"
                   className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400"
@@ -544,7 +544,10 @@ export function Terminal() {
               </div>
             </div>
 
-            <div className="flex max-h-[380px] flex-col gap-3 overflow-y-auto px-5 py-6 font-mono text-[0.82rem] leading-relaxed text-neutral-100 sm:text-sm" ref={logRef}>
+            <div
+              className="flex max-h-[380px] flex-col gap-3 overflow-y-auto px-4 py-5 font-mono text-[0.82rem] leading-relaxed text-neutral-100 sm:px-5 sm:py-6 sm:text-sm"
+              ref={logRef}
+            >
               {renderedEntries.map((entry) => (
                 <TerminalLine
                   key={entry.id}
@@ -558,23 +561,25 @@ export function Terminal() {
             </div>
 
             <form
-              className="flex flex-wrap items-center gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100 sm:flex-nowrap"
+              className="flex flex-col gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100 sm:flex-row sm:items-center sm:gap-4 sm:py-5"
               onSubmit={handleSubmit}
             >
-              <span className="flex-shrink-0 whitespace-pre text-xs text-sky-300 sm:text-sm sm:whitespace-nowrap">{promptLabel}</span>
+              <span className="w-full whitespace-pre-wrap break-all text-xs text-sky-300 sm:w-auto sm:flex-shrink-0 sm:text-sm sm:whitespace-nowrap">
+                {promptLabel}
+              </span>
               <input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder={t("inputPlaceholder")}
-                className="min-w-0 flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
+                className="w-full min-w-0 flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
                 aria-label={t("inputAriaLabel")}
                 disabled={isRateLimited}
               />
               <button
                 type="submit"
                 className={cn(
-                  "w-full rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition sm:w-auto sm:py-1",
+                  "w-full rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition sm:w-auto sm:py-2",
                   "hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
                   isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/10" : undefined,
                 )}

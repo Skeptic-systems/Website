@@ -46,7 +46,7 @@ const toMessagePayload = (
 
 const setSessionCookie = (c: Context, sessionId: string): void => {
   const resolvedSameSite = terminalSessionEnv.cookieSameSite ?? (secureCookies ? "None" : "Lax");
-  const enforceSecureFlag = resolvedSameSite === "None" || resolvedSameSite === "none";
+const enforceSecureFlag = resolvedSameSite === "None";
 
   const options: CookieOptions = {
     httpOnly: true,

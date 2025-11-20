@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { CaretRight, GitFork, Star } from "phosphor-react";
 
@@ -9,7 +9,6 @@ import { geist } from "@/app/fonts";
 import { LanguageBadge } from "@/components/github-language-badge";
 import { Button } from "@/components/ui/button";
 import {
-  type AsyncState,
   type GitHubPinnedRepository,
   buildRepositorySlug,
   type PinnedResponse,
@@ -36,50 +35,14 @@ export function Projects() {
     throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
   }
 
-  const [repositoriesState, setRepositoriesState] = useState<AsyncState<GitHubPinnedRepository[]>>({
-    status: "idle",
-    data: null,
-    error: null,
+  const repositoriesQuery = useQuery({
+    queryKey: ["github", "pinned"],
+    queryFn: async ({ signal }) => fetchPinnedRepositories(apiBase, signal),
   });
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    setRepositoriesState({
-      status: "loading",
-      data: null,
-      error: null,
-    });
-
-    requestJson<PinnedResponse>(`${apiBase}/github/pinned`, { signal: controller.signal }).then((data) => {
-      if (!isMounted || controller.signal.aborted) {
-        return;
-      }
-
-      if (!data || !Array.isArray(data.repositories)) {
-        setRepositoriesState({
-          status: "error",
-          data: null,
-          error: t("states.error"),
-        });
-        return;
-      }
-
-      setRepositoriesState({
-        status: "loaded",
-        data: data.repositories,
-        error: null,
-      });
-    });
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [apiBase, t]);
-
-  const repositories = repositoriesState.data ?? [];
+  const repositories = repositoriesQuery.data ?? [];
+  const hasError = repositoriesQuery.status === "error";
+  const isLoading = repositoriesQuery.status === "pending";
 
   return (
     <section id="projects" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen">
@@ -111,7 +74,7 @@ export function Projects() {
           </div>
 
           <div className="space-y-8">
-            {repositoriesState.status === "loading" ? (
+            {isLoading ? (
               <div className="space-y-8">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <div
@@ -125,13 +88,13 @@ export function Projects() {
               </div>
             ) : null}
 
-            {repositoriesState.status === "error" ? (
+            {hasError ? (
               <div className="rounded-[40px] border border-red-300/60 bg-red-50/70 p-6 text-red-700 backdrop-blur dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-200">
-                {repositoriesState.error ?? t("states.error")}
+                {t("states.error")}
               </div>
             ) : null}
 
-            {repositoriesState.status === "loaded" && repositories.length === 0 ? (
+            {repositoriesQuery.status === "success" && repositories.length === 0 ? (
               <div className="rounded-[40px] border border-neutral-200/70 bg-white/70 p-6 text-neutral-600 backdrop-blur dark:border-neutral-800/80 dark:bg-neutral-900/70 dark:text-neutral-300">
                 {t("states.empty")}
               </div>
@@ -145,6 +108,16 @@ export function Projects() {
       </div>
     </section>
   );
+}
+
+async function fetchPinnedRepositories(apiBase: string, signal?: AbortSignal): Promise<GitHubPinnedRepository[]> {
+  const response = await requestJson<PinnedResponse>(`${apiBase}/github/pinned`, { signal });
+
+  if (!response || !Array.isArray(response.repositories)) {
+    throw new Error("Pinned repositories unavailable");
+  }
+
+  return response.repositories;
 }
 
 function ProjectCard({ repository, locale, t }: ProjectCardProps) {

@@ -7,8 +7,20 @@ import { gsap } from "gsap";
 export function Hero() {
   const t = useTranslations("hero");
   const title = t("title");
-  const words = title.split(" ");
   const headingRef = useRef<HTMLHeadingElement>(null);
+
+  const wordCounts = new Map<string, number>();
+  const wordEntries = title.split(" ").map((word) => {
+    const charCounts = new Map<string, number>();
+    const occurrences = wordCounts.get(word) ?? 0;
+    wordCounts.set(word, occurrences + 1);
+    const letters = word.split("").map((ch) => {
+      const seen = charCounts.get(ch) ?? 0;
+      charCounts.set(ch, seen + 1);
+      return { char: ch, key: `${word}-${ch}-${seen}` };
+    });
+    return { word, key: `${word}-${occurrences}`, letters };
+  });
 
   useEffect(() => {
     const node = headingRef.current;
@@ -30,23 +42,23 @@ export function Hero() {
       <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-      <div className="relative z-10 w-full px-6 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
+      <div className="relative z-10 w-full px-4 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
         <h1
           ref={headingRef}
-          className={`mx-auto text-center font-black leading-[1.05] tracking-tight text-balance pb-[0.08em]`}
+          className={`mx-auto max-w-[min(90vw,70rem)] text-center font-black leading-[1.05] tracking-tight text-balance pb-[0.08em]`}
           aria-label={title}
         >
-          {words.map((word, wordIdx) => (
-            <div key={`${word}-${wordIdx}`} className={`overflow-hidden`}>
+          {wordEntries.map((entry, wordIdx) => (
+            <div key={entry.key} className={`overflow-hidden`}>
               <span
-                className={`block align-baseline text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[5.5rem] sm:text-8xl md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8.5rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
+                className={`block align-baseline whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[clamp(2.4rem,12vw,4.7rem)] sm:text-7xl md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8.5rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
               >
-                {word.split("").map((ch, i) => (
+                {entry.letters.map((letter) => (
                   <span
-                    key={i}
+                    key={letter.key}
                     className="inline-block char will-change-transform leading-[1.15] pt-[0.12em] -mt-[0.12em] pb-[0.18em] -mb-[0.18em] px-[0.08em] -mx-[0.08em] text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white"
                   >
-                    {ch}
+                    {letter.char}
                   </span>
                 ))}
               </span>
