@@ -21,9 +21,11 @@ const baseOpenGraph: NonNullable<Metadata["openGraph"]> = {
   ],
 };
 
+const baseTitleText = toMetadataPlainText(baseOpenGraph.title) ?? "";
+
 const baseTwitter: NonNullable<Metadata["twitter"]> = {
   card: "summary_large_image",
-  title: baseOpenGraph.title,
+  title: baseTitleText,
   description: baseOpenGraph.description,
   images: [previewImagePath],
 };
@@ -52,6 +54,7 @@ export function buildMetadata(overrides: SeoOverrides = {}): Metadata {
   const { title, description, path, imagePath } = overrides;
   const image: string = imagePath ?? previewImagePath;
   const resolvedTitle = title ?? baseOpenGraph.title;
+  const resolvedTitleText = toMetadataPlainText(resolvedTitle) ?? baseTitleText;
   const resolvedDescription = description ?? baseOpenGraph.description;
   const resolvedPath = path && path !== "/" ? path : "/";
   const canonicalUrl = path ? `${domain}${resolvedPath}` : domain;
@@ -74,17 +77,37 @@ export function buildMetadata(overrides: SeoOverrides = {}): Metadata {
           url: image,
           width: previewWidth,
           height: previewHeight,
-          alt: resolvedTitle,
+          alt: resolvedTitleText,
         },
       ],
     },
     twitter: {
       ...BASE_METADATA.twitter,
-      title: resolvedTitle,
+      title: resolvedTitleText,
       description: resolvedDescription,
       images: [image],
     },
   };
 }
+
+function toMetadataPlainText(
+  value: string | NonNullable<Metadata["title"]> | null | undefined,
+): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "object" && "default" in value && typeof value.default === "string") {
+    return value.default;
+  }
+
+  return undefined;
+}
+
+
 
 

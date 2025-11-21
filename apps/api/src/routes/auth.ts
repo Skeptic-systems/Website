@@ -16,3 +16,5 @@ authRoutes.all("/*", async (c) => {
 
 export { authRoutes };
 
+
+
