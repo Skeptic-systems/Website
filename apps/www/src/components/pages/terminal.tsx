@@ -5,8 +5,14 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import { cn } from "@/lib/utils";
 import { requestJson } from "@/lib/request";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
 
 type TerminalEntryStatus = "pending" | "published" | "error";
 
@@ -466,8 +472,66 @@ export function Terminal() {
     [communityPromptLabel, entries, promptLabel, publishedMessages, selectFeedText, systemIntroLine, systemPromptLabel],
   );
 
+  const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
+    const { triggerStart, ease } = gsapSectionConfig;
+    const fadeIn = (element: HTMLElement | null, start = triggerStart) => {
+      if (!element) {
+        return;
+      }
+      gsap.fromTo(
+        element,
+        { y: 40, opacity: 0, filter: "blur(8px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.78,
+          ease,
+          scrollTrigger: {
+            trigger: element,
+            start,
+            once: true,
+          },
+          clearProps: "all",
+        },
+      );
+    };
+
+    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-accent']"), "top 85%");
+    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+
+    const copies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
+    copies.forEach((copy, index) => {
+      fadeIn(copy, index === 0 ? "top 82%" : "top 80%");
+    });
+
+    const shell = node.querySelector<HTMLElement>("[data-animate='terminal-shell']");
+    if (shell) {
+      gsap.fromTo(
+        shell,
+        { y: 80, opacity: 0, scale: 0.92, filter: "blur(10px)" },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.9,
+          ease,
+          scrollTrigger: {
+            trigger: shell,
+            start: "top 78%",
+            once: true,
+          },
+          clearProps: "transform,opacity",
+        },
+      );
+    }
+  }, []);
+  const sectionRef = useGsapSection<HTMLDivElement>(terminalAnimation);
+
   return (
     <section
+      ref={sectionRef}
       id="terminal"
       className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden"
     >
@@ -479,6 +543,7 @@ export function Terminal() {
       <div className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center px-6 pt-24 sm:pt-28 md:pt-32">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <span
+            data-animate="section-accent"
             className={cn(
               geist.className,
               "text-xs font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
@@ -487,20 +552,22 @@ export function Terminal() {
             {t("accent")}
           </span>
           <h2
-            className={cn(
-              geist.className,
-              "mt-4 text-[2.5rem] font-bold tracking-tight text-neutral-900 sm:text-[3.2rem] md:text-6xl dark:text-neutral-50",
-            )}
+            data-animate="section-heading"
+            className={sectionHeadingClass("mt-4 text-neutral-900 dark:text-neutral-50")}
           >
             {t("title")}
           </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-300">
+          <p
+            data-animate="section-copy"
+            className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-300"
+          >
             {t("description")}
           </p>
         </div>
       </div>
       <div className="relative z-10 px-6 pb-28">
         <motion.div
+          data-animate="terminal-shell"
           layout
           className="mx-auto mt-16 w-full max-w-4xl rounded-[28px] border border-neutral-200/70 bg-white/90 p-6 shadow-[0_40px_130px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl dark:border-neutral-800/70 dark:bg-neutral-900/80 dark:shadow-[0_50px_140px_-80px_rgba(15,23,42,0.75)]"
         >

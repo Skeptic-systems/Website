@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { cn } from "@/lib/utils";
+
 type GlowTileProps = {
   label: string;
   glowFrom: string;
@@ -7,11 +9,20 @@ type GlowTileProps = {
   ringColor: string;
   icon?: React.ReactNode;
   children?: React.ReactNode;
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
-export function GlowTile({ label, glowFrom, glowTo, ringColor, icon, children }: GlowTileProps) {
+export function GlowTile({
+  label,
+  glowFrom,
+  glowTo,
+  ringColor,
+  icon,
+  children,
+  className,
+  ...props
+}: GlowTileProps) {
   return (
-    <div className="group relative">
+    <div {...props} className={cn("group relative h-full", className)}>
       <div
         className="pointer-events-none absolute -inset-1 rounded-[26px] opacity-0 blur-3xl transition-opacity duration-300 ease-out group-hover:opacity-100"
         style={{ background: `linear-gradient(180deg, ${glowFrom}, ${glowTo})` }}

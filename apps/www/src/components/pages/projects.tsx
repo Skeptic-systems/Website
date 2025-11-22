@@ -4,10 +4,17 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { CaretRight, GitFork, Star } from "phosphor-react";
+import { useCallback } from "react";
 
 import { geist } from "@/app/fonts";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
 import { LanguageBadge } from "@/components/github-language-badge";
 import { Button } from "@/components/ui/button";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import {
   type GitHubPinnedRepository,
   buildRepositorySlug,
@@ -43,9 +50,72 @@ export function Projects() {
   const repositories = repositoriesQuery.data ?? [];
   const hasError = repositoriesQuery.status === "error";
   const isLoading = repositoriesQuery.status === "pending";
+  const repositoriesSignature = repositories.map((repository) => repository.id).join("|");
+
+  const projectsAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
+    ({ node, gsap }) => {
+      const { triggerStart, ease } = gsapSectionConfig;
+      const fadeIn = (element: HTMLElement | null, start = triggerStart) => {
+        if (!element) {
+          return;
+        }
+        gsap.fromTo(
+          element,
+          { y: 40, opacity: 0, filter: "blur(6px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.75,
+            ease,
+            scrollTrigger: {
+              trigger: element,
+              start,
+              once: true,
+            },
+            clearProps: "all",
+          },
+        );
+      };
+
+      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-accent']"), "top 85%");
+      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-subtitle']"), "top 82%");
+      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-copy']"), "top 80%");
+
+      const cards = node.querySelectorAll<HTMLElement>("[data-animate='project-card']");
+      const grid = node.querySelector<HTMLElement>("[data-animate='projects-grid']");
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { y: 50, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.74,
+            ease,
+            stagger: 0.08,
+            scrollTrigger: {
+              trigger: grid ?? node,
+              start: "top 78%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+      }
+    },
+    [repositoriesSignature],
+  );
+
+  const sectionRef = useGsapSection<HTMLDivElement>(projectsAnimation);
 
   return (
-    <section id="projects" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen">
+    <section
+      ref={sectionRef}
+      id="projects"
+      className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen"
+    >
       <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
       <div className="accent-glow-layer-right" />
       <div className="accent-glow-layer-left-lower" />
@@ -53,7 +123,10 @@ export function Projects() {
 
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full items-center justify-center px-6">
-          <h2 className={`${geist.className} text-[2.7rem] sm:text-[3.5rem] md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}>
+          <h2
+            data-animate="section-heading"
+            className={sectionHeadingClass("mt-16 sm:mt-20 md:mt-24 text-center")}
+          >
             {t("title")}
           </h2>
         </div>
@@ -62,18 +135,29 @@ export function Projects() {
       <div className="relative z-10 px-6 -mt-10 sm:-mt-16 md:-mt-24 pb-24">
         <div className="mx-auto w-full max-w-7xl space-y-12">
           <div className="space-y-3">
-            <p className={`${geist.className} text-xs uppercase tracking-[0.32em] text-emerald-500/80`}>{t("accent")}</p>
+            <p
+              data-animate="section-accent"
+              className={`${geist.className} text-xs uppercase tracking-[0.32em] text-emerald-500/80`}
+            >
+              {t("accent")}
+            </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <h3 className={`${geist.className} text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50`}>
+              <h3
+                data-animate="section-subtitle"
+                className={`${geist.className} text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50`}
+              >
                 {t("subtitle")}
               </h3>
-              <div className="max-w-2xl text-sm text-neutral-600 dark:text-neutral-300">
+              <div
+                data-animate="section-copy"
+                className="max-w-2xl text-sm text-neutral-600 dark:text-neutral-300"
+              >
                 <p>{t("description")}</p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-8">
+          <div data-animate="projects-grid" className="space-y-8">
             {isLoading ? (
               <div className="space-y-8">
                 {Array.from({ length: 3 }).map((_, index) => (
@@ -130,6 +214,7 @@ function ProjectCard({ repository, locale, t }: ProjectCardProps) {
 
   return (
     <article
+      data-animate="project-card"
       className={cn(
         "group relative overflow-hidden rounded-[32px] border border-neutral-200/70 bg-white/70 backdrop-blur-md shadow-xl transition hover:shadow-2xl dark:border-neutral-800/80 dark:bg-neutral-900/70"
       )}
