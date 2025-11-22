@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
-import type { ComponentType } from "react";
+import { useCallback, type ComponentType } from "react";
 import {
   IconAppWindow,
   IconApps,
@@ -34,6 +34,12 @@ import {
 } from "@tabler/icons-react";
 
 import { geist } from "@/app/fonts";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import { cn } from "@/lib/utils";
 
 type IconComponent = ComponentType<{ className?: string; stroke?: number }>;
@@ -395,10 +401,90 @@ const TOOL_SECTIONS = [
 
 export function Tools() {
   const t = useTranslations("tools");
+  const toolsAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
+    const { triggerStart, ease } = gsapSectionConfig;
+    const fadeIn = (element: HTMLElement | null, start: string = triggerStart, delay = 0) => {
+      if (!element) {
+        return;
+      }
+      gsap.fromTo(
+        element,
+        { y: 40, opacity: 0, filter: "blur(6px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.7,
+          ease,
+          delay,
+          scrollTrigger: {
+            trigger: element,
+            start,
+            once: true,
+          },
+          clearProps: "all",
+        },
+      );
+    };
+
+    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+
+    const copies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
+    copies.forEach((copy, index) => {
+      fadeIn(copy, "top 82%", index * 0.05);
+    });
+
+    const sections = node.querySelectorAll<HTMLElement>("[data-animate='tool-section']");
+      sections.forEach((block) => {
+      gsap.fromTo(
+        block,
+        { y: 60, opacity: 0, scale: 0.97 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+            duration: 0.82,
+          ease,
+          scrollTrigger: {
+            trigger: block,
+            start: "top 80%",
+            once: true,
+          },
+          clearProps: "transform,opacity",
+        },
+      );
+
+      const cards = block.querySelectorAll<HTMLElement>("[data-animate='tool-card']");
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { y: 32, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.64,
+            ease,
+            stagger: 0.05,
+            scrollTrigger: {
+              trigger: block,
+              start: "top 78%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+      }
+    });
+  }, []);
+  const sectionRef = useGsapSection<HTMLDivElement>(toolsAnimation);
 
   return (
-    <section id="tools" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden">
-      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+    <section
+      ref={sectionRef}
+      id="tools"
+      className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden"
+    >
+      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer-right" />
       <div className="accent-glow-layer-left-lower" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -406,16 +492,24 @@ export function Tools() {
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
-            className={cn(
-              geist.className,
-              "mt-16 text-center text-[2.6rem] font-bold tracking-tight text-neutral-900 sm:mt-20 sm:text-[3.4rem] md:mt-24 md:text-7xl lg:text-8xl dark:text-neutral-50"
-            )}
+            data-animate="section-heading"
+            className={sectionHeadingClass("mt-16 text-center text-neutral-900 sm:mt-20 md:mt-24 dark:text-neutral-50")}
           >
             {t("title")}
           </h2>
           <div className="max-w-3xl space-y-2">
-            <p className="text-base leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-300">{t("subtitle")}</p>
-            <p className="text-base leading-relaxed text-neutral-500 sm:text-lg dark:text-neutral-400">{t("description")}</p>
+            <p
+              data-animate="section-copy"
+              className="text-base leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-300"
+            >
+              {t("subtitle")}
+            </p>
+            <p
+              data-animate="section-copy"
+              className="text-base leading-relaxed text-neutral-500 sm:text-lg dark:text-neutral-400"
+            >
+              {t("description")}
+            </p>
           </div>
         </div>
       </div>
@@ -443,6 +537,7 @@ function ToolSection({ section, t }: ToolSectionProps) {
 
   return (
     <section
+      data-animate="tool-section"
       className={cn(
         "group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/80 shadow-[0_50px_140px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-[0_60px_160px_-80px_rgba(15,23,42,0.7)] dark:border-neutral-800/70 dark:bg-neutral-950/40",
         section.borderClass
@@ -508,6 +603,7 @@ function ToolLinkCard({ item, label }: ToolLinkCardProps) {
       className="group/card relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-neutral-100/60 dark:focus-visible:ring-offset-neutral-950"
     >
       <motion.div
+        data-animate="tool-card"
         whileHover={{ y: -3, scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         transition={{ type: "spring", stiffness: 320, damping: 26 }}

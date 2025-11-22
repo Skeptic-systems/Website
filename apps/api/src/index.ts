@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { appEnv } from "./config/env";
+import { authRoutes } from "./routes/auth";
 import { discordRoutes } from "./routes/discord";
 import { githubRoutes } from "./routes/github";
 import { pterodactylRoutes } from "./routes/pterodactyl";
@@ -16,6 +17,7 @@ import { verifyJellyfinConnection } from "./services/jellyfin";
 import { verifySpotifyConnection } from "./services/spotify";
 import { verifyRedisConnection } from "./services/redis";
 import { initializeTerminalPersistence } from "./services/terminal-persistence";
+import { initializeAuth } from "./services/auth";
 import { initializeDatabase } from "./services/database";
 
 const app = new Hono();
@@ -45,6 +47,7 @@ app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.route("/auth", authRoutes);
 app.route("/github", githubRoutes);
 app.route("/spotify", spotifyRoutes);
 app.route("/discord", discordRoutes);
@@ -124,6 +127,11 @@ const registeredRoutes = [
     path: "/terminal/messages",
     description: "Fetch recent terminal messages",
   },
+  {
+    method: "ALL",
+    path: "/auth/*",
+    description: "Authentication handler",
+  },
 ] as const;
 
 const getBaseUrl = (): string => appEnv.apiBaseUrl;
@@ -196,6 +204,15 @@ const bootstrap = async (): Promise<void> => {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error(`[bootstrap] Database initialization failed: ${message}`);
+    throw error;
+  }
+
+  try {
+    await initializeAuth();
+    console.log("[bootstrap] Auth schema ensured");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[bootstrap] Auth initialization failed: ${message}`);
     throw error;
   }
 

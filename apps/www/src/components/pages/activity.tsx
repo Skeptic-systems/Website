@@ -2,12 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import { requestJson } from "@/lib/request";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
 
 type SpotifyArtist = {
   id: string;
@@ -136,7 +142,7 @@ function formatMsToTime(ms: number): string {
 
 function SectionHeader({ accent, title }: { accent: string; title: string }): ReactElement {
   return (
-    <div className="space-y-2">
+    <div data-animate="subheader" className="space-y-2">
       <p className={`${geist.className} text-xs uppercase tracking-[0.32em] text-emerald-400/90`}>{accent}</p>
       <h3 className={`${geist.className} text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50`}>
         {title}
@@ -397,15 +403,131 @@ export function Activity() {
     return track.artists.map((artist) => artist.name).join(", ");
   };
 
+  const trackSignature = topTracks.map((track) => track.id).join("|");
+  const activitySignature = activities.map((activity) => activity.id).join("|");
+  const playbackSignature = playback?.track?.id ?? (playback ? "active" : "idle");
+
+  const activityAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
+    ({ node, gsap }) => {
+      const { triggerStart, ease } = gsapSectionConfig;
+      const animateBlock = (element: HTMLElement | null, start: string = triggerStart) => {
+        if (!element) {
+          return;
+        }
+        gsap.fromTo(
+          element,
+          { y: 48, opacity: 0, filter: "blur(8px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.78,
+            ease,
+            scrollTrigger: {
+              trigger: element,
+              start,
+              once: true,
+            },
+            clearProps: "all",
+          },
+        );
+      };
+
+      animateBlock(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+
+      const subheaders = node.querySelectorAll<HTMLElement>("[data-animate='subheader']");
+      subheaders.forEach((block) => {
+        animateBlock(block, "top 85%");
+      });
+
+      const panels = node.querySelectorAll<HTMLElement>("[data-animate='panel']");
+      panels.forEach((panel) => {
+        gsap.fromTo(
+          panel,
+          { y: 60, opacity: 0, scale: 0.94, filter: "blur(8px)" },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.82,
+            ease,
+            scrollTrigger: {
+              trigger: panel,
+              start: "top 80%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+      });
+
+      const trackWrapper = node.querySelector<HTMLElement>("[data-animate='tracks-wrapper']");
+      const trackCards = node.querySelectorAll<HTMLElement>("[data-animate='track-card']");
+      if (trackWrapper && trackCards.length > 0) {
+        gsap.fromTo(
+          trackCards,
+          { y: 40, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.68,
+            ease,
+            stagger: 0.07,
+            scrollTrigger: {
+              trigger: trackWrapper,
+              start: "top 78%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+      }
+
+      const presenceWrapper = node.querySelector<HTMLElement>("[data-animate='presence-wrapper']");
+      const presenceCards = node.querySelectorAll<HTMLElement>("[data-animate='presence-card']");
+      if (presenceWrapper && presenceCards.length > 0) {
+        gsap.fromTo(
+          presenceCards,
+          { y: 32, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.64,
+            ease,
+            stagger: 0.06,
+            scrollTrigger: {
+              trigger: presenceWrapper,
+              start: "top 80%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+      }
+    },
+    [activitySignature, playbackSignature, trackSignature],
+  );
+
+  const sectionRef = useGsapSection<HTMLDivElement>(activityAnimation);
+
   return (
-    <section id="activity" className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen">
-      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+    <section
+      ref={sectionRef}
+      id="activity"
+      className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen"
+    >
+      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full items-center justify-center px-6">
-          <h2 className={`${geist.className} text-[2.7rem] sm:text-[3.6rem] md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}>
+          <h2
+            data-animate="section-heading"
+            className={sectionHeadingClass("text-center mt-16 sm:mt-20 md:mt-24")}
+          >
             {t("title")}
           </h2>
         </div>
@@ -415,7 +537,10 @@ export function Activity() {
         <div className="mx-auto w-full max-w-7xl space-y-20">
           <div className="space-y-10">
             <SectionHeader accent={t("sections.nowPlayingAccent")} title={t("sections.nowPlaying")} />
-            <div className="relative overflow-hidden rounded-[32px] border border-neutral-200/70 bg-white/70 backdrop-blur-md shadow-lg dark:border-neutral-800/80 dark:bg-neutral-900/70">
+            <div
+              data-animate="panel"
+              className="relative overflow-hidden rounded-[32px] border border-neutral-200/70 bg-white/70 backdrop-blur-md shadow-lg dark:border-neutral-800/80 dark:bg-neutral-900/70"
+            >
               {playback?.track?.album.imageUrl ? (
                 <Image
                   src={playback.track.album.imageUrl}
@@ -491,7 +616,10 @@ export function Activity() {
 
           <div className="space-y-10">
             <SectionHeader accent={t("sections.topTracksAccent")} title={t("sections.topTracks")} />
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+            <div
+              data-animate="tracks-wrapper"
+              className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
+            >
               {isTopTracksLoading
                 ? Array.from({ length: 5 }).map((_, index) => (
                     <div
@@ -510,6 +638,7 @@ export function Activity() {
                     const rank = typeof track.rank === "number" ? track.rank : index + 1;
                     return (
                       <div
+                        data-animate="track-card"
                         key={track.id}
                         className="group relative flex min-h-[240px] flex-col overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/70 backdrop-blur-md shadow-md transition hover:shadow-lg dark:border-neutral-800/80 dark:bg-neutral-900/70"
                       >
@@ -555,7 +684,7 @@ export function Activity() {
 
           <div className="space-y-10">
             <SectionHeader accent={t("sections.presenceAccent")} title={t("sections.presence")} />
-            <div className="space-y-4">
+            <div data-animate="presence-wrapper" className="space-y-4">
               {isPresenceLoading ? (
                 <div className="space-y-4">
                   {Array.from({ length: 2 }).map((_, index) => (
@@ -576,6 +705,7 @@ export function Activity() {
                     const cover = activity.assets?.large?.url ?? activity.assets?.small?.url ?? null;
                     return (
                       <div
+                        data-animate="presence-card"
                         key={activity.id}
                         className="relative flex gap-5 rounded-3xl border border-neutral-200/70 bg-white/70 p-6 backdrop-blur-md shadow-md transition hover:shadow-lg dark:border-neutral-800/80 dark:bg-neutral-900/70"
                       >

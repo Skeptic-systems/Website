@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactElement } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactElement } from "react";
 import { useTranslations } from "next-intl";
 import { Clock, Cpu, FilmSlate, HardDrive, HardDrives, StackSimple, UsersThree } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import { requestJson } from "@/lib/request";
 
 type PterodactylServerLimits = {
@@ -151,7 +157,7 @@ function SectionHeading({
         {accent}
       </p>
       <h3
-        className={`${geist.className} text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50`}
+        className={`${geist.className} text-[clamp(1.9rem,6vw,2.8rem)] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50 sm:text-4xl`}
       >
         {title}
       </h3>
@@ -169,7 +175,8 @@ function StatCard({ label, value, tone }: StatCardProps): ReactElement {
       : "border-sky-200/70 bg-white/80 text-neutral-900 dark:border-sky-500/30 dark:bg-neutral-900/70 dark:text-neutral-50";
   return (
     <div
-      className={`rounded-3xl border px-6 py-5 shadow-sm backdrop-blur-md sm:px-7 sm:py-6 ${toneClasses}`}
+      data-animate="selfhosted-stat"
+      className={`w-full rounded-3xl border px-5 py-5 shadow-sm backdrop-blur-md sm:px-7 sm:py-6 ${toneClasses}`}
     >
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-neutral-500 dark:text-neutral-400">
         {label}
@@ -570,12 +577,118 @@ export function Selfhosted() {
     return date.toLocaleString();
   }, [jellyfinOverview]);
 
+  const pterodactylSignature = pterodactylServers.map((server) => server.identifier).join("|");
+  const jellyfinSessionsSignature = jellyfinSessions.map((session) => session.id).join("|");
+  const jellyfinOverviewKey = jellyfinOverview?.generatedAt ?? "none";
+
+  const selfhostedAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
+    ({ node, gsap }) => {
+      const { triggerStart, ease } = gsapSectionConfig;
+      const fadeIn = (element: HTMLElement | null, start: string = triggerStart, delay = 0) => {
+        if (!element) {
+          return;
+        }
+        gsap.fromTo(
+          element,
+          { y: 42, opacity: 0, filter: "blur(8px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.78,
+            ease,
+            delay,
+            scrollTrigger: {
+              trigger: element,
+              start,
+              once: true,
+            },
+            clearProps: "all",
+          },
+        );
+      };
+
+      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+      const introCopies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
+      introCopies.forEach((copy, index) => {
+        fadeIn(copy, "top 82%", index * 0.05);
+      });
+
+      const panels = node.querySelectorAll<HTMLElement>("[data-animate='selfhosted-panel']");
+      panels.forEach((panel) => {
+        gsap.fromTo(
+          panel,
+          { y: 70, opacity: 0, scale: 0.97 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.85,
+            ease,
+            scrollTrigger: {
+              trigger: panel,
+              start: "top 80%",
+              once: true,
+            },
+            clearProps: "transform,opacity",
+          },
+        );
+
+        const stats = panel.querySelectorAll<HTMLElement>("[data-animate='selfhosted-stat']");
+        if (stats.length > 0) {
+          gsap.fromTo(
+            stats,
+            { y: 26, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.65,
+              ease,
+              stagger: 0.06,
+              scrollTrigger: {
+                trigger: panel,
+                start: "top 78%",
+                once: true,
+              },
+              clearProps: "transform,opacity",
+            },
+          );
+        }
+
+        const cards = panel.querySelectorAll<HTMLElement>("[data-animate='selfhosted-card']");
+        if (cards.length > 0) {
+          gsap.fromTo(
+            cards,
+            { y: 32, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.68,
+              ease,
+              stagger: 0.05,
+              scrollTrigger: {
+                trigger: panel,
+                start: "top 76%",
+                once: true,
+              },
+              clearProps: "transform,opacity",
+            },
+          );
+        }
+      });
+    },
+    [jellyfinOverviewKey, jellyfinSessionsSignature, pterodactylSignature],
+  );
+
+  const sectionRef = useGsapSection<HTMLDivElement>(selfhostedAnimation);
+
   return (
     <section
+      ref={sectionRef}
       id="selfhosted"
       className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen"
     >
-      <div className="absolute -top-px left-0 right-0 bottom-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+      <div className="absolute -top-px left-0 right-0 bottom-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer-right" />
       <div className="accent-glow-layer-left-lower" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -583,27 +696,31 @@ export function Selfhosted() {
       <div className="relative min-h-[40vh] sm:min-h-[45vh] md:min-h-[50vh]">
         <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
-            className={`${geist.className} text-[2.8rem] sm:text-[3.6rem] md:text-7xl lg:text-8xl font-bold tracking-tight mt-16 sm:mt-20 md:mt-24`}
+            data-animate="section-heading"
+            className={sectionHeadingClass("mt-16 sm:mt-20 md:mt-24 text-center")}
           >
             {t("title")}
           </h2>
           <div className="max-w-3xl space-y-2">
-            <p className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
+            <p data-animate="section-copy" className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
               {t("intro.title")}
             </p>
-            <p className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
+            <p data-animate="section-copy" className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
               {t("intro.bodyOne")}
             </p>
-            <p className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
+            <p data-animate="section-copy" className="text-base leading-relaxed text-[#8B8D92] sm:text-lg">
               {t("intro.bodyTwo")}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="relative z-10 px-6 pb-24 pt-10 sm:pt-16">
+      <div className="relative z-10 px-4 pb-24 pt-10 sm:px-6 sm:pt-16">
         <div className="mx-auto w-full max-w-7xl space-y-24">
-          <div className="relative overflow-hidden rounded-[36px] border border-fuchsia-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-fuchsia-500/30 dark:bg-neutral-900/80 sm:p-10">
+          <div
+            data-animate="selfhosted-panel"
+            className="relative overflow-hidden rounded-[36px] border border-fuchsia-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-fuchsia-500/30 dark:bg-neutral-900/80 sm:p-10"
+          >
             <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/10" />
             <div className="relative space-y-10">
               <SectionHeading
@@ -681,7 +798,7 @@ export function Selfhosted() {
                 ) : null}
 
                 {!isPterodactylLoading && !pterodactylError && pterodactylServers.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
                     {pterodactylServers.map((server) => {
                       const resources = pterodactylResources[server.identifier] ?? null;
                       const uptimeSeconds = resources?.uptime ?? server.uptime ?? null;
@@ -716,11 +833,12 @@ export function Selfhosted() {
                           ? `${cpuLabel} / ${server.limits.cpu}%`
                           : cpuLabel;
 
-                      return (
-                        <div
-                          key={server.identifier}
-                          className="relative flex flex-col gap-5 rounded-3xl border border-fuchsia-200/60 bg-white/75 p-6 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start"
-                        >
+                    return (
+                      <div
+                        data-animate="selfhosted-card"
+                        key={server.identifier}
+                        className="relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-3xl border border-fuchsia-200/60 bg-white/75 p-5 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start sm:p-6"
+                      >
                           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500/20 via-fuchsia-400/20 to-sky-400/30 text-fuchsia-600 dark:from-fuchsia-500/20 dark:to-sky-400/20">
                             <HardDrives size={28} weight="fill" />
                           </div>
@@ -778,7 +896,10 @@ export function Selfhosted() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[36px] border border-sky-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-sky-500/30 dark:bg-neutral-900/80 sm:p-10">
+          <div
+            data-animate="selfhosted-panel"
+            className="relative overflow-hidden rounded-[36px] border border-sky-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-sky-500/30 dark:bg-neutral-900/80 sm:p-10"
+          >
             <div className="pointer-events-none absolute -left-40 -top-10 h-72 w-72 rounded-full bg-sky-400/30 blur-3xl dark:bg-sky-500/20" />
             <div className="pointer-events-none absolute -bottom-32 -right-16 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-500/10" />
             <div className="relative space-y-10">
@@ -851,7 +972,7 @@ export function Selfhosted() {
 
               {!isJellyfinLoading && !jellyfinError && jellyfinOverview ? (
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                  <div className="flex flex-col gap-6 rounded-3xl border border-sky-200/60 bg-white/75 p-6 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80">
+                  <div className="flex w-full min-w-0 flex-col gap-6 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
                     <div className="flex items-center gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 via-blue-400/20 to-violet-400/30 text-sky-600 dark:from-sky-500/20 dark:to-violet-500/20">
                         <FilmSlate size={28} weight="fill" />
@@ -898,6 +1019,7 @@ export function Selfhosted() {
 
                           return (
                             <div
+                              data-animate="selfhosted-card"
                               key={session.id}
                               className="rounded-2xl border border-sky-200/50 bg-white/70 p-4 shadow-sm transition duration-150 hover:shadow-md dark:border-sky-500/20 dark:bg-neutral-900/70"
                             >
@@ -938,7 +1060,7 @@ export function Selfhosted() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4 rounded-3xl border border-sky-200/60 bg-white/75 p-6 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80">
+                  <div className="flex w-full min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
                         <UsersThree size={24} weight="fill" />

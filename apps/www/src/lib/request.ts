@@ -29,7 +29,9 @@ export async function requestJson<T>(input: string, options?: FetchJsonOptions):
       return null;
     }
 
-    console.error(error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`[requestJson] Failed to fetch ${input}`, error);
+    }
     return null;
   }
 }

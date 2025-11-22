@@ -5,8 +5,14 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
 import { geist } from "@/app/fonts";
+import {
+  gsapSectionConfig,
+  type GsapSectionSetup,
+  useGsapSection,
+} from "@/lib/gsap-animations";
 import { cn } from "@/lib/utils";
 import { requestJson } from "@/lib/request";
+import { sectionHeadingClass } from "@/components/pages/section-heading";
 
 type TerminalEntryStatus = "pending" | "published" | "error";
 
@@ -466,8 +472,66 @@ export function Terminal() {
     [communityPromptLabel, entries, promptLabel, publishedMessages, selectFeedText, systemIntroLine, systemPromptLabel],
   );
 
+  const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
+    const { triggerStart, ease } = gsapSectionConfig;
+    const fadeIn = (element: HTMLElement | null, start: string = triggerStart) => {
+      if (!element) {
+        return;
+      }
+      gsap.fromTo(
+        element,
+        { y: 40, opacity: 0, filter: "blur(8px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.78,
+          ease,
+          scrollTrigger: {
+            trigger: element,
+            start,
+            once: true,
+          },
+          clearProps: "all",
+        },
+      );
+    };
+
+    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-accent']"), "top 85%");
+    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+
+    const copies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
+    copies.forEach((copy, index) => {
+      fadeIn(copy, index === 0 ? "top 82%" : "top 80%");
+    });
+
+    const shell = node.querySelector<HTMLElement>("[data-animate='terminal-shell']");
+    if (shell) {
+      gsap.fromTo(
+        shell,
+        { y: 80, opacity: 0, scale: 0.92, filter: "blur(10px)" },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.9,
+          ease,
+          scrollTrigger: {
+            trigger: shell,
+            start: "top 78%",
+            once: true,
+          },
+          clearProps: "transform,opacity",
+        },
+      );
+    }
+  }, []);
+  const sectionRef = useGsapSection<HTMLDivElement>(terminalAnimation);
+
   return (
     <section
+      ref={sectionRef}
       id="terminal"
       className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen overflow-hidden"
     >
@@ -479,6 +543,7 @@ export function Terminal() {
       <div className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center px-6 pt-24 sm:pt-28 md:pt-32">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <span
+            data-animate="section-accent"
             className={cn(
               geist.className,
               "text-xs font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
@@ -487,45 +552,47 @@ export function Terminal() {
             {t("accent")}
           </span>
           <h2
-            className={cn(
-              geist.className,
-              "mt-4 text-[2.5rem] font-bold tracking-tight text-neutral-900 sm:text-[3.2rem] md:text-6xl dark:text-neutral-50",
-            )}
+            data-animate="section-heading"
+            className={sectionHeadingClass("mt-4 text-neutral-900 dark:text-neutral-50")}
           >
             {t("title")}
           </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-300">
+          <p
+            data-animate="section-copy"
+            className="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-300"
+          >
             {t("description")}
           </p>
         </div>
       </div>
       <div className="relative z-10 px-6 pb-28">
         <motion.div
+          data-animate="terminal-shell"
           layout
           className="mx-auto mt-16 w-full max-w-4xl rounded-[28px] border border-neutral-200/70 bg-white/90 p-6 shadow-[0_40px_130px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl dark:border-neutral-800/70 dark:bg-neutral-900/80 dark:shadow-[0_50px_140px_-80px_rgba(15,23,42,0.75)]"
         >
-          <div className="rounded-2xl border border-neutral-200/80 bg-neutral-900 text-neutral-100 shadow-inner dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="flex items-center rounded-t-2xl border-b border-neutral-800/60 bg-neutral-900 px-4 py-3">
+          <div className="rounded-2xl border border-neutral-200/80 bg-neutral-50 text-neutral-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100 dark:shadow-inner">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-t-2xl border-b border-neutral-200/70 bg-neutral-100 px-4 py-3 text-neutral-500 sm:flex-nowrap dark:border-neutral-800/60 dark:bg-neutral-900 dark:text-neutral-400">
               <div className="flex items-center gap-2">
                 <span className="inline-flex h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-amber-400/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-emerald-500/80" />
               </div>
-              <div className="flex flex-1 items-center justify-center">
-                <span className="font-mono text-[0.7rem] text-neutral-400">{welcomeLine}</span>
-              </div>
-              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-400">
+              <span className="order-3 w-full font-mono text-[0.7rem] text-neutral-500 sm:order-none sm:flex-1 sm:text-center dark:text-neutral-400">
+                {welcomeLine}
+              </span>
+              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-500 sm:text-right dark:text-neutral-400">
                 {t("windowTitle")}
               </span>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800/60 bg-neutral-900/80 px-5 py-3">
-              <span className="text-xs text-neutral-500">
+            <div className="flex flex-col gap-3 border-b border-neutral-200/70 bg-white px-5 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800/60 dark:bg-neutral-900/80">
+              <span className="text-xs text-neutral-500 sm:text-left dark:text-neutral-400">
                 {sessionUsageText ?? " "}
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
                 <label
                   htmlFor="terminal-language"
-                  className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400"
+                  className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400"
                 >
                   {languageLabel}
                 </label>
@@ -533,7 +600,7 @@ export function Terminal() {
                   id="terminal-language"
                   value={feedLanguage}
                   onChange={(event) => setFeedLanguage(event.target.value as LanguageKey)}
-                  className="rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1 text-xs font-medium text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70"
+                  className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus-visible:ring-offset-neutral-900"
                 >
                   {languageOrder.map((language) => (
                     <option key={language} value={language}>
@@ -544,7 +611,10 @@ export function Terminal() {
               </div>
             </div>
 
-            <div className="flex max-h-[380px] flex-col gap-3 overflow-y-auto px-5 py-6 font-mono text-[0.82rem] leading-relaxed text-neutral-100 sm:text-sm" ref={logRef}>
+            <div
+              className="flex max-h-[380px] flex-col gap-3 overflow-y-auto bg-neutral-50 px-4 py-5 font-mono text-[0.82rem] leading-relaxed text-neutral-800 sm:px-5 sm:py-6 sm:text-sm dark:bg-neutral-900 dark:text-neutral-100"
+              ref={logRef}
+            >
               {renderedEntries.map((entry) => (
                 <TerminalLine
                   key={entry.id}
@@ -558,25 +628,27 @@ export function Terminal() {
             </div>
 
             <form
-              className="flex flex-wrap items-center gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100 sm:flex-nowrap"
+              className="flex flex-col gap-3 border-t border-neutral-200/70 bg-white px-5 py-4 font-mono text-sm text-neutral-800 sm:flex-row sm:items-center sm:gap-4 sm:py-5 dark:border-neutral-800/60 dark:bg-neutral-900/80 dark:text-neutral-100"
               onSubmit={handleSubmit}
             >
-              <span className="flex-shrink-0 whitespace-pre text-xs text-sky-300 sm:text-sm sm:whitespace-nowrap">{promptLabel}</span>
+              <span className="w-full whitespace-pre-wrap break-all text-xs text-sky-700 sm:w-auto sm:flex-shrink-0 sm:text-sm sm:whitespace-nowrap dark:text-sky-300">
+                {promptLabel}
+              </span>
               <input
                 ref={inputRef}
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder={t("inputPlaceholder")}
-                className="min-w-0 flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
+                className="w-full min-w-0 flex-1 rounded-md bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:rounded-none dark:bg-transparent dark:text-neutral-100 dark:placeholder:text-neutral-600 dark:focus-visible:ring-offset-neutral-900"
                 aria-label={t("inputAriaLabel")}
                 disabled={isRateLimited}
               />
               <button
                 type="submit"
                 className={cn(
-                  "w-full rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition sm:w-auto sm:py-1",
-                  "hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
-                  isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/10" : undefined,
+                  "w-full rounded-lg border border-sky-500/40 bg-sky-500/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 transition sm:w-auto sm:py-2",
+                  "hover:bg-sky-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-sky-500/60 dark:bg-sky-500/10 dark:text-sky-200 dark:hover:bg-sky-500/20 dark:focus-visible:ring-offset-neutral-900",
+                  isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/15 dark:hover:bg-sky-500/10" : undefined,
                 )}
                 disabled={isRateLimited}
               >
@@ -616,8 +688,8 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
         className={cn(
           "justify-self-start rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] sm:justify-self-end",
           status === "pending"
-            ? "bg-amber-500/10 text-amber-300"
-            : "bg-rose-500/10 text-rose-300",
+            ? "bg-amber-500/10 text-amber-600 dark:text-amber-300"
+            : "bg-rose-500/10 text-rose-600 dark:text-rose-300",
         )}
       >
         {statusLabels[status]}
@@ -630,14 +702,14 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
     <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-baseline">
       <span
         className={cn(
-          "whitespace-pre-wrap break-words text-xs text-sky-300 transition-opacity sm:text-sm sm:whitespace-nowrap",
+          "whitespace-pre-wrap break-words text-xs text-sky-700 transition-opacity sm:text-sm sm:whitespace-nowrap dark:text-sky-300",
           showPrompt,
         )}
         aria-hidden={!withPrompt}
       >
         {prompt}
       </span>
-      <span className="min-w-0 break-words text-neutral-100">{content}</span>
+      <span className="min-w-0 break-words text-neutral-900 dark:text-neutral-100">{content}</span>
       {statusBadge}
     </div>
   );

@@ -1,0 +1,6 @@
+## Project Structure Guardrails
+
+- Respect the existing Turborepo layout for every change. Reuse package-level scripts, workspace tooling, and existing package boundaries instead of introducing ad‑hoc scripts or bypassing the monorepo setup.
+- When touching TanStack integrations (React Query, Router, Devtools, etc.), follow the established patterns in this repo—providers, devtools aggregation, helper modules—rather than dropping in standalone instances.
+- Mirror current module conventions (Next.js routing, localization, API handlers, shared libs) to keep the architecture cohesive. If a feature already has an idiomatic pattern in the codebase, extend it instead of inventing a new one.
+- Only deviate from the schema when the user explicitly asks for a restructuring; otherwise, preserve and build upon the existing design.

@@ -7,8 +7,20 @@ import { gsap } from "gsap";
 export function Hero() {
   const t = useTranslations("hero");
   const title = t("title");
-  const words = title.split(" ");
   const headingRef = useRef<HTMLHeadingElement>(null);
+
+  const wordCounts = new Map<string, number>();
+  const wordEntries = title.split(" ").map((word) => {
+    const charCounts = new Map<string, number>();
+    const occurrences = wordCounts.get(word) ?? 0;
+    wordCounts.set(word, occurrences + 1);
+    const letters = word.split("").map((ch) => {
+      const seen = charCounts.get(ch) ?? 0;
+      charCounts.set(ch, seen + 1);
+      return { char: ch, key: `${word}-${ch}-${seen}` };
+    });
+    return { word, key: `${word}-${occurrences}`, letters };
+  });
 
   useEffect(() => {
     const node = headingRef.current;
@@ -25,28 +37,37 @@ export function Hero() {
     });
   }, []);
 
+  const primaryWordGradient =
+    "bg-gradient-to-b from-[#4a4a55] via-[#2b2a33] to-[#09080d] dark:from-white dark:via-neutral-200 dark:to-white";
+  const secondaryWordGradient =
+    "bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 dark:from-white dark:via-neutral-200 dark:to-white";
+
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center bg-white dark:bg-black">
-      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+    <section className="relative flex min-h-screen w-full items-center justify-center bg-white dark:bg-black">
+      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-      <div className="relative z-10 w-full px-6 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
+      <div className="relative z-10 w-full px-4 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
         <h1
           ref={headingRef}
-          className={`mx-auto text-center font-black leading-[1.05] tracking-tight text-balance pb-[0.08em]`}
+          className="mx-auto max-w-[min(90vw,70rem)] text-balance pb-[0.08em] text-center font-black leading-[1.05] tracking-tight"
           aria-label={title}
         >
-          {words.map((word, wordIdx) => (
-            <div key={`${word}-${wordIdx}`} className={`overflow-hidden`}>
+          {wordEntries.map((entry, wordIdx) => (
+            <div key={entry.key} className="overflow-hidden">
               <span
-                className={`block align-baseline text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[5.5rem] sm:text-8xl md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8.5rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
+                className={`block align-baseline whitespace-nowrap text-transparent ${wordIdx === 0 ? primaryWordGradient : secondaryWordGradient} bg-clip-text text-[clamp(5rem,20vw,6rem)] sm:text-[6.5rem] md:text-[7.5rem] lg:text-[8.5rem] xl:text-[9.5rem] 2xl:text-[11rem] ${
+                  wordIdx === 0 ? "mb-1 sm:mb-2" : "pb-[0.22em] leading-[1.2] text-stroke-hero"
+                }`}
               >
-                {word.split("").map((ch, i) => (
+                {entry.letters.map((letter) => (
                   <span
-                    key={i}
-                    className="inline-block char will-change-transform leading-[1.15] pt-[0.12em] -mt-[0.12em] pb-[0.18em] -mb-[0.18em] px-[0.08em] -mx-[0.08em] text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white"
+                    key={letter.key}
+                    className={`char inline-block text-transparent bg-clip-text will-change-transform ${
+                      wordIdx === 0 ? primaryWordGradient : secondaryWordGradient
+                    } -mx-[0.08em] px-[0.08em] pt-[0.12em] pb-[0.18em] -mt-[0.12em] -mb-[0.18em] leading-[1.15]`}
                   >
-                    {ch}
+                    {letter.char}
                   </span>
                 ))}
               </span>
