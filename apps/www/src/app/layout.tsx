@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -11,10 +12,22 @@ import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = buildMetadata();
+export async function generateMetadata(): Promise<Metadata> {
+  const headerList = headers();
+  const forwardedProto = headerList.get("x-forwarded-proto");
+  const forwardedHost = headerList.get("x-forwarded-host");
+  const host = forwardedHost ?? headerList.get("host");
+  const protocol =
+    forwardedProto ?? (host && host.startsWith("localhost") ? "http" : "https");
+  const envBase = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL;
+  const baseUrl = host ? `${protocol ?? "https"}://${host}` : envBase;
+
+  return buildMetadata(baseUrl);
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const accept = (await headers()).get("accept-language")?.toLowerCase() || "";
+  const headerList = headers();
+  const accept = headerList.get("accept-language")?.toLowerCase() || "";
   const locale = accept.startsWith("de") ? "de" : "en";
   const messages = (await import(`@/locals/${locale}.json`)).default;
 
