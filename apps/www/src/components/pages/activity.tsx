@@ -410,7 +410,7 @@ export function Activity() {
   const activityAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
     ({ node, gsap }) => {
       const { triggerStart, ease } = gsapSectionConfig;
-      const animateBlock = (element: HTMLElement | null, start = triggerStart) => {
+      const animateBlock = (element: HTMLElement | null, start: string = triggerStart) => {
         if (!element) {
           return;
         }
