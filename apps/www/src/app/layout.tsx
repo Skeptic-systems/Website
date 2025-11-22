@@ -13,12 +13,11 @@ import "./globals.css";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const headerList = headers();
-  const forwardedProto = headerList.get("x-forwarded-proto");
-  const forwardedHost = headerList.get("x-forwarded-host");
-  const host = forwardedHost ?? headerList.get("host");
-  const protocol =
-    forwardedProto ?? (host && host.startsWith("localhost") ? "http" : "https");
+  const headerList = await headers();
+  const forwardedProto = headerList.get("x-forwarded-proto") ?? undefined;
+  const forwardedHost = headerList.get("x-forwarded-host") ?? undefined;
+  const host = forwardedHost ?? headerList.get("host") ?? undefined;
+  const protocol = forwardedProto ?? (host?.startsWith("localhost") ? "http" : "https");
   const envBase = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL;
   const baseUrl = host ? `${protocol ?? "https"}://${host}` : envBase;
 
@@ -26,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const headerList = headers();
+  const headerList = await headers();
   const accept = headerList.get("accept-language")?.toLowerCase() || "";
   const locale = accept.startsWith("de") ? "de" : "en";
   const messages = (await import(`@/locals/${locale}.json`)).default;
