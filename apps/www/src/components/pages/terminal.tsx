@@ -571,28 +571,28 @@ export function Terminal() {
           layout
           className="mx-auto mt-16 w-full max-w-4xl rounded-[28px] border border-neutral-200/70 bg-white/90 p-6 shadow-[0_40px_130px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl dark:border-neutral-800/70 dark:bg-neutral-900/80 dark:shadow-[0_50px_140px_-80px_rgba(15,23,42,0.75)]"
         >
-          <div className="rounded-2xl border border-neutral-200/80 bg-neutral-900 text-neutral-100 shadow-inner dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-t-2xl border-b border-neutral-800/60 bg-neutral-900 px-4 py-3 sm:flex-nowrap">
+          <div className="rounded-2xl border border-neutral-200/80 bg-neutral-50 text-neutral-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100 dark:shadow-inner">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-t-2xl border-b border-neutral-200/70 bg-neutral-100 px-4 py-3 text-neutral-500 sm:flex-nowrap dark:border-neutral-800/60 dark:bg-neutral-900 dark:text-neutral-400">
               <div className="flex items-center gap-2">
                 <span className="inline-flex h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-amber-400/80" />
                 <span className="inline-flex h-3 w-3 rounded-full bg-emerald-500/80" />
               </div>
-              <span className="order-3 w-full font-mono text-[0.7rem] text-neutral-400 sm:order-none sm:flex-1 sm:text-center">
+              <span className="order-3 w-full font-mono text-[0.7rem] text-neutral-500 sm:order-none sm:flex-1 sm:text-center dark:text-neutral-400">
                 {welcomeLine}
               </span>
-              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-400 sm:text-right">
+              <span className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-500 sm:text-right dark:text-neutral-400">
                 {t("windowTitle")}
               </span>
             </div>
-            <div className="flex flex-col gap-3 border-b border-neutral-800/60 bg-neutral-900/80 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-xs text-neutral-500 sm:text-left">
+            <div className="flex flex-col gap-3 border-b border-neutral-200/70 bg-white px-5 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800/60 dark:bg-neutral-900/80">
+              <span className="text-xs text-neutral-500 sm:text-left dark:text-neutral-400">
                 {sessionUsageText ?? " "}
               </span>
               <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
                 <label
                   htmlFor="terminal-language"
-                  className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400"
+                  className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400"
                 >
                   {languageLabel}
                 </label>
@@ -600,7 +600,7 @@ export function Terminal() {
                   id="terminal-language"
                   value={feedLanguage}
                   onChange={(event) => setFeedLanguage(event.target.value as LanguageKey)}
-                  className="rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1 text-xs font-medium text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70"
+                  className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus-visible:ring-offset-neutral-900"
                 >
                   {languageOrder.map((language) => (
                     <option key={language} value={language}>
@@ -612,7 +612,7 @@ export function Terminal() {
             </div>
 
             <div
-              className="flex max-h-[380px] flex-col gap-3 overflow-y-auto px-4 py-5 font-mono text-[0.82rem] leading-relaxed text-neutral-100 sm:px-5 sm:py-6 sm:text-sm"
+              className="flex max-h-[380px] flex-col gap-3 overflow-y-auto bg-neutral-50 px-4 py-5 font-mono text-[0.82rem] leading-relaxed text-neutral-800 sm:px-5 sm:py-6 sm:text-sm dark:bg-neutral-900 dark:text-neutral-100"
               ref={logRef}
             >
               {renderedEntries.map((entry) => (
@@ -628,10 +628,10 @@ export function Terminal() {
             </div>
 
             <form
-              className="flex flex-col gap-3 border-t border-neutral-800/60 bg-neutral-900/80 px-5 py-4 font-mono text-sm text-neutral-100 sm:flex-row sm:items-center sm:gap-4 sm:py-5"
+              className="flex flex-col gap-3 border-t border-neutral-200/70 bg-white px-5 py-4 font-mono text-sm text-neutral-800 sm:flex-row sm:items-center sm:gap-4 sm:py-5 dark:border-neutral-800/60 dark:bg-neutral-900/80 dark:text-neutral-100"
               onSubmit={handleSubmit}
             >
-              <span className="w-full whitespace-pre-wrap break-all text-xs text-sky-300 sm:w-auto sm:flex-shrink-0 sm:text-sm sm:whitespace-nowrap">
+              <span className="w-full whitespace-pre-wrap break-all text-xs text-sky-700 sm:w-auto sm:flex-shrink-0 sm:text-sm sm:whitespace-nowrap dark:text-sky-300">
                 {promptLabel}
               </span>
               <input
@@ -639,16 +639,16 @@ export function Terminal() {
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder={t("inputPlaceholder")}
-                className="w-full min-w-0 flex-1 bg-transparent text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
+                className="w-full min-w-0 flex-1 rounded-md bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:rounded-none dark:bg-transparent dark:text-neutral-100 dark:placeholder:text-neutral-600 dark:focus-visible:ring-offset-neutral-900"
                 aria-label={t("inputAriaLabel")}
                 disabled={isRateLimited}
               />
               <button
                 type="submit"
                 className={cn(
-                  "w-full rounded-lg border border-sky-500/60 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200 transition sm:w-auto sm:py-2",
-                  "hover:bg-sky-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
-                  isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/10" : undefined,
+                  "w-full rounded-lg border border-sky-500/40 bg-sky-500/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 transition sm:w-auto sm:py-2",
+                  "hover:bg-sky-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-sky-500/60 dark:bg-sky-500/10 dark:text-sky-200 dark:hover:bg-sky-500/20 dark:focus-visible:ring-offset-neutral-900",
+                  isRateLimited ? "cursor-not-allowed opacity-60 hover:bg-sky-500/15 dark:hover:bg-sky-500/10" : undefined,
                 )}
                 disabled={isRateLimited}
               >
@@ -688,8 +688,8 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
         className={cn(
           "justify-self-start rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] sm:justify-self-end",
           status === "pending"
-            ? "bg-amber-500/10 text-amber-300"
-            : "bg-rose-500/10 text-rose-300",
+            ? "bg-amber-500/10 text-amber-600 dark:text-amber-300"
+            : "bg-rose-500/10 text-rose-600 dark:text-rose-300",
         )}
       >
         {statusLabels[status]}
@@ -702,14 +702,14 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
     <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-baseline">
       <span
         className={cn(
-          "whitespace-pre-wrap break-words text-xs text-sky-300 transition-opacity sm:text-sm sm:whitespace-nowrap",
+          "whitespace-pre-wrap break-words text-xs text-sky-700 transition-opacity sm:text-sm sm:whitespace-nowrap dark:text-sky-300",
           showPrompt,
         )}
         aria-hidden={!withPrompt}
       >
         {prompt}
       </span>
-      <span className="min-w-0 break-words text-neutral-100">{content}</span>
+      <span className="min-w-0 break-words text-neutral-900 dark:text-neutral-100">{content}</span>
       {statusBadge}
     </div>
   );

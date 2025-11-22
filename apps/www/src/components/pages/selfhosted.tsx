@@ -688,7 +688,7 @@ export function Selfhosted() {
       id="selfhosted"
       className="relative w-full min-h-[70vh] sm:min-h-[80vh] md:min-h-screen"
     >
-      <div className="absolute -top-px left-0 right-0 bottom-0 [background-size:28px_28px] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+      <div className="absolute -top-px left-0 right-0 bottom-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
       <div className="accent-glow-layer-right" />
       <div className="accent-glow-layer-left-lower" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
