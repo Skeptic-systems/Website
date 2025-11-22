@@ -510,8 +510,9 @@
       }
     },
     "meta": {
-      "madeWith": "Mit \u2665\uFE0F gemacht von Skeptic",
-      "copyright": "\u00A9 Skeptic Systems {start} - {end}"
+      "madeWith": "Mit <heart></heart> gemacht von Skeptic",
+      "copyright": "\u00A9 Skeptic Systems {start} - {end}",
+      "secret": "Moneymarc aka Monetenmarc ist der Beste"
     }
   }
 }

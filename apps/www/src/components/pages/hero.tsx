@@ -51,7 +51,7 @@ export function Hero() {
           {wordEntries.map((entry, wordIdx) => (
             <div key={entry.key} className={`overflow-hidden`}>
               <span
-                className={`block align-baseline whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[clamp(2.4rem,12vw,4.7rem)] sm:text-7xl md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8.5rem] 2xl:text-[10rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
+                className={`block align-baseline whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-white text-[clamp(5rem,20vw,6rem)] sm:text-[6.5rem] md:text-[7.5rem] lg:text-[8.5rem] xl:text-[9.5rem] 2xl:text-[11rem] ${wordIdx === 0 ? "mb-1 sm:mb-2" : "leading-[1.2] pb-[0.22em] text-stroke-hero"}`}
               >
                 {entry.letters.map((letter) => (
                   <span

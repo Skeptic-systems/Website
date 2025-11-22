@@ -78,9 +78,7 @@ const readNumericEnv = (key: string): number => {
 export const databaseEnv = {
   connectionString: readEnv("DATABASE_URL"),
   host: readEnv("DATABASE_HOST"),
-  internalHost: readEnv("DATABASE_HOST_INTERNAL"),
   port: readNumericEnv("DATABASE_PORT"),
-  internalPort: readNumericEnv("DATABASE_PORT_INTERNAL"),
   name: readEnv("DATABASE_NAME"),
   user: readEnv("DATABASE_USER"),
   password: readEnv("DATABASE_PASSWORD"),

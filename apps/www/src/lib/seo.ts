@@ -1,6 +1,22 @@
 import type { Metadata } from "next";
 
-const domain = "https://skeptic-systems.de";
+function getBaseUrl() {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000";
+  }
+
+  const url = process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL;
+  
+  if (!url) {
+    // Fallback to ensure build doesn't fail if env vars are missing, 
+    // but ideally this should come from env vars as requested.
+    return "https://skeptic-systems.de"; 
+  }
+  
+  return url;
+}
+
+const domain = getBaseUrl();
 const previewImagePath = "/asstes/seo/preview400x400.png";
 const previewWidth = 400;
 const previewHeight = 400;
@@ -31,6 +47,7 @@ const baseTwitter: NonNullable<Metadata["twitter"]> = {
 };
 
 export const BASE_METADATA: Metadata = {
+  metadataBase: new URL(domain),
   title: baseOpenGraph.title,
   description: baseOpenGraph.description,
   alternates: {
