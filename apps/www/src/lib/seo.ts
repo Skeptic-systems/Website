@@ -8,18 +8,18 @@ const baseTitle = "Jonas – Full-stack Dev & Systems Integrator";
 const baseDescription =
   "Hey, I'm Jonas — a full-stack dev and systems integrator shipping slick apps and keeping systems rock-solid.";
 
-const baseOpenGraph: Pick<NonNullable<Metadata["openGraph"]>, "type" | "siteName"> = {
+const baseOpenGraph = {
   type: "website",
   siteName: "Skeptic Systems",
-};
+} satisfies Partial<NonNullable<Metadata["openGraph"]>>;
 
-const baseTwitter: Pick<NonNullable<Metadata["twitter"]>, "card"> = {
+const baseTwitter = {
   card: "summary_large_image",
-};
+} satisfies Partial<NonNullable<Metadata["twitter"]>>;
 
-const baseIcons: NonNullable<Metadata["icons"]> = {
+const baseIcons = {
   icon: "/asstes/favicon.ico",
-};
+} satisfies NonNullable<Metadata["icons"]>;
 
 const baseTitleText = toMetadataPlainText(baseTitle) ?? "";
 
