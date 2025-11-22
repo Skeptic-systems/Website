@@ -474,7 +474,7 @@ export function Terminal() {
 
   const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
     const { triggerStart, ease } = gsapSectionConfig;
-    const fadeIn = (element: HTMLElement | null, start = triggerStart) => {
+    const fadeIn = (element: HTMLElement | null, start: string = triggerStart) => {
       if (!element) {
         return;
       }

@@ -403,7 +403,7 @@ export function Tools() {
   const t = useTranslations("tools");
   const toolsAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
     const { triggerStart, ease } = gsapSectionConfig;
-    const fadeIn = (element: HTMLElement | null, start = triggerStart, delay = 0) => {
+    const fadeIn = (element: HTMLElement | null, start: string = triggerStart, delay = 0) => {
       if (!element) {
         return;
       }
