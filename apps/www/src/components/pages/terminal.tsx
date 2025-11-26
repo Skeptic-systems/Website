@@ -84,6 +84,18 @@ type PostMessageEnvelope =
   | (PostMessageQueued & { session: TerminalSessionResponse })
   | (PostMessageError & { session?: TerminalSessionResponse });
 
+type RenderedTerminalEntry = {
+  id: string;
+  prompt: string;
+  content: string;
+  status: TerminalEntryStatus;
+  withPrompt: boolean;
+  reportMeta?: {
+    count: number;
+    onSelect: () => void;
+  };
+};
+
 const TERMINAL_SCROLL_OFFSET = 24;
 const languageOrder: LanguageKey[] = ["default", "de", "en"];
 const reportReasonOrder: ReportReason[] = ["personal_information", "hate_speech", "other"];
@@ -575,8 +587,8 @@ export function Terminal() {
   const welcomeLine = t("welcomeLine");
   const systemIntroLine = t("systemIntroLine");
 
-  const renderedEntries = useMemo(() => {
-    const feedEntries = publishedMessages
+  const renderedEntries = useMemo<RenderedTerminalEntry[]>(() => {
+    const feedEntries: RenderedTerminalEntry[] = publishedMessages
       .slice()
       .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
       .map((message) => ({
@@ -591,13 +603,13 @@ export function Terminal() {
         },
       }));
 
-      const userEntries = entries.map((entry) => ({
-        id: entry.id,
-        prompt: promptLabel,
-        content: entry.message,
-        status: entry.status,
-        withPrompt: true,
-      }));
+    const userEntries: RenderedTerminalEntry[] = entries.map((entry) => ({
+      id: entry.id,
+      prompt: promptLabel,
+      content: entry.message,
+      status: entry.status,
+      withPrompt: true,
+    }));
 
     return [
       {
@@ -609,17 +621,7 @@ export function Terminal() {
       },
       ...feedEntries,
       ...userEntries,
-    ] satisfies Array<{
-      id: string;
-      prompt: string;
-      content: string;
-      status: TerminalEntryStatus;
-      withPrompt: boolean;
-      reportMeta?: {
-        count: number;
-        onSelect: () => void;
-      };
-    }>;
+    ];
   }, [
     communityPromptLabel,
     entries,
