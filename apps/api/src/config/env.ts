@@ -75,6 +75,28 @@ const readNumericEnv = (key: string): number => {
   return parsedValue;
 };
 
+const readCsvEnv = (key: string, fallback: string[] = []): string[] => {
+  const rawValue = readOptionalEnv(key);
+
+  if (!rawValue) {
+    return fallback;
+  }
+
+  return rawValue
+    .split(",")
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+};
+
+const defaultAllowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = readCsvEnv("ALLOWED_ORIGINS", defaultAllowedOrigins);
+const apiBaseUrl = readEnv("NEXT_PUBLIC_API_URL");
+
+const resolveTrustedOrigins = (origins: string[], fallback: string): string[] => {
+  const filtered = origins.filter((origin) => origin !== "*");
+  return filtered.length > 0 ? filtered : [fallback];
+};
+
 export const databaseEnv = {
   connectionString: readEnv("DATABASE_URL"),
   host: readEnv("DATABASE_HOST"),
@@ -140,10 +162,12 @@ export const githubEnv = {
 };
 
 export const appEnv = {
-  apiBaseUrl: readEnv("NEXT_PUBLIC_API_URL"),
+  apiBaseUrl,
+  allowedOrigins,
 };
 
 export const authEnv = {
   secret: readEnv("BETTER_AUTH_SECRET"),
+  trustedOrigins: resolveTrustedOrigins(allowedOrigins, apiBaseUrl),
 };
 

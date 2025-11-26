@@ -19,13 +19,14 @@
   },
   "navbar": {
     "links": {
-      "about": "Über uns",
+      "about": "Über mich",
       "tools": "Tools",
       "selfhosted": "Selfhosted"
     },
     "cta": {
       "login": "Anmelden",
-      "logout": "Abmelden"
+      "logout": "Abmelden",
+      "dashboard": "Dashboard"
     },
     "session": {
       "greeting": "Hallo, {name}",
@@ -75,7 +76,8 @@
         "submit": "Anmelden",
         "submitting": "Melde an...",
         "signOut": "Abmelden",
-        "signingOut": "Melde ab..."
+        "signingOut": "Melde ab...",
+        "back": "Zurück zur Seite"
       },
       "signedInDescription": "Du kannst dich unten abmelden, um das Konto zu wechseln.",
       "feedback": {
@@ -85,6 +87,176 @@
         "success": "Erfolgreich angemeldet.",
         "signOutError": "Abmelden fehlgeschlagen. Bitte erneut versuchen.",
         "signOutSuccess": "Abgemeldet."
+      },
+      "owner": {
+        "accent": "OWNER-SETUP",
+        "title": "Owner-Konto erstellen",
+        "description": "Lege das erste Konto an, um spätere Logins freizuschalten.",
+        "locked": "Anmelden bleibt gesperrt, bis ein Owner existiert.",
+        "ctaSignInLocked": "Erstelle den Owner, um den normalen Login zu aktivieren.",
+        "status": {
+          "loading": "Owner-Status wird geprüft..."
+        },
+        "fields": {
+          "firstName": {
+            "label": "Vorname",
+            "placeholder": "Ada"
+          },
+          "lastName": {
+            "label": "Nachname",
+            "placeholder": "Lovelace"
+          },
+          "email": {
+            "label": "E-Mail-Adresse",
+            "placeholder": "owner@example.com"
+          },
+          "password": {
+            "label": "Passwort",
+            "placeholder": "Sicheres Passwort"
+          }
+        },
+        "actions": {
+          "submit": "Owner erstellen",
+          "submitting": "Owner wird erstellt..."
+        },
+        "feedback": {
+          "required": "Bitte alle Felder ausfüllen.",
+          "error": "Owner konnte nicht erstellt werden. Versuche es erneut.",
+          "success": "Owner erstellt. Weiterleitung...",
+          "exists": "Konto existiert bereits. Bitte melde dich an."
+        }
+      }
+    }
+  },
+  "dashboard": {
+    "accent": "STEUERUNG",
+    "title": "Internes Dashboard",
+    "subtitle": "Moderiere das öffentliche Terminal und verwalte vertrauenswürdige Accounts.",
+    "actions": {
+      "signOut": "Abmelden",
+      "signingOut": "Melde ab...",
+      "signOutError": "Abmelden fehlgeschlagen. Bitte erneut versuchen."
+    },
+    "access": {
+      "loading": "Dashboard wird geladen...",
+      "unauthorized": "Melde dich an, um das Dashboard zu öffnen.",
+      "error": "Profil konnte nicht geladen werden.",
+      "forbidden": "Du hast keine Berechtigung für diesen Bereich.",
+      "signedInAs": "Angemeldet als {name}.",
+      "actions": {
+        "login": "Zum Login",
+        "retry": "Erneut versuchen"
+      }
+    },
+    "nav": {
+      "labels": {
+        "overview": "Dashboard",
+        "terminal": "Terminal",
+        "metrics": "Metriken",
+        "downloads": "Downloads"
+      },
+      "descriptions": {
+        "overview": "Übersicht und Kontrollen für dein Konto.",
+        "terminal": "Community-Nachrichten moderieren.",
+        "metrics": "Telemetry- und Uptime-Einblicke folgen bald.",
+        "downloads": "Ressourcen und Artefakte bald verfügbar."
+      },
+      "settings": {
+        "label": "Einstellungen",
+        "description": "Benutzer anlegen und Admin-Werkzeuge verwalten."
+      },
+      "placeholders": {
+        "metrics": {
+          "badge": "METRIKEN",
+          "title": "Metriken kommen bald",
+          "body": "Dashboards für Dienste und Container befinden sich in Arbeit."
+        },
+        "downloads": {
+          "badge": "DOWNLOADS",
+          "title": "Downloads kommen bald",
+          "body": "Installer, Konfigurationen und Wissen landen zukünftig hier."
+        }
+      }
+    },
+    "terminal": {
+      "accent": "TERMINAL",
+      "title": "Terminal-Moderation",
+      "description": "Überprüfe Einsendungen, korrigiere Übersetzungen oder lösche Nachrichten, die die KI übersehen hat.",
+      "instructions": "Wähle eine Nachricht aus, um Standard- und Sprachvarianten zu bearbeiten.",
+      "editing": "Bearbeite Nachricht {id}",
+      "loading": "Terminal-Nachrichten werden geladen...",
+      "error": "Terminal-Nachrichten konnten nicht geladen werden.",
+      "empty": "Noch keine moderierten Nachrichten.",
+      "session": "Sitzung {id}",
+      "fields": {
+        "textDefault": "Standardtext",
+        "textEn": "Englischer Text",
+        "textDe": "Deutscher Text"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "confirmDelete": "Nachricht wirklich löschen?",
+        "confirmYes": "Ja",
+        "confirmNo": "Nein",
+        "refresh": "Liste aktualisieren",
+        "refreshing": "Aktualisiere...",
+        "save": "Änderungen speichern",
+        "saving": "Speichere...",
+        "cancel": "Abbrechen"
+      },
+      "feedback": {
+        "updated": "Nachricht aktualisiert.",
+        "deleted": "Nachricht gelöscht.",
+        "error": "Nachricht konnte nicht aktualisiert werden."
+      },
+      "reports": {
+        "badge": "{count, plural, one {# Meldung} other {# Meldungen}}",
+        "heading": "{count, plural, one {1 Meldung} other {# Meldungen}}",
+        "empty": "Noch keine Details vorhanden.",
+        "reasons": {
+          "personal_information": "Personenbezogene Daten",
+          "hate_speech": "Hassrede oder Beleidigung",
+          "other": "Anderes"
+        }
+      }
+    },
+    "users": {
+      "accent": "BENUTZER",
+      "title": "Benutzerverwaltung",
+      "description": "Lade neue Admins oder Mitglieder für zukünftige Tools ein.",
+      "actions": {
+        "refresh": "Benutzer aktualisieren"
+      },
+      "form": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "role": "Rolle",
+        "submit": "Benutzer anlegen",
+        "submitting": "Lege Benutzer an...",
+        "roles": {
+          "owner": "Owner",
+          "admin": "Admin",
+          "member": "Mitglied"
+        }
+      },
+      "list": {
+        "heading": "Vorhandene Benutzer",
+        "loading": "Benutzer werden geladen...",
+        "error": "Benutzer konnten nicht geladen werden.",
+        "empty": "Keine Benutzer vorhanden.",
+        "columns": {
+          "name": "Name",
+          "email": "E-Mail",
+          "role": "Rolle",
+          "created": "Erstellt"
+        }
+      },
+      "feedback": {
+        "created": "Benutzer erfolgreich angelegt.",
+        "error": "Benutzer konnte nicht angelegt werden."
       }
     }
   },
@@ -209,6 +381,39 @@
       "approved": "Die Moderation hat deine Nachricht freigegeben: {reason}",
       "unauthorized": "Keine Sitzung gefunden. Lade die Seite neu, um eine neue Terminal-Sitzung zu starten.",
       "sessionInitFailed": "Die Terminal-Sitzung konnte nicht initialisiert werden. Bitte die Seite neu laden oder später erneut versuchen."
+    },
+    "report": {
+      "title": "Nachricht melden",
+      "placeholder": "Wähle eine Nachricht aus und klicke auf Melden, um sie manuell prüfen zu lassen.",
+      "selected": "Eintrag {id} melden",
+      "notice": "Alle Beiträge werden weiterhin automatisch geprüft. Manuelle Meldungen helfen, Nachkontrollen zu priorisieren.",
+      "action": "Melden",
+      "flagLabel": "Meldungen",
+      "flagAria": "{count, plural, one {# Meldung} other {# Meldungen}}",
+      "reasonLabel": "Grund",
+      "descriptionLabel": "Beschreibung",
+      "descriptionPlaceholder": "Beschreibe kurz, warum der Beitrag gegen die Regeln verstößt.",
+      "previewLabel": "Vorschau",
+      "reasons": {
+        "personal_information": "Personenbezogene Daten",
+        "hate_speech": "Hassrede oder Beleidigung",
+        "other": "Anderes"
+      },
+      "actions": {
+        "submit": "Meldung senden",
+        "submitting": "Senden...",
+        "cancel": "Abbrechen"
+      },
+      "validation": {
+        "description": "Bitte mindestens 10 Zeichen angeben."
+      },
+      "feedback": {
+        "success": "Danke, der Beitrag wird manuell geprüft.",
+        "duplicate": "Du hast diesen Beitrag bereits gemeldet.",
+        "notFound": "Dieser Beitrag ist nicht mehr verfügbar.",
+        "sessionMissing": "Sitzung fehlt. Bitte Seite neu laden.",
+        "error": "Die Meldung konnte nicht gesendet werden."
+      }
     }
   }
   ,

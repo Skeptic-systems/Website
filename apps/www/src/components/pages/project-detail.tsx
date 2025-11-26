@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 import { CaretDown, CaretLeft, CaretRight, FileText, FolderSimple } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
-import { LanguageBadge } from "@/components/github-language-badge";
+import { LanguageBadge } from "@/components/common/github-language-badge";
 import { Button } from "@/components/ui/button";
 import {
   type AsyncState,

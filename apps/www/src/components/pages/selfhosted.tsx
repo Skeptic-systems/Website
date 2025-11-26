@@ -5,13 +5,14 @@ import { useTranslations } from "next-intl";
 import { Clock, Cpu, FilmSlate, HardDrive, HardDrives, StackSimple, UsersThree } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
+import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
   gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
 import { requestJson } from "@/lib/request";
+import { useSectionIntersection } from "@/lib/use-section-intersection";
 
 type PterodactylServerLimits = {
   memory: number;
@@ -323,6 +324,7 @@ export function Selfhosted() {
   const tCommon = useTranslations("common");
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const shouldLoadSelfhosted = useSectionIntersection("selfhosted", { rootMargin: "35%" });
 
   if (!apiBase) {
     throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
@@ -344,6 +346,10 @@ export function Selfhosted() {
   const [jellyfinSessions, setJellyfinSessions] = useState<JellyfinActiveSession[]>([]);
 
   useEffect(() => {
+    if (!shouldLoadSelfhosted) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -389,9 +395,13 @@ export function Selfhosted() {
       isMounted = false;
       controller.abort();
     };
-  }, [apiBase]);
+  }, [apiBase, shouldLoadSelfhosted]);
 
   useEffect(() => {
+    if (!shouldLoadSelfhosted) {
+      return;
+    }
+
     if (pterodactylServers.length === 0) {
       setPterodactylResources({});
       setIsPterodactylResourcesLoading(false);
@@ -454,9 +464,13 @@ export function Selfhosted() {
       isMounted = false;
       controller.abort();
     };
-  }, [apiBase, pterodactylServers]);
+  }, [apiBase, pterodactylServers, shouldLoadSelfhosted]);
 
   useEffect(() => {
+    if (!shouldLoadSelfhosted) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -503,7 +517,7 @@ export function Selfhosted() {
       isMounted = false;
       controller.abort();
     };
-  }, [apiBase]);
+  }, [apiBase, shouldLoadSelfhosted]);
 
   const pterodactylMemoryTotal = useMemo(() => {
     return pterodactylServers.reduce((total, server) => {

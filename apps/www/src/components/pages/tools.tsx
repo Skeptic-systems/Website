@@ -34,7 +34,7 @@ import {
 } from "@tabler/icons-react";
 
 import { geist } from "@/app/fonts";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
+import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
   gsapSectionConfig,
   type GsapSectionSetup,

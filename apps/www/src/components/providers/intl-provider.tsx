@@ -40,7 +40,7 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
       } catch {}
     }
     if (nextLocale !== locale) {
-      import(`../locals/${nextLocale}.json`).then((mod) => {
+      import(`../../locals/${nextLocale}.json`).then((mod) => {
         setLocale(nextLocale);
         setMessages(mod.default as AbstractIntlMessages);
           setMessages(mod.default as AbstractIntlMessages);
@@ -53,7 +53,7 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
     const onStorage = (event: StorageEvent) => {
       if (event.key === STORAGE_KEY && event.newValue && event.newValue !== locale) {
         const nextLocale = event.newValue;
-        import(`../locals/${nextLocale}.json`).then((mod) => {
+        import(`../../locals/${nextLocale}.json`).then((mod) => {
           setLocale(nextLocale);
           setMessages(mod.default as AbstractIntlMessages);
           if (typeof document !== "undefined") {
@@ -67,7 +67,7 @@ export function IntlProvider({ defaultLocale, defaultMessages, children }: IntlP
       const custom = event as CustomEvent<{ locale: string }>;
       const nextLocale = custom.detail?.locale;
       if (nextLocale && nextLocale !== locale) {
-        import(`../locals/${nextLocale}.json`).then((mod) => {
+        import(`../../locals/${nextLocale}.json`).then((mod) => {
           setLocale(nextLocale);
           setMessages(mod.default as AbstractIntlMessages);
           if (typeof document !== "undefined") {

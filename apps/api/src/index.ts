@@ -24,12 +24,7 @@ const app = new Hono();
 
 app.use("*", logger());
 
-const allowedOrigins =
-  process.env.ALLOWED_ORIGINS?.split(",")
-    .map((origin) => origin.trim())
-    .filter((origin) => origin.length > 0) ?? ["http://localhost:3000"];
-
-const corsOrigin = allowedOrigins.includes("*") ? "*" : allowedOrigins;
+const corsOrigin = appEnv.allowedOrigins.includes("*") ? "*" : appEnv.allowedOrigins;
 
 app.use(
   "*",
@@ -60,6 +55,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 const registeredRoutes = [
   { method: "GET", path: "/", description: "API status" },
   { method: "GET", path: "/health", description: "Health check" },
+  { method: "ALL", path: "/auth/*", description: "Authentication handler" },
   { method: "GET", path: "/github/pinned", description: "GitHub pinned repositories" },
   {
     method: "GET",
@@ -128,9 +124,24 @@ const registeredRoutes = [
     description: "Fetch recent terminal messages",
   },
   {
-    method: "ALL",
-    path: "/auth/*",
-    description: "Authentication handler",
+    method: "POST",
+    path: "/terminal/messages/:id/report",
+    description: "Report a terminal message",
+  },
+  {
+    method: "GET",
+    path: "/terminal/admin/messages",
+    description: "List moderated terminal messages (admin)",
+  },
+  {
+    method: "PATCH",
+    path: "/terminal/admin/messages/:id",
+    description: "Update a moderated terminal message (admin)",
+  },
+  {
+    method: "DELETE",
+    path: "/terminal/admin/messages/:id",
+    description: "Delete a moderated terminal message (admin)",
   },
 ] as const;
 

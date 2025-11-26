@@ -13,7 +13,8 @@ import {
   useGsapSection,
 } from "@/lib/gsap-animations";
 import { requestJson } from "@/lib/request";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
+import { useSectionIntersection } from "@/lib/use-section-intersection";
+import { sectionHeadingClass } from "@/components/common/section-heading";
 
 type SpotifyArtist = {
   id: string;
@@ -158,6 +159,7 @@ export function Activity() {
     (typeof window === "undefined"
       ? process.env.NEXT_INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL
       : process.env.NEXT_PUBLIC_API_URL) ?? null;
+  const shouldLoadActivity = useSectionIntersection("activity", { rootMargin: "35%" });
 
   if (!apiBase) {
     throw new Error("Missing API base URL environment variable");
@@ -174,43 +176,50 @@ export function Activity() {
   const lastFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!shouldLoadActivity) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
     const cachedTracks = readCachedTopTracks();
-    if (cachedTracks && isMounted) {
+
+    if (cachedTracks) {
       setTopTracks(cachedTracks);
       setIsTopTracksLoading(false);
-      return () => {
-        isMounted = false;
-        controller.abort();
-      };
+    } else {
+      setIsTopTracksLoading(true);
+      requestJson<TopTracksResponse>(`${apiBase}/spotify/top-tracks`, { signal: controller.signal })
+        .then((data) => {
+          if (!isMounted) {
+            return;
+          }
+          if (!data || !Array.isArray(data.tracks)) {
+            setTopTracks([]);
+            return;
+          }
+          const limitedTracks = data.tracks.slice(0, 5);
+          setTopTracks(limitedTracks);
+          writeCachedTopTracks(limitedTracks);
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsTopTracksLoading(false);
+          }
+        });
     }
-    setIsTopTracksLoading(true);
-    requestJson<TopTracksResponse>(`${apiBase}/spotify/top-tracks`, { signal: controller.signal })
-      .then((data) => {
-        if (!isMounted) {
-          return;
-        }
-        if (!data || !Array.isArray(data.tracks)) {
-          setTopTracks([]);
-          return;
-        }
-        const limitedTracks = data.tracks.slice(0, 5);
-        setTopTracks(limitedTracks);
-        writeCachedTopTracks(limitedTracks);
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsTopTracksLoading(false);
-        }
-      });
+
     return () => {
       isMounted = false;
       controller.abort();
     };
-  }, [apiBase]);
+  }, [apiBase, shouldLoadActivity]);
 
   useEffect(() => {
+    if (!shouldLoadActivity) {
+      return;
+    }
+
     let isMounted = true;
     let controller: AbortController | null = null;
 
@@ -249,7 +258,7 @@ export function Activity() {
       }
       window.clearInterval(interval);
     };
-  }, [apiBase]);
+  }, [apiBase, shouldLoadActivity]);
 
   useEffect(() => {
     if (!playback || playback.progressMs === null) {
@@ -326,6 +335,10 @@ export function Activity() {
   }, [playback, showProgressBar]);
 
   useEffect(() => {
+    if (!shouldLoadActivity) {
+      return;
+    }
+
     let isMounted = true;
     let controller: AbortController | null = null;
 
@@ -362,7 +375,7 @@ export function Activity() {
       }
       window.clearInterval(interval);
     };
-  }, [apiBase]);
+  }, [apiBase, shouldLoadActivity]);
 
   const progressPercent = useMemo(() => {
     if (!showProgressBar || !playback || !playback.track || displayProgressMs === null) {

@@ -3,7 +3,7 @@
 import { IconPalette } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { ACCENT_KEYS, type AccentKey, useAccent } from "@/components/accent-provider";
+import { ACCENT_KEYS, type AccentKey, useAccent } from "@/components/providers/accent-provider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

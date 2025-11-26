@@ -1,6 +1,10 @@
-## Project Structure Guardrails
+---
+description: Supplemental reminder to follow the canonical structure in 040-project-structure
+alwaysApply: true
+---
 
-- Respect the existing Turborepo layout for every change. Reuse package-level scripts, workspace tooling, and existing package boundaries instead of introducing ad‑hoc scripts or bypassing the monorepo setup.
-- When touching TanStack integrations (React Query, Router, Devtools, etc.), follow the established patterns in this repo—providers, devtools aggregation, helper modules—rather than dropping in standalone instances.
-- Mirror current module conventions (Next.js routing, localization, API handlers, shared libs) to keep the architecture cohesive. If a feature already has an idiomatic pattern in the codebase, extend it instead of inventing a new one.
-- Only deviate from the schema when the user explicitly asks for a restructuring; otherwise, preserve and build upon the existing design.
+# Project Structure Guardrails (Summary)
+
+- Use the structure documented in `040-project-structure.mdc` as the single source of truth. When in doubt, check that rule for the latest layout breakdown.
+- Keep changes within the Turborepo boundaries: run workspace scripts via pnpm/turbo, reuse shared tooling, and avoid ad-hoc commands.
+- Extend existing patterns (Next.js routes, TanStack providers, Hono routes, Drizzle schema) instead of creating parallel stacks. Only diverge if the user explicitly approves a restructuring.
