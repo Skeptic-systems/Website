@@ -1,9 +1,7 @@
 import { sql } from "drizzle-orm";
 import { migrate as applySqlMigrations } from "drizzle-orm/postgres-js/migrator";
-import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import type { Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { databaseEnv } from "../config/env";
 import { db } from "../db";
@@ -76,19 +74,7 @@ const locateApiRoot = (): string => {
   }
 };
 
-const resolveDrizzleBinary = (rootDir: string): string => {
-  const binaryName = process.platform === "win32" ? "drizzle-kit.cmd" : "drizzle-kit";
-  const binaryPath = resolve(rootDir, "node_modules", ".bin", binaryName);
-
-  if (!existsSync(binaryPath)) {
-    throw new Error(`drizzle-kit executable not found at ${binaryPath}`);
-  }
-
-  return binaryPath;
-};
-
 const API_ROOT = locateApiRoot();
-const DRIZZLE_BINARY_PATH = resolveDrizzleBinary(API_ROOT);
 const DRIZZLE_MIGRATIONS_DIR = resolve(API_ROOT, "drizzle");
 
 const pause = (duration: number): Promise<void> =>
@@ -274,79 +260,7 @@ const hasSqlMigrations = (): boolean => {
   }
 
   const entries = readdirSync(DRIZZLE_MIGRATIONS_DIR, { withFileTypes: true });
-  return entries.some((entry) => {
-    if (!entry.isFile()) {
-      return false;
-    }
-
-    const lowerName = entry.name.toLowerCase();
-    return lowerName.endsWith(".sql") || lowerName.endsWith(".ts") || lowerName.endsWith(".js");
-  });
-};
-
-const startAutoConfirmStream = (input: Writable | null): NodeJS.Timeout | null => {
-  if (!input || input.destroyed) {
-    return null;
-  }
-
-  input.setDefaultEncoding("utf-8");
-
-  return setInterval(() => {
-    try {
-      input.write("\n");
-    } catch {
-      // ignore write errors (process might have exited)
-    }
-  }, 250);
-};
-
-const stopAutoConfirmStream = (timer: NodeJS.Timeout | null, input: Writable | null): void => {
-  if (timer) {
-    clearInterval(timer);
-  }
-
-  if (input && !input.destroyed) {
-    input.end();
-  }
-};
-
-const runDrizzlePush = async (force: boolean, reason: string): Promise<void> => {
-  const args = ["push"];
-
-  if (force) {
-    args.push("--force");
-  }
-
-  await new Promise<void>((resolvePush, rejectPush) => {
-    console.log(`[database] Running drizzle-kit ${args.join(" ")} → ${reason}`);
-
-    const child = spawn(DRIZZLE_BINARY_PATH, args, {
-      cwd: API_ROOT,
-      env: {
-        ...process.env,
-        DATABASE_URL: databaseEnv.connectionString,
-      },
-      stdio: ["pipe", "inherit", "inherit"],
-    });
-
-    const autoConfirmTimer = startAutoConfirmStream(child.stdin);
-
-    child.on("error", (error) => {
-      stopAutoConfirmStream(autoConfirmTimer, child.stdin);
-      rejectPush(error);
-    });
-
-    child.on("close", (exitCode) => {
-      stopAutoConfirmStream(autoConfirmTimer, child.stdin);
-
-      if (exitCode === 0) {
-        resolvePush();
-        return;
-      }
-
-      rejectPush(new Error(`drizzle-kit push exited with code ${exitCode ?? -1}`));
-    });
-  });
+  return entries.some((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".sql"));
 };
 
 const runSqlMigrations = async (reason: string): Promise<void> => {
@@ -357,20 +271,13 @@ const runSqlMigrations = async (reason: string): Promise<void> => {
 };
 
 const executeSchemaAction = async (decision: SchemaDecision): Promise<void> => {
-  if (decision.action === "push") {
-    await runDrizzlePush(true, decision.reason);
+  if (hasSqlMigrations()) {
+    await runSqlMigrations(decision.reason);
     return;
   }
 
-  if (decision.action === "migrate") {
-    if (hasSqlMigrations()) {
-      await runSqlMigrations(decision.reason);
-      return;
-    }
-
-    console.warn("[database] No SQL migrations detected, falling back to drizzle-kit push");
-    await runDrizzlePush(true, decision.reason);
-  }
+  console.warn("[database] No SQL migrations detected, applying manual schema sync");
+  await runManualSchemaSync(decision.reason);
 };
 
 const synchronizeDatabaseSchema = async (): Promise<void> => {
@@ -395,7 +302,7 @@ const synchronizeDatabaseSchema = async (): Promise<void> => {
   console.log("[database] Schema synchronized successfully");
 };
 
-const ensureUserProfileSchema = async (): Promise<void> => {
+async function ensureUserProfileSchema(): Promise<void> {
   await db.execute(sql`
     DO $$
     BEGIN
@@ -522,7 +429,7 @@ const ensureUserProfileSchema = async (): Promise<void> => {
   }
 };
 
-const ensureAiModerationEntriesTable = async (): Promise<void> => {
+async function ensureAiModerationEntriesTable(): Promise<void> {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS ai_moderation_entries (
       id SERIAL PRIMARY KEY,
@@ -534,7 +441,7 @@ const ensureAiModerationEntriesTable = async (): Promise<void> => {
   `);
 };
 
-const ensureTerminalEnums = async (): Promise<void> => {
+async function ensureTerminalEnums(): Promise<void> {
   await db.execute(sql`
     DO $$
     BEGIN
@@ -578,7 +485,7 @@ const ensureTerminalEnums = async (): Promise<void> => {
   `);
 };
 
-export const ensureTerminalTables = async (): Promise<void> => {
+export async function ensureTerminalTables(): Promise<void> {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS terminal_sessions (
       id TEXT PRIMARY KEY,
@@ -625,6 +532,14 @@ export const ensureTerminalTables = async (): Promise<void> => {
       ON terminal_message_reports (message_id, session_id);
   `);
 };
+
+async function runManualSchemaSync(reason: string): Promise<void> {
+  console.log(`[database] Manual schema sync → ${reason}`);
+  await ensureUserProfileSchema();
+  await ensureAiModerationEntriesTable();
+  await ensureTerminalEnums();
+  await ensureTerminalTables();
+}
 
 export const initializeDatabase = async (): Promise<void> => {
   await waitForDatabaseAvailability();
