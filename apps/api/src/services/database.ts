@@ -3,7 +3,6 @@ import { migrate as applySqlMigrations } from "drizzle-orm/postgres-js/migrator"
 import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { databaseEnv } from "../config/env";
 import { db } from "../db";
 
 const DEFAULT_WAIT_RETRIES = 20;
@@ -98,6 +97,58 @@ const waitForDatabaseAvailability = async (): Promise<void> => {
       );
       await pause(DEFAULT_WAIT_DELAY_MS);
     }
+  }
+};
+
+type TableColumnMetadata = {
+  column_name: string;
+  data_type: string;
+  is_nullable: "YES" | "NO";
+  column_default: string | null;
+};
+
+const fetchTableColumnMetadata = async (tableName: string): Promise<TableColumnMetadata[]> => {
+  const rows = (await db.execute(sql`
+    SELECT column_name, data_type, is_nullable, column_default
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = ${tableName}
+    ORDER BY ordinal_position;
+  `)) as TableColumnMetadata[];
+
+  return rows;
+};
+
+const fetchTableColumnNames = async (tableName: string): Promise<Set<string>> => {
+  const metadata = await fetchTableColumnMetadata(tableName);
+  return new Set(metadata.map((column) => column.column_name));
+};
+
+const logDatabaseSnapshot = async (): Promise<void> => {
+  try {
+    const tables = (await db.execute(sql`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+      ORDER BY table_name;
+    `)) as Array<{ table_name: string }>;
+
+    console.log(`[database] snapshot: ${tables.length} tables in public schema`);
+
+    for (const table of tables) {
+      const columns = await fetchTableColumnMetadata(table.table_name);
+      const formatted = columns
+        .map((column) => {
+          const nullableSuffix = column.is_nullable === "YES" ? "?" : "";
+          const defaultSuffix = column.column_default ? `=${column.column_default}` : "";
+          return `${column.column_name}:${column.data_type}${nullableSuffix}${defaultSuffix}`;
+        })
+        .join(", ");
+
+      console.log(`[database] table ${table.table_name}: ${formatted || "(no columns)"}`);
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.warn(`[database] Failed to log schema snapshot: ${message}`);
   }
 };
 
@@ -415,19 +466,44 @@ async function ensureUserProfileSchema(): Promise<void> {
   const legacyTableExists = legacyTableExistsResult[0]?.exists ?? false;
 
   if (legacyTableExists) {
-    await db.execute(sql`
-      UPDATE "user" AS u
-      SET
-        first_name = COALESCE(u.first_name, legacy.first_name),
-        last_name = COALESCE(u.last_name, legacy.last_name),
-        role = COALESCE(u.role, legacy.role)
-      FROM users AS legacy
-      WHERE legacy.auth_user_id = u.id;
-    `);
+    const legacyColumns = await fetchTableColumnNames("users");
+    const hasAuthUserId = legacyColumns.has("auth_user_id");
 
-    await db.execute(sql`DROP TABLE IF EXISTS users;`);
+    if (hasAuthUserId) {
+      if (legacyColumns.has("first_name")) {
+        await db.execute(sql`
+          UPDATE "user" AS u
+          SET first_name = COALESCE(u.first_name, legacy.first_name)
+          FROM users AS legacy
+          WHERE legacy.auth_user_id = u.id;
+        `);
+      }
+
+      if (legacyColumns.has("last_name")) {
+        await db.execute(sql`
+          UPDATE "user" AS u
+          SET last_name = COALESCE(u.last_name, legacy.last_name)
+          FROM users AS legacy
+          WHERE legacy.auth_user_id = u.id;
+        `);
+      }
+
+      if (legacyColumns.has("role")) {
+        await db.execute(sql`
+          UPDATE "user" AS u
+          SET role = COALESCE(u.role, legacy.role)
+          FROM users AS legacy
+          WHERE legacy.auth_user_id = u.id;
+        `);
+      }
+    } else {
+      console.warn('[database] Legacy table "users" missing auth_user_id column; skipping data migration.');
+    }
+
+    await db.execute(sql`DROP TABLE IF EXISTS users_legacy;`);
+    await db.execute(sql`ALTER TABLE users RENAME TO users_legacy;`);
   }
-};
+}
 
 async function ensureAiModerationEntriesTable(): Promise<void> {
   await db.execute(sql`
@@ -543,6 +619,7 @@ async function runManualSchemaSync(reason: string): Promise<void> {
 
 export const initializeDatabase = async (): Promise<void> => {
   await waitForDatabaseAvailability();
+  await logDatabaseSnapshot();
   await synchronizeDatabaseSchema();
   await ensureUserProfileSchema();
   await ensureAiModerationEntriesTable();
