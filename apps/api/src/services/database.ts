@@ -495,6 +495,50 @@ const ensureAiModerationEntriesTable = async (): Promise<void> => {
   `);
 };
 
+const ensureTerminalEnums = async (): Promise<void> => {
+  await db.execute(sql`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'terminal_report_reason') THEN
+        CREATE TYPE terminal_report_reason AS ENUM ('personal_information', 'hate_speech', 'other');
+      END IF;
+    END;
+    $$;
+  `);
+
+  await db.execute(sql`
+    DO $$
+    BEGIN
+      IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'terminal_report_reason') THEN
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_enum
+          WHERE enumlabel = 'personal_information' AND enumtypid = 'terminal_report_reason'::regtype
+        ) THEN
+          ALTER TYPE terminal_report_reason ADD VALUE 'personal_information';
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_enum
+          WHERE enumlabel = 'hate_speech' AND enumtypid = 'terminal_report_reason'::regtype
+        ) THEN
+          ALTER TYPE terminal_report_reason ADD VALUE 'hate_speech';
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_enum
+          WHERE enumlabel = 'other' AND enumtypid = 'terminal_report_reason'::regtype
+        ) THEN
+          ALTER TYPE terminal_report_reason ADD VALUE 'other';
+        END IF;
+      END IF;
+    END;
+    $$;
+  `);
+};
+
 export const ensureTerminalTables = async (): Promise<void> => {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS terminal_sessions (
@@ -525,6 +569,22 @@ export const ensureTerminalTables = async (): Promise<void> => {
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS terminal_messages_created_idx ON terminal_messages (created_at DESC);
   `);
+
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS terminal_message_reports (
+      id TEXT PRIMARY KEY,
+      message_id TEXT NOT NULL REFERENCES terminal_messages(id) ON DELETE CASCADE,
+      session_id TEXT NOT NULL,
+      reason terminal_report_reason NOT NULL,
+      description TEXT NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await db.execute(sql`
+    CREATE UNIQUE INDEX IF NOT EXISTS terminal_message_reports_message_session_idx
+      ON terminal_message_reports (message_id, session_id);
+  `);
 };
 
 export const initializeDatabase = async (): Promise<void> => {
@@ -532,6 +592,7 @@ export const initializeDatabase = async (): Promise<void> => {
   await synchronizeDatabaseSchema();
   await ensureUserProfileSchema();
   await ensureAiModerationEntriesTable();
+  await ensureTerminalEnums();
   await ensureTerminalTables();
 };
 
