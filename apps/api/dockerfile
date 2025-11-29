@@ -5,6 +5,7 @@ ENV NODE_ENV=production
 RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps ./apps
+RUN mkdir -p apps/api/drizzle
 RUN git init && pnpm --filter @website/api... install --frozen-lockfile --ignore-scripts
 
 FROM deps AS build

@@ -1,0 +1,17 @@
+---
+description: Workflow for modifying the API database schema
+globs: ""
+alwaysApply: false
+---
+
+## Database Schema Changes (`apps/api`)
+
+1. **Plan first** – jot the change in `tmp/` (current vs. desired schema, touched files, checklist).
+2. **Edit the source schema** – update `apps/api/src/db/schema.ts` only; keep table + enum names aligned with the SQL definitions in `services/database.ts`.
+3. **Generate SQL migrations** – run `pnpm --filter @website/api db:generate`. This writes `.sql` files into `apps/api/drizzle/`; commit these artefacts.
+4. **Sync your local database** – prefer `pnpm --filter @website/api db:migrate` when migrations exist; otherwise run `pnpm --filter @website/api db:push` once to seed empty environments.
+5. **Verify bootstrap automation** – start the API (`pnpm --filter @website/api dev`) and ensure the `[database]` logs show whether it chose `push`, `migrate`, or `skip`. The runtime inspects the live database and automatically:
+   - runs `drizzle-kit push --force` for brand-new installs,
+   - falls back to SQL migrations when files are present,
+   - refuses to continue if drift remains after the selected action.
+6. **Keep env parity** – the container relies on `DATABASE_URL` and `drizzle.config.ts`; never hardcode credentials or bypass `initializeDatabase`.

@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
+import { migrate as applySqlMigrations } from "drizzle-orm/postgres-js/migrator";
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { databaseEnv } from "../config/env";
@@ -87,6 +88,7 @@ const resolveDrizzleBinary = (rootDir: string): string => {
 
 const API_ROOT = locateApiRoot();
 const DRIZZLE_BINARY_PATH = resolveDrizzleBinary(API_ROOT);
+const DRIZZLE_MIGRATIONS_DIR = resolve(API_ROOT, "drizzle");
 
 const pause = (duration: number): Promise<void> =>
   new Promise((resolve) => {
@@ -259,11 +261,32 @@ const determineSchemaDecision = (inspection: SchemaInspection): SchemaDecision =
   };
 };
 
-const runDrizzleSync = async (action: Exclude<SchemaAction, "skip">, reason: string): Promise<void> => {
-  await new Promise<void>((resolveSync, rejectSync) => {
-    console.log(`[database] Running drizzle-kit push (${action}) → ${reason}`);
+const ensureMigrationsDirectory = (): void => {
+  if (!existsSync(DRIZZLE_MIGRATIONS_DIR)) {
+    mkdirSync(DRIZZLE_MIGRATIONS_DIR, { recursive: true });
+  }
+};
 
-    const child = spawn(DRIZZLE_BINARY_PATH, ["push", "--force"], {
+const hasSqlMigrations = (): boolean => {
+  if (!existsSync(DRIZZLE_MIGRATIONS_DIR)) {
+    return false;
+  }
+
+  const entries = readdirSync(DRIZZLE_MIGRATIONS_DIR, { withFileTypes: true });
+  return entries.some((entry) => entry.isFile() && entry.name.endsWith(".sql"));
+};
+
+const runDrizzlePush = async (force: boolean, reason: string): Promise<void> => {
+  const args = ["push"];
+
+  if (force) {
+    args.push("--force");
+  }
+
+  await new Promise<void>((resolvePush, rejectPush) => {
+    console.log(`[database] Running drizzle-kit ${args.join(" ")} → ${reason}`);
+
+    const child = spawn(DRIZZLE_BINARY_PATH, args, {
       cwd: API_ROOT,
       env: {
         ...process.env,
@@ -273,21 +296,46 @@ const runDrizzleSync = async (action: Exclude<SchemaAction, "skip">, reason: str
     });
 
     child.on("error", (error) => {
-      rejectSync(error);
+      rejectPush(error);
     });
 
     child.on("close", (exitCode) => {
       if (exitCode === 0) {
-        resolveSync();
+        resolvePush();
         return;
       }
 
-      rejectSync(new Error(`drizzle-kit push exited with code ${exitCode ?? -1}`));
+      rejectPush(new Error(`drizzle-kit push exited with code ${exitCode ?? -1}`));
     });
   });
 };
 
+const runSqlMigrations = async (reason: string): Promise<void> => {
+  ensureMigrationsDirectory();
+  console.log(`[database] Applying SQL migrations → ${reason}`);
+  await applySqlMigrations(db, { migrationsFolder: DRIZZLE_MIGRATIONS_DIR });
+  console.log("[database] SQL migrations completed");
+};
+
+const executeSchemaAction = async (decision: SchemaDecision): Promise<void> => {
+  if (decision.action === "push") {
+    await runDrizzlePush(true, decision.reason);
+    return;
+  }
+
+  if (decision.action === "migrate") {
+    if (hasSqlMigrations()) {
+      await runSqlMigrations(decision.reason);
+      return;
+    }
+
+    console.warn("[database] No SQL migrations detected, falling back to drizzle-kit push");
+    await runDrizzlePush(true, decision.reason);
+  }
+};
+
 const synchronizeDatabaseSchema = async (): Promise<void> => {
+  ensureMigrationsDirectory();
   const inspection = await inspectSchema();
   const decision = determineSchemaDecision(inspection);
 
@@ -296,7 +344,7 @@ const synchronizeDatabaseSchema = async (): Promise<void> => {
     return;
   }
 
-  await runDrizzleSync(decision.action, decision.reason);
+  await executeSchemaAction(decision);
 
   const verification = await inspectSchema();
   const verificationDecision = determineSchemaDecision(verification);
