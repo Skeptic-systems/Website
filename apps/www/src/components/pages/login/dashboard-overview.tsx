@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,9 @@ export function DashboardOverviewSection({
         {t("access.signedInAs", { name: userName })}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Button type="button" asChild variant="secondary">
+          <Link href="/">{t("actions.back")}</Link>
+        </Button>
         <Button type="button" onClick={onSignOut} disabled={isSigningOut}>
           {isSigningOut ? t("actions.signingOut") : t("actions.signOut")}
         </Button>

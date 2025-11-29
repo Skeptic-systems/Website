@@ -133,6 +133,7 @@
     "title": "Internal dashboard",
     "subtitle": "Moderate the public terminal and manage trusted accounts.",
     "actions": {
+      "back": "Back to site",
       "signOut": "Sign out",
       "signingOut": "Signing out...",
       "signOutError": "Sign out failed. Try again."
