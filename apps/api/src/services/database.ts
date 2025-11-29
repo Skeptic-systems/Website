@@ -3,6 +3,7 @@ import { migrate as applySqlMigrations } from "drizzle-orm/postgres-js/migrator"
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import type { Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { databaseEnv } from "../config/env";
 import { db } from "../db";
@@ -273,11 +274,44 @@ const hasSqlMigrations = (): boolean => {
   }
 
   const entries = readdirSync(DRIZZLE_MIGRATIONS_DIR, { withFileTypes: true });
-  return entries.some((entry) => entry.isFile() && entry.name.endsWith(".sql"));
+  return entries.some((entry) => {
+    if (!entry.isFile()) {
+      return false;
+    }
+
+    const lowerName = entry.name.toLowerCase();
+    return lowerName.endsWith(".sql") || lowerName.endsWith(".ts") || lowerName.endsWith(".js");
+  });
+};
+
+const startAutoConfirmStream = (input: Writable | null): NodeJS.Timeout | null => {
+  if (!input || input.destroyed) {
+    return null;
+  }
+
+  input.setDefaultEncoding("utf-8");
+
+  return setInterval(() => {
+    try {
+      input.write("\n");
+    } catch {
+      // ignore write errors (process might have exited)
+    }
+  }, 250);
+};
+
+const stopAutoConfirmStream = (timer: NodeJS.Timeout | null, input: Writable | null): void => {
+  if (timer) {
+    clearInterval(timer);
+  }
+
+  if (input && !input.destroyed) {
+    input.end();
+  }
 };
 
 const runDrizzlePush = async (force: boolean, reason: string): Promise<void> => {
-  const args = ["push", "--yes"];
+  const args = ["push"];
 
   if (force) {
     args.push("--force");
@@ -292,14 +326,19 @@ const runDrizzlePush = async (force: boolean, reason: string): Promise<void> => 
         ...process.env,
         DATABASE_URL: databaseEnv.connectionString,
       },
-      stdio: "inherit",
+      stdio: ["pipe", "inherit", "inherit"],
     });
 
+    const autoConfirmTimer = startAutoConfirmStream(child.stdin);
+
     child.on("error", (error) => {
+      stopAutoConfirmStream(autoConfirmTimer, child.stdin);
       rejectPush(error);
     });
 
     child.on("close", (exitCode) => {
+      stopAutoConfirmStream(autoConfirmTimer, child.stdin);
+
       if (exitCode === 0) {
         resolvePush();
         return;
