@@ -277,7 +277,7 @@ const hasSqlMigrations = (): boolean => {
 };
 
 const runDrizzlePush = async (force: boolean, reason: string): Promise<void> => {
-  const args = ["push"];
+  const args = ["push", "--yes"];
 
   if (force) {
     args.push("--force");
