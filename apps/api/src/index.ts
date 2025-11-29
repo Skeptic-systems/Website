@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { appEnv } from "./config/env";
+import { rewriteAuthCookies } from "./lib/cookies";
 import { authRoutes } from "./routes/auth";
 import { discordRoutes } from "./routes/discord";
 import { githubRoutes } from "./routes/github";
@@ -21,6 +22,11 @@ import { initializeAuth } from "./services/auth";
 import { initializeDatabase } from "./services/database";
 
 const app = new Hono();
+
+app.use("*", async (c, next) => {
+  await next();
+  rewriteAuthCookies(c.res.headers);
+});
 
 app.use("*", logger());
 

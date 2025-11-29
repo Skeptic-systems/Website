@@ -169,5 +169,6 @@ export const appEnv = {
 export const authEnv = {
   secret: readEnv("BETTER_AUTH_SECRET"),
   trustedOrigins: resolveTrustedOrigins(allowedOrigins, apiBaseUrl),
+  cookieDomain: terminalSessionEnv.cookieDomain,
 };
 
