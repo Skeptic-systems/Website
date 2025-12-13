@@ -7,8 +7,8 @@ import { CaretRight, GitFork, Star } from "phosphor-react";
 import { useCallback } from "react";
 
 import { geist } from "@/app/fonts";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
-import { LanguageBadge } from "@/components/github-language-badge";
+import { sectionHeadingClass } from "@/components/common/section-heading";
+import { LanguageBadge } from "@/components/common/github-language-badge";
 import { Button } from "@/components/ui/button";
 import {
   gsapSectionConfig,
@@ -24,6 +24,7 @@ import {
   hexToRgba,
 } from "@/lib/github";
 import { requestJson } from "@/lib/request";
+import { useSectionIntersection } from "@/lib/use-section-intersection";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
@@ -37,6 +38,7 @@ export function Projects() {
   const locale = useLocale();
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const shouldLoadProjects = useSectionIntersection("projects", { rootMargin: "30%" });
 
   if (!apiBase) {
     throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
@@ -45,11 +47,14 @@ export function Projects() {
   const repositoriesQuery = useQuery({
     queryKey: ["github", "pinned"],
     queryFn: async ({ signal }) => fetchPinnedRepositories(apiBase, signal),
+    enabled: shouldLoadProjects,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   const repositories = repositoriesQuery.data ?? [];
-  const hasError = repositoriesQuery.status === "error";
-  const isLoading = repositoriesQuery.status === "pending";
+  const hasError = repositoriesQuery.isError;
+  const isLoading = shouldLoadProjects && repositoriesQuery.isPending;
   const repositoriesSignature = repositories.map((repository) => repository.id).join("|");
 
   const projectsAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(

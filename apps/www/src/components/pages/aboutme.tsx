@@ -6,7 +6,7 @@ import { Code, PlugsConnected, Medal } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
 import { GlowTile } from "@/components/ui/glow-tile";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
+import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
   gsapSectionConfig,
   type GsapSectionSetup,

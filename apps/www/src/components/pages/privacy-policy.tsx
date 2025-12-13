@@ -144,4 +144,3 @@ function renderLink(link: PrivacyLink) {
     </Link>
   );
 }
-

@@ -3,19 +3,39 @@ description: Monorepo structure and conventions (apps/www Next.js, apps/api Hono
 alwaysApply: true
 ---
 
-# Project Structure
+# Project Structure & Tooling
 
 ## Workspaces
-- `apps/www` – Next.js 16 (React 19), Tailwind v3, `@` → `./src/*`
-- `apps/api` – Hono server with Drizzle ORM (Postgres)
+- `apps/www` – Next.js 16 (React 19) app router, Tailwind v3, `@` alias → `./src/*`
+- `apps/api` – Hono server using Drizzle ORM (Postgres) plus Redis-backed services
 
-## Paths
-- Web components in `apps/www/src/components`
-- UI primitives in `apps/www/src/components/ui`
-- Shared utils in `apps/www/src/lib`
+## Tooling expectations
+- Use the Turborepo + pnpm workspace scripts (`pnpm turbo run <task>`) whenever linting, testing, or building across packages; do not add ad-hoc scripts that bypass the monorepo.
+- Lean on the built-in stack: Next.js features (app router, metadata API, `next-intl`) for the web, TanStack Query/Router/Devtools for client data/state, and Hono + Drizzle for API endpoints. Prefer extending these integrations instead of introducing parallel solutions.
+- When touching shared workflows (auth, fetching, animation), reuse helpers in `apps/www/src/lib` or `apps/api/src/services` before inventing new plumbing.
 
-## Conventions
-- When renaming/moving files, update all imports accordingly
-- Delete obsolete code when replaced by new implementations
-- New files/folders use clear, English names aligned with current structure
-- Follow existing API and UI patterns before introducing new ones
+## apps/www layout
+- `src/app` – Next.js routes, layouts, metadata, and global styles.
+- `src/components/layout` – Site-wide layout pieces such as `Topbar`, `Footer`, and any cross-page chrome.
+- `src/components/providers` – Context wrappers (theme, intl, query, path helpers, devtools aggregation); every global provider lives here.
+- `src/components/navigation` – Navigation-specific UI, including navbar toggles and related controls.
+- `src/components/pages` – Section-level page content (hero, projects, legal pages, etc.). Each entry consumes primitives from other buckets.
+- `src/components/pages/login` – Authenticated/behind-login experiences (dashboard, admin tooling). Keep all protected UI here for clarity.
+- `src/components/common` – Shared visual primitives (e.g., GitHub language badge) used across multiple sections.
+- `src/components/accessibility` – Accessibility helpers like `SrSections` that expose structural landmarks.
+- `src/components/ui` – Low-level UI primitives (buttons, glow tiles, resizable navbar) following the shadcn-style pattern.
+- `src/lib` – Shared utilities (auth clients, GSAP hooks, SEO, routing helpers, fetch wrappers).
+- `src/locals` – `en.json` / `de.json` translation sources; every user-facing string must be represented here.
+
+## apps/api layout
+- `src/routes` – All Hono route handlers grouped by integration (`github.ts`, `spotify.ts`, etc.); add new endpoints here.
+- `src/services` – Business logic and external service clients (GitHub, Discord, Jellyfin, Redis, terminal processing).
+- `src/db` – Drizzle schema, migrations, and database bootstrap utilities.
+- `src/config` – Environment parsing and static configuration helpers.
+- `src/lib` – Reusable libraries such as Redis helpers.
+
+## Guardrails
+- Respect the existing Turborepo layout when touching any workspace—reuse package-level scripts, tooling, and boundaries instead of bypassing the monorepo.
+- When editing TanStack integrations (React Query, Router, Devtools), follow the established provider approach rather than spinning up standalone instances.
+- Mirror current module conventions (Next.js routing, localization, API handler structure, shared libs). Only deviate when the user explicitly asks for a restructuring.
+- Update imports whenever files move, and delete obsolete modules once replacements exist. Keep names concise and English, aligned with the directories above.

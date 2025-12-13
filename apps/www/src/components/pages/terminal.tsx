@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import { Flag } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
 import {
@@ -12,7 +13,8 @@ import {
 } from "@/lib/gsap-animations";
 import { cn } from "@/lib/utils";
 import { requestJson } from "@/lib/request";
-import { sectionHeadingClass } from "@/components/pages/section-heading";
+import { sectionHeadingClass } from "@/components/common/section-heading";
+import { useSectionIntersection } from "@/lib/use-section-intersection";
 
 type TerminalEntryStatus = "pending" | "published" | "error";
 
@@ -29,7 +31,10 @@ type TerminalMessage = {
   textEn: string;
   textDe: string;
   createdAt: string;
+  reportCount: number;
 };
+
+type ReportReason = "personal_information" | "hate_speech" | "other";
 
 type LanguageKey = "default" | "en" | "de";
 
@@ -79,8 +84,21 @@ type PostMessageEnvelope =
   | (PostMessageQueued & { session: TerminalSessionResponse })
   | (PostMessageError & { session?: TerminalSessionResponse });
 
+type RenderedTerminalEntry = {
+  id: string;
+  prompt: string;
+  content: string;
+  status: TerminalEntryStatus;
+  withPrompt: boolean;
+  reportMeta?: {
+    count: number;
+    onSelect: () => void;
+  };
+};
+
 const TERMINAL_SCROLL_OFFSET = 24;
 const languageOrder: LanguageKey[] = ["default", "de", "en"];
+const reportReasonOrder: ReportReason[] = ["personal_information", "hate_speech", "other"];
 
 const createEntryId = (index: number): string => {
   const stamp = Date.now().toString(36);
@@ -96,8 +114,15 @@ export function Terminal() {
   const [inputValue, setInputValue] = useState<string>("");
   const [feedback, setFeedback] = useState<{ tone: "error" | "success"; text: string } | null>(null);
   const [feedLanguage, setFeedLanguage] = useState<LanguageKey>("default");
+  const [reportTarget, setReportTarget] = useState<{ id: string; preview: string } | null>(null);
+  const [reportReason, setReportReason] = useState<ReportReason>("personal_information");
+  const [reportDescription, setReportDescription] = useState("");
+  const [reportFeedback, setReportFeedback] = useState<{ tone: "success" | "error"; text: string } | null>(null);
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const logRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const shouldLoadTerminal = useSectionIntersection("terminal", { rootMargin: "35%" });
 
   const statusLabels = useMemo(() => {
     return t.raw("statuses") as StatusDictionary;
@@ -105,6 +130,29 @@ export function Terminal() {
 
   const languageOptions = useMemo(() => {
     return t.raw("languageOptions") as LanguageOptions;
+  }, [t]);
+
+  const selectFeedText = useCallback(
+    (message: TerminalMessage): string => {
+      const sanitized = message.textDefault.trim();
+
+      if (feedLanguage === "de") {
+        const german = message.textDe.trim();
+        return german.length > 0 ? german : sanitized;
+      }
+
+      if (feedLanguage === "en") {
+        const english = message.textEn.trim();
+        return english.length > 0 ? english : sanitized;
+      }
+
+      return sanitized;
+    },
+    [feedLanguage],
+  );
+
+  const reportReasonLabels = useMemo(() => {
+    return t.raw("report.reasons") as Record<ReportReason, string>;
   }, [t]);
 
   const isRateLimited = useMemo(() => {
@@ -142,6 +190,10 @@ export function Terminal() {
   }, [sessionInfo, t]);
 
   useEffect(() => {
+    if (!shouldLoadTerminal) {
+      return;
+    }
+
     const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
     if (!apiBase) {
@@ -187,9 +239,13 @@ export function Terminal() {
       isActive = false;
       abortController.abort();
     };
-  }, [t]);
+  }, [shouldLoadTerminal, t]);
 
   useEffect(() => {
+    if (!shouldLoadTerminal) {
+      return;
+    }
+
     const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
     if (!apiBase) {
@@ -213,7 +269,7 @@ export function Terminal() {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [shouldLoadTerminal]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -265,6 +321,114 @@ export function Terminal() {
   const removeEntry = useCallback((entryId: string) => {
     setEntries((previous) => previous.filter((item) => item.id !== entryId));
   }, []);
+
+  const handleReportSelect = useCallback(
+    (message: TerminalMessage) => {
+      setReportTarget({
+        id: message.id,
+        preview: selectFeedText(message),
+      });
+      setReportReason("personal_information");
+      setReportDescription("");
+      setReportFeedback(null);
+      setReportError(null);
+    },
+    [selectFeedText],
+  );
+
+  const handleReportCancel = useCallback(() => {
+    setReportTarget(null);
+    setReportDescription("");
+    setReportReason("personal_information");
+    setReportFeedback(null);
+    setReportError(null);
+    setIsSubmittingReport(false);
+  }, []);
+
+  const handleReportSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      if (!reportTarget) {
+        return;
+      }
+
+      const trimmedDescription = reportDescription.trim();
+
+      if (trimmedDescription.length < 10) {
+        setReportError(t("report.validation.description"));
+        return;
+      }
+
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
+      if (!apiBase) {
+        setReportError(t("report.feedback.error"));
+        return;
+      }
+
+      setIsSubmittingReport(true);
+      setReportError(null);
+      setReportFeedback(null);
+
+      try {
+        const response = await fetch(`${apiBase}/terminal/messages/${reportTarget.id}/report`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reason: reportReason,
+            description: trimmedDescription,
+          }),
+        });
+
+        const payload = (await response.json().catch(() => null)) as { reportCount?: number } | { error?: string } | null;
+
+        if (response.status === 401) {
+          setReportError(t("report.feedback.sessionMissing"));
+          return;
+        }
+
+        if (response.status === 404) {
+          setReportError(t("report.feedback.notFound"));
+          return;
+        }
+
+        if (response.status === 409) {
+          setReportError(t("report.feedback.duplicate"));
+          return;
+        }
+
+        if (!payload || typeof (payload as { reportCount?: number }).reportCount !== "number") {
+          setReportError(t("report.feedback.error"));
+          return;
+        }
+
+        const { reportCount } = payload as { reportCount: number };
+
+        setPublishedMessages((previous) =>
+          previous.map((message) =>
+            message.id === reportTarget.id ? { ...message, reportCount } : message,
+          ),
+        );
+        setReportFeedback({ tone: "success", text: t("report.feedback.success") });
+        setReportTarget(null);
+        setReportDescription("");
+        setReportReason("personal_information");
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        setReportError(t("report.feedback.error"));
+      } finally {
+        setIsSubmittingReport(false);
+      }
+    },
+    [reportDescription, reportReason, reportTarget, setPublishedMessages, t],
+  );
 
   const queueSubmission = useCallback(
     async (entry: TerminalEntry) => {
@@ -403,74 +567,71 @@ export function Terminal() {
   const systemPromptLabel = t("systemPrompt");
   const communityPromptLabel = t("communityPrompt");
   const languageLabel = t("languageLabel");
+  const reportActionLabel = t("report.action");
+  const reportPanelTitle = t("report.title");
+  const reportPlaceholder = t("report.placeholder");
+  const reportReasonLabel = t("report.reasonLabel");
+  const reportDescriptionLabel = t("report.descriptionLabel");
+  const reportPreviewLabel = t("report.previewLabel");
+  const reportSubmitLabel = t("report.actions.submit");
+  const reportCancelLabel = t("report.actions.cancel");
+  const reportSubmittingLabel = t("report.actions.submitting");
+  const reportDescriptionPlaceholder = t("report.descriptionPlaceholder");
+  const getReportFlagAria = useCallback(
+    (count: number) => t("report.flagAria", { count }),
+    [t],
+  );
   const sessionUsageText = sessionInfo
     ? t("sessionUsage", { used: sessionInfo.textCount, limit: sessionInfo.textLimit })
     : null;
   const welcomeLine = t("welcomeLine");
   const systemIntroLine = t("systemIntroLine");
 
-  const selectFeedText = useCallback(
-    (message: TerminalMessage): string => {
-      const sanitized = message.textDefault.trim();
-
-      if (feedLanguage === "de") {
-        const german = message.textDe.trim();
-        return german.length > 0 ? german : sanitized;
-      }
-
-      if (feedLanguage === "en") {
-        const english = message.textEn.trim();
-        return english.length > 0 ? english : sanitized;
-      }
-
-      return sanitized;
-    },
-    [feedLanguage],
-  );
-
-  const renderedEntries = useMemo(
-    () => {
-      const feedEntries = publishedMessages
-        .slice()
-        .sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        )
-        .map((message) => ({
-          id: `feed-${message.id}`,
-          prompt: communityPromptLabel,
-          content: selectFeedText(message),
-          status: "published" as const,
-          withPrompt: true,
-        }));
-
-      const userEntries = entries.map((entry) => ({
-        id: entry.id,
-        prompt: promptLabel,
-        content: entry.message,
-        status: entry.status,
+  const renderedEntries = useMemo<RenderedTerminalEntry[]>(() => {
+    const feedEntries: RenderedTerminalEntry[] = publishedMessages
+      .slice()
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      .map((message) => ({
+        id: `feed-${message.id}`,
+        prompt: communityPromptLabel,
+        content: selectFeedText(message),
+        status: "published" as const,
         withPrompt: true,
+        reportMeta: {
+          count: message.reportCount,
+          onSelect: () => handleReportSelect(message),
+        },
       }));
 
-      return [
-        {
-          id: "system-intro",
-          prompt: systemPromptLabel,
-          content: systemIntroLine,
-          status: "published" as const,
-          withPrompt: true,
-        },
-        ...feedEntries,
-        ...userEntries,
-      ] satisfies Array<{
-        id: string;
-        prompt: string;
-        content: string;
-        status: TerminalEntryStatus;
-        withPrompt: boolean;
-      }>;
-    },
-    [communityPromptLabel, entries, promptLabel, publishedMessages, selectFeedText, systemIntroLine, systemPromptLabel],
-  );
+    const userEntries: RenderedTerminalEntry[] = entries.map((entry) => ({
+      id: entry.id,
+      prompt: promptLabel,
+      content: entry.message,
+      status: entry.status,
+      withPrompt: true,
+    }));
+
+    return [
+      {
+        id: "system-intro",
+        prompt: systemPromptLabel,
+        content: systemIntroLine,
+        status: "published" as const,
+        withPrompt: true,
+      },
+      ...feedEntries,
+      ...userEntries,
+    ];
+  }, [
+    communityPromptLabel,
+    entries,
+    handleReportSelect,
+    promptLabel,
+    publishedMessages,
+    selectFeedText,
+    systemIntroLine,
+    systemPromptLabel,
+  ]);
 
   const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
     const { triggerStart, ease } = gsapSectionConfig;
@@ -623,8 +784,105 @@ export function Terminal() {
                   status={entry.status}
                   statusLabels={statusLabels}
                   withPrompt={entry.withPrompt}
+                  reportMeta={
+                    entry.reportMeta
+                      ? {
+                          count: entry.reportMeta.count,
+                          onSelect: entry.reportMeta.onSelect,
+                          actionLabel: reportActionLabel,
+                          flagAriaLabel: getReportFlagAria(entry.reportMeta.count),
+                        }
+                      : undefined
+                  }
                 />
               ))}
+            </div>
+
+            <div className="border-t border-neutral-200/70 bg-white px-5 py-4 text-sm text-neutral-800 dark:border-neutral-800/60 dark:bg-neutral-900/80 dark:text-neutral-100">
+              <div className="flex flex-col gap-3">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                    {reportPanelTitle}
+                  </span>
+                  <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                    {reportTarget ? t("report.selected", { id: reportTarget.id }) : reportPlaceholder}
+                  </p>
+                </div>
+                {reportTarget ? (
+                  <>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{t("report.notice")}</p>
+                    <form className="space-y-3" onSubmit={handleReportSubmit}>
+                    <div className="rounded-2xl border border-neutral-200/70 bg-white/80 p-3 text-neutral-700 dark:border-neutral-800/70 dark:bg-neutral-900/70 dark:text-neutral-200">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                        {reportPreviewLabel}
+                      </span>
+                      <p className="mt-2 text-sm text-neutral-900 dark:text-neutral-100">{reportTarget.preview}</p>
+                    </div>
+                    <label className="flex flex-col gap-2 text-left">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                        {reportReasonLabel}
+                      </span>
+                      <select
+                        value={reportReason}
+                        onChange={(event) => setReportReason(event.target.value as ReportReason)}
+                        className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus-visible:ring-offset-neutral-900"
+                      >
+                        {reportReasonOrder.map((reasonKey) => (
+                          <option key={reasonKey} value={reasonKey}>
+                            {reportReasonLabels[reasonKey]}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-2 text-left">
+                      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                        {reportDescriptionLabel}
+                      </span>
+                      <textarea
+                        value={reportDescription}
+                        onChange={(event) => setReportDescription(event.target.value)}
+                        rows={3}
+                        placeholder={reportDescriptionPlaceholder}
+                        className="w-full rounded-2xl border border-neutral-200/70 bg-white/80 px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200 dark:border-neutral-700/80 dark:bg-neutral-900/70 dark:text-neutral-50 dark:focus:border-sky-400 dark:focus:ring-sky-500/30"
+                      />
+                    </label>
+                    {reportError ? (
+                      <p className="text-xs font-semibold text-rose-600 dark:text-rose-400">{reportError}</p>
+                    ) : null}
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="submit"
+                        className={cn(
+                          "rounded-xl border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 transition dark:border-sky-500/60 dark:bg-sky-500/10 dark:text-sky-200",
+                          isSubmittingReport ? "opacity-60" : undefined,
+                        )}
+                        disabled={isSubmittingReport}
+                      >
+                        {isSubmittingReport ? reportSubmittingLabel : reportSubmitLabel}
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded-xl border border-neutral-300 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-600 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800/60"
+                        onClick={handleReportCancel}
+                        disabled={isSubmittingReport}
+                      >
+                        {reportCancelLabel}
+                      </button>
+                    </div>
+                    </form>
+                  </>
+                ) : null}
+                {reportFeedback ? (
+                  <p
+                    className={cn(
+                      "text-xs font-semibold",
+                      reportFeedback.tone === "success" ? "text-emerald-500" : "text-rose-500",
+                    )}
+                  >
+                    {reportFeedback.text}
+                  </p>
+                ) : null}
+              </div>
             </div>
 
             <form
@@ -678,15 +936,21 @@ type TerminalLineProps = {
   status: TerminalEntryStatus;
   statusLabels: StatusDictionary;
   withPrompt: boolean;
+  reportMeta?: {
+    count: number;
+    onSelect: () => void;
+    actionLabel: string;
+    flagAriaLabel: string;
+  };
 };
 
-function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: TerminalLineProps) {
+function TerminalLine({ prompt, content, status, statusLabels, withPrompt, reportMeta }: TerminalLineProps) {
   const showPrompt = withPrompt ? "opacity-100" : "opacity-0";
   const statusBadge =
     status !== "published" ? (
       <span
         className={cn(
-          "justify-self-start rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] sm:justify-self-end",
+          "rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em]",
           status === "pending"
             ? "bg-amber-500/10 text-amber-600 dark:text-amber-300"
             : "bg-rose-500/10 text-rose-600 dark:text-rose-300",
@@ -694,12 +958,27 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
       >
         {statusLabels[status]}
       </span>
-    ) : (
-      <span aria-hidden className="h-4 w-0" />
-    );
+    ) : null;
+
+  const reportButton = reportMeta ? (
+    <button
+      type="button"
+      onClick={reportMeta.onSelect}
+      aria-label={`${reportMeta.actionLabel}. ${reportMeta.flagAriaLabel}`}
+      title={reportMeta.actionLabel}
+      className="relative inline-flex h-7 w-7 items-center justify-center rounded-full border border-neutral-300/70 text-neutral-500 transition hover:border-rose-400 hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/70 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-rose-300"
+    >
+      <Flag size={12} weight="fill" aria-hidden />
+      {reportMeta.count > 0 ? (
+        <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-rose-500 text-[0.55rem] font-semibold text-white dark:bg-rose-400">
+          {reportMeta.count}
+        </span>
+      ) : null}
+    </button>
+  ) : null;
 
   return (
-    <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-baseline">
+    <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center">
       <span
         className={cn(
           "whitespace-pre-wrap break-words text-xs text-sky-700 transition-opacity sm:text-sm sm:whitespace-nowrap dark:text-sky-300",
@@ -710,7 +989,10 @@ function TerminalLine({ prompt, content, status, statusLabels, withPrompt }: Ter
         {prompt}
       </span>
       <span className="min-w-0 break-words text-neutral-900 dark:text-neutral-100">{content}</span>
-      {statusBadge}
+      <div className="flex items-center gap-2 justify-start sm:justify-end">
+        {reportButton}
+        {statusBadge ?? <span aria-hidden className="h-4 w-0" />}
+      </div>
     </div>
   );
 }

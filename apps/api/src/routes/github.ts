@@ -14,8 +14,43 @@ import {
   fetchGitHubRepositoryReadme,
 } from "../services/github";
 import { githubEnv } from "../config/env";
+import { redis } from "../lib/redis";
 
 export const githubRoutes = new Hono();
+
+const PINNED_CACHE_KEY = "github:pinned:v1";
+const PINNED_CACHE_TTL_SECONDS = 300;
+const PINNED_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=60";
+
+const readCachedPinnedRepositories = async (): Promise<GitHubPinnedRepository[] | null> => {
+  try {
+    const payload = await redis.get(PINNED_CACHE_KEY);
+    if (!payload) {
+      return null;
+    }
+
+    const parsed = JSON.parse(payload) as { repositories?: unknown };
+    if (!parsed || !Array.isArray(parsed.repositories)) {
+      await redis.del(PINNED_CACHE_KEY);
+      return null;
+    }
+
+    return parsed.repositories as GitHubPinnedRepository[];
+  } catch (error) {
+    await redis.del(PINNED_CACHE_KEY).catch(() => undefined);
+    console.warn("🐙 [github] Failed to parse pinned repositories cache", error);
+    return null;
+  }
+};
+
+const writeCachedPinnedRepositories = async (repositories: GitHubPinnedRepository[]): Promise<void> => {
+  try {
+    const payload = JSON.stringify({ repositories });
+    await redis.set(PINNED_CACHE_KEY, payload, "EX", PINNED_CACHE_TTL_SECONDS);
+  } catch (error) {
+    console.warn("🐙 [github] Failed to persist pinned repositories cache", error);
+  }
+};
 
 const sanitizeRepositoryName = (value: string): string => value.trim();
 
@@ -63,10 +98,22 @@ const buildRepositoryIdentifier = (
 
 githubRoutes.get("/pinned", async (c) => {
   try {
+    c.header("Cache-Control", PINNED_CACHE_CONTROL);
+    const cachedRepositories = await readCachedPinnedRepositories();
+
+    if (cachedRepositories) {
+      c.header("X-Cache", "HIT");
+      return c.json<{ repositories: GitHubPinnedRepository[] }>({ repositories: cachedRepositories });
+    }
+
     const repositories = await fetchGitHubPinnedRepositories();
+    await writeCachedPinnedRepositories(repositories);
+    c.header("X-Cache", "MISS");
 
     return c.json<{ repositories: GitHubPinnedRepository[] }>({ repositories });
   } catch (error) {
+    c.header("Cache-Control", "no-store");
+    c.header("X-Cache", "ERROR");
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error(`🐙 [github] Failed to load pinned repositories: ${message}`);
 

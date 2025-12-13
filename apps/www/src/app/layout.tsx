@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { QueryProvider } from "@/components/query-provider";
-import { ThemeProvider } from "@/components/theme-provider";
-import { PathNormalizer } from "@/components/path-normalizer";
-import { ScrollReset } from "@/components/scroll-reset";
-import { Topbar } from "@/components/topbar";
-import { IntlProvider } from "@/components/intl-provider";
-import { TanstackDevtools } from "@/components/tanstack-devtools";
+import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { PathNormalizer } from "@/components/providers/path-normalizer";
+import { ScrollReset } from "@/components/providers/scroll-reset";
+import { Topbar } from "@/components/layout/topbar";
+import { IntlProvider } from "@/components/providers/intl-provider";
+import { TanstackDevtools } from "@/components/providers/tanstack-devtools";
 import { buildMetadata } from "@/lib/seo";
 import "./globals.css";
 

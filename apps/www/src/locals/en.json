@@ -25,7 +25,8 @@
     },
     "cta": {
       "login": "Login",
-      "logout": "Logout"
+      "logout": "Logout",
+      "dashboard": "Dashboard"
     },
     "session": {
       "greeting": "Hi, {name}",
@@ -75,7 +76,8 @@
         "submit": "Sign in",
         "submitting": "Signing in...",
         "signOut": "Sign out",
-        "signingOut": "Signing out..."
+        "signingOut": "Signing out...",
+        "back": "Back to site"
       },
       "signedInDescription": "You can sign out below if you want to switch accounts.",
       "feedback": {
@@ -85,6 +87,177 @@
         "success": "Signed in successfully.",
         "signOutError": "Sign out failed. Please retry.",
         "signOutSuccess": "Signed out."
+      },
+      "owner": {
+        "accent": "OWNER SETUP",
+        "title": "Create the owner account",
+        "description": "Provision the very first account to unlock sign-in for everyone else.",
+        "locked": "Sign-in stays locked until the owner account exists.",
+        "ctaSignInLocked": "Create the owner to enable regular sign-in.",
+        "status": {
+          "loading": "Checking owner status..."
+        },
+        "fields": {
+          "firstName": {
+            "label": "First name",
+            "placeholder": "Ada"
+          },
+          "lastName": {
+            "label": "Last name",
+            "placeholder": "Lovelace"
+          },
+          "email": {
+            "label": "Email address",
+            "placeholder": "owner@example.com"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "Strong password"
+          }
+        },
+        "actions": {
+          "submit": "Create owner",
+          "submitting": "Creating owner..."
+        },
+        "feedback": {
+          "required": "Provide every field to continue.",
+          "error": "We couldn't create the owner account right now.",
+          "success": "Owner account created. Redirecting...",
+          "exists": "Account already exists. Please sign in."
+        }
+      }
+    }
+  },
+  "dashboard": {
+    "accent": "CONTROL",
+    "title": "Internal dashboard",
+    "subtitle": "Moderate the public terminal and manage trusted accounts.",
+    "actions": {
+      "back": "Back to site",
+      "signOut": "Sign out",
+      "signingOut": "Signing out...",
+      "signOutError": "Sign out failed. Try again."
+    },
+    "access": {
+      "loading": "Loading your dashboard...",
+      "unauthorized": "Sign in to access the dashboard.",
+      "error": "We couldn't load your profile.",
+      "forbidden": "You don't have permission for this section.",
+      "signedInAs": "Signed in as {name}.",
+      "actions": {
+        "login": "Go to login",
+        "retry": "Try again"
+      }
+    },
+    "nav": {
+      "labels": {
+        "overview": "Dashboard",
+        "terminal": "Terminal",
+        "metrics": "Metrics",
+        "downloads": "Downloads"
+      },
+      "descriptions": {
+        "overview": "Activity overview and account controls.",
+        "terminal": "Moderate community messages.",
+        "metrics": "Telemetry and uptime insights soon.",
+        "downloads": "Artifacts and resources coming soon."
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "Create users and tune privileged tools."
+      },
+      "placeholders": {
+        "metrics": {
+          "badge": "METRICS",
+          "title": "Metrics arrive soon",
+          "body": "Operational dashboards for services and containers are in progress."
+        },
+        "downloads": {
+          "badge": "DOWNLOADS",
+          "title": "Downloads arrive soon",
+          "body": "Installer packages, configs, and knowledge base exports will be published here."
+        }
+      }
+    },
+    "terminal": {
+      "accent": "TERMINAL",
+      "title": "Terminal moderation",
+      "description": "Review submissions, fix translations, or delete messages the AI missed.",
+      "instructions": "Pick a message to edit its normalized and localized copies.",
+      "editing": "Editing message {id}",
+      "loading": "Loading terminal messages...",
+      "error": "Terminal messages failed to load.",
+      "empty": "No moderated messages yet.",
+      "session": "Session {id}",
+      "fields": {
+        "textDefault": "Default text",
+        "textEn": "English text",
+        "textDe": "German text"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "confirmDelete": "Delete this message?",
+        "confirmYes": "Yes",
+        "confirmNo": "No",
+        "refresh": "Refresh list",
+        "refreshing": "Refreshing...",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "feedback": {
+        "updated": "Message updated.",
+        "deleted": "Message deleted.",
+        "error": "We couldn't update the message."
+      },
+      "reports": {
+        "badge": "{count, plural, one {# report} other {# reports}}",
+        "heading": "{count, plural, one {Review this report} other {Review {count} reports}}",
+        "empty": "No report details available yet.",
+        "reasons": {
+          "personal_information": "Personal information",
+          "hate_speech": "Hate or harassment",
+          "other": "Other"
+        }
+      }
+    },
+    "users": {
+      "accent": "USERS",
+      "title": "User management",
+      "description": "Invite new admins or members for future tooling.",
+      "actions": {
+        "refresh": "Refresh users"
+      },
+      "form": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "password": "Password",
+        "role": "Role",
+        "submit": "Create user",
+        "submitting": "Creating...",
+        "roles": {
+          "owner": "Owner",
+          "admin": "Admin",
+          "member": "Member"
+        }
+      },
+      "list": {
+        "heading": "Existing users",
+        "loading": "Loading users...",
+        "error": "Users failed to load.",
+        "empty": "No users found.",
+        "columns": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "created": "Created"
+        }
+      },
+      "feedback": {
+        "created": "User created successfully.",
+        "error": "We couldn't create the user."
       }
     }
   },
@@ -209,6 +382,39 @@
       "approved": "Moderation approved your message: {reason}",
       "unauthorized": "Session missing. Reload the page to start a new terminal session.",
       "sessionInitFailed": "We couldn't initialize your terminal session. Reload the page or try again later."
+    },
+    "report": {
+      "title": "Report message",
+      "placeholder": "Pick a message and press Report to flag it for manual review.",
+      "selected": "Reporting entry {id}",
+      "notice": "An AI moderation service still reviews every entry automatically; manual reports help prioritize follow-ups.",
+      "action": "Report",
+      "flagLabel": "Reports",
+      "flagAria": "{count, plural, one {# report} other {# reports}}",
+      "reasonLabel": "Reason",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Add a short note explaining why this message breaks the rules.",
+      "previewLabel": "Preview",
+      "reasons": {
+        "personal_information": "Personal information",
+        "hate_speech": "Hate or harassment",
+        "other": "Other"
+      },
+      "actions": {
+        "submit": "Send report",
+        "submitting": "Sending...",
+        "cancel": "Cancel"
+      },
+      "validation": {
+        "description": "Add at least 10 characters."
+      },
+      "feedback": {
+        "success": "Thanks. The moderation team will review this entry.",
+        "duplicate": "You already reported this message.",
+        "notFound": "This message is no longer available.",
+        "sessionMissing": "Session missing. Reload the page.",
+        "error": "We couldn't send the report."
+      }
     }
   }
   ,
