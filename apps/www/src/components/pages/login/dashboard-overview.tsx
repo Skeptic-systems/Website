@@ -28,7 +28,7 @@ export function DashboardOverviewSection({
       <h1 className="mt-2 text-3xl font-semibold">{t("title")}</h1>
       <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-300">{t("subtitle")}</p>
       <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-        {t("access.signedInAs", { name: userName })}
+        {t("access.signedInAs", { name: userName ?? "" })}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Button type="button" asChild variant="secondary">

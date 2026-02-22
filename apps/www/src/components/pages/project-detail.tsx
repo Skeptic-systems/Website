@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import ReactMarkdown, { type Components } from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { CaretDown, CaretLeft, CaretRight, FileText, FolderSimple } from "phosphor-react";
 
@@ -166,13 +167,14 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
       ),
       p: ({ node, ...props }) => <p className="mt-5 text-base leading-7 text-neutral-700 dark:text-neutral-200" {...props} />,
       a: ({ node, href, ...props }) => {
+        const isHashLink = (href ?? "").startsWith("#");
         const resolved = resolveRelativeUrl(readmeBase, href ?? "");
         return (
           <a
             {...props}
             href={resolved}
-            target="_blank"
-            rel="noreferrer"
+            target={isHashLink ? undefined : "_blank"}
+            rel={isHashLink ? undefined : "noreferrer"}
             className="text-emerald-500 underline decoration-dotted underline-offset-4 transition hover:text-emerald-400"
           />
         );
@@ -206,14 +208,19 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
       img: ({ node, src, alt, ...props }) => {
         const srcString = typeof src === "string" ? src : "";
         const resolved = resolveRelativeUrl(readmeBase, srcString);
+
+        if (!resolved) {
+          return null;
+        }
+
         return (
-          <Image
+          <img
             src={resolved}
             alt={alt ?? ""}
-            unoptimized
-            width={1200}
-            height={700}
+            loading="lazy"
+            decoding="async"
             className="mt-8 h-auto w-full rounded-3xl border border-neutral-200/70 object-contain dark:border-neutral-700/60"
+            {...props}
           />
         );
       },
@@ -480,7 +487,11 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
 
                 {readmeState.status === "loaded" && readmeState.data ? (
                   readmeState.data.content.trim().length > 0 ? (
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                      components={markdownComponents}
+                    >
                       {readmeState.data.content}
                     </ReactMarkdown>
                   ) : (
