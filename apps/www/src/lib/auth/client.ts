@@ -13,4 +13,3 @@ const normalizedBaseUrl = apiBaseUrl.endsWith("/") ? apiBaseUrl.slice(0, -1) : a
 export const authClient = createAuthClient({
   baseURL: `${normalizedBaseUrl}/auth`,
 });
-

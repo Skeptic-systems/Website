@@ -43,7 +43,7 @@ export function Footer() {
   const startYear = 2024;
   const copyright = t("meta.copyright", { start: startYear, end: currentYear });
 
-  const [clicks, setClicks] = useState(0);
+  const [, setClicks] = useState(0);
   const [secretActive, setSecretActive] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 

@@ -4,9 +4,9 @@ const DEFAULT_DOMAIN = "https://skeptic-systems.de";
 const previewImagePath = "/asstes/seo/preview400x400.png";
 const previewWidth = 400;
 const previewHeight = 400;
-const baseTitle = "Jonas – Full-stack Dev & Systems Integrator";
+const baseTitle = "Jonas – Dev & Systems Integrator";
 const baseDescription =
-  "Hey, I'm Jonas — a full-stack dev and systems integrator shipping slick apps and keeping systems rock-solid.";
+  "Hey, I'm Jonas — a dev and systems integrator shipping slick apps and keeping systems rock-solid.";
 
 const baseOpenGraph = {
   type: "website",

@@ -90,7 +90,8 @@ const mergeTurboIntoTurbopack = (config) => {
     };
   }
 
-  const { experimental: _removed, ...withoutExperimental } = base;
+  const withoutExperimental = { ...base };
+  delete withoutExperimental.experimental;
   return withoutExperimental;
 };
 

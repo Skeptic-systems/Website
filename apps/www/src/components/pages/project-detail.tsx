@@ -156,17 +156,17 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
 
   const markdownComponents = useMemo<Components>(
     () => ({
-      h1: ({ node, ...props }) => (
+      h1: ({ node: _node, ...props }) => (
         <h1 className="mt-6 text-4xl font-semibold text-neutral-900 first:mt-0 dark:text-neutral-50" {...props} />
       ),
-      h2: ({ node, ...props }) => (
+      h2: ({ node: _node, ...props }) => (
         <h2 className="mt-12 text-3xl font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
       ),
-      h3: ({ node, ...props }) => (
+      h3: ({ node: _node, ...props }) => (
         <h3 className="mt-8 text-2xl font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
       ),
-      p: ({ node, ...props }) => <p className="mt-5 text-base leading-7 text-neutral-700 dark:text-neutral-200" {...props} />,
-      a: ({ node, href, ...props }) => {
+      p: ({ node: _node, ...props }) => <p className="mt-5 text-base leading-7 text-neutral-700 dark:text-neutral-200" {...props} />,
+      a: ({ node: _node, href, ...props }) => {
         const isHashLink = (href ?? "").startsWith("#");
         const resolved = resolveRelativeUrl(readmeBase, href ?? "");
         return (
@@ -193,19 +193,19 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
           />
         );
       },
-      pre: ({ node, ...props }) => (
+      pre: ({ node: _node, ...props }) => (
         <pre className="mt-8 overflow-x-auto rounded-3xl bg-neutral-100 p-5 dark:bg-neutral-900" {...props} />
       ),
-      ul: ({ node, ...props }) => <ul className="mt-5 list-disc space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
-      ol: ({ node, ...props }) => <ol className="mt-5 list-decimal space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
-      li: ({ node, ...props }) => <li {...props} />,
-      blockquote: ({ node, ...props }) => (
+      ul: ({ node: _node, ...props }) => <ul className="mt-5 list-disc space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
+      ol: ({ node: _node, ...props }) => <ol className="mt-5 list-decimal space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
+      li: ({ node: _node, ...props }) => <li {...props} />,
+      blockquote: ({ node: _node, ...props }) => (
         <blockquote
           className="mt-6 border-l-4 border-neutral-200 pl-4 text-base italic text-neutral-600 dark:border-neutral-700 dark:text-neutral-300"
           {...props}
         />
       ),
-      img: ({ node, src, alt, ...props }) => {
+      img: ({ node: _node, src, alt, ...props }) => {
         const srcString = typeof src === "string" ? src : "";
         const resolved = resolveRelativeUrl(readmeBase, srcString);
 
@@ -224,19 +224,19 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
           />
         );
       },
-      table: ({ node, ...props }) => (
+      table: ({ node: _node, ...props }) => (
         <div className="mt-8 overflow-x-auto rounded-3xl border border-neutral-200/70 dark:border-neutral-700/60">
           <table className="min-w-full divide-y divide-neutral-200 text-sm dark:divide-neutral-700" {...props} />
         </div>
       ),
-      thead: ({ node, ...props }) => (
+      thead: ({ node: _node, ...props }) => (
         <thead className="bg-neutral-100/70 dark:bg-neutral-800/70" {...props} />
       ),
-      tbody: ({ node, ...props }) => <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700" {...props} />,
-      th: ({ node, ...props }) => (
+      tbody: ({ node: _node, ...props }) => <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700" {...props} />,
+      th: ({ node: _node, ...props }) => (
         <th className="px-3 py-3 text-left font-semibold text-neutral-700 dark:text-neutral-200" {...props} />
       ),
-      td: ({ node, ...props }) => <td className="px-3 py-3 text-neutral-600 dark:text-neutral-300" {...props} />,
+      td: ({ node: _node, ...props }) => <td className="px-3 py-3 text-neutral-600 dark:text-neutral-300" {...props} />,
     }),
     [readmeBase]
   );

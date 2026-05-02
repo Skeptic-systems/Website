@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowCircleDown, ChartLineUp, Gauge, GearSix, TerminalWindow } from "phosphor-react";
 
 import { Button } from "@/components/ui/button";
-import { apiBaseUrl } from "@/lib/api";
+import { getApiBaseUrl } from "@/lib/api";
 import { authClient } from "@/lib/auth/client";
 import type { AuthenticatedProfile } from "@/lib/auth/types";
 import { cn } from "@/lib/utils";
@@ -30,9 +30,9 @@ import type {
   UserListResponse,
 } from "@/components/login/dashboard-types";
 
-const profileEndpoint = `${apiBaseUrl}/auth/me`;
-const usersEndpoint = `${apiBaseUrl}/auth/users`;
-const terminalAdminEndpoint = `${apiBaseUrl}/terminal/admin/messages`;
+const resolveProfileEndpoint = (): string => `${getApiBaseUrl()}/auth/me`;
+const resolveUsersEndpoint = (): string => `${getApiBaseUrl()}/auth/users`;
+const resolveTerminalAdminEndpoint = (): string => `${getApiBaseUrl()}/terminal/admin/messages`;
 
 async function fetchAuthedJson<T>(input: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
@@ -132,7 +132,7 @@ export function DashboardPage({ initialProfile }: DashboardPageProps) {
 
   const profileQuery = useQuery({
     queryKey: ["dashboard", "profile"],
-    queryFn: async () => fetchAuthedJson<ProfileResponse>(profileEndpoint),
+    queryFn: async () => fetchAuthedJson<ProfileResponse>(resolveProfileEndpoint()),
     enabled: isAuthenticated,
     retry: 1,
     initialData: initialProfile ? { user: initialProfile } : undefined,
@@ -191,14 +191,14 @@ export function DashboardPage({ initialProfile }: DashboardPageProps) {
   const terminalMessagesQuery = useQuery({
     queryKey: ["dashboard", "terminal-messages"],
     queryFn: async () =>
-      fetchAuthedJson<TerminalMessagesResponse>(`${terminalAdminEndpoint}?limit=100`),
+      fetchAuthedJson<TerminalMessagesResponse>(`${resolveTerminalAdminEndpoint()}?limit=100`),
     enabled: isAuthenticated && canAdministrate,
     retry: 1,
   });
 
   const usersQuery = useQuery({
     queryKey: ["dashboard", "users"],
-    queryFn: async () => fetchAuthedJson<UserListResponse>(usersEndpoint),
+    queryFn: async () => fetchAuthedJson<UserListResponse>(resolveUsersEndpoint()),
     enabled: isAuthenticated && canAdministrate,
     retry: 1,
   });
@@ -206,7 +206,7 @@ export function DashboardPage({ initialProfile }: DashboardPageProps) {
   const updateMessageMutation = useMutation({
     mutationFn: async (input: { id: string; payload: typeof terminalForm }) => {
       const result = await fetchAuthedJson<{ message: TerminalMessage }>(
-        `${terminalAdminEndpoint}/${input.id}`,
+        `${resolveTerminalAdminEndpoint()}/${input.id}`,
         {
           method: "PATCH",
           body: JSON.stringify(input.payload),
@@ -229,7 +229,7 @@ export function DashboardPage({ initialProfile }: DashboardPageProps) {
 
   const deleteMessageMutation = useMutation({
     mutationFn: async (messageId: string) => {
-      await fetchAuthedJson<{ deleted: boolean }>(`${terminalAdminEndpoint}/${messageId}`, {
+      await fetchAuthedJson<{ deleted: boolean }>(`${resolveTerminalAdminEndpoint()}/${messageId}`, {
         method: "DELETE",
       });
     },
@@ -250,7 +250,7 @@ export function DashboardPage({ initialProfile }: DashboardPageProps) {
 
   const createUserMutation = useMutation({
     mutationFn: async (input: CreateUserInput) => {
-      await fetchAuthedJson<{ user: AuthenticatedProfile }>(usersEndpoint, {
+      await fetchAuthedJson<{ user: AuthenticatedProfile }>(resolveUsersEndpoint(), {
         method: "POST",
         body: JSON.stringify(input),
       });
