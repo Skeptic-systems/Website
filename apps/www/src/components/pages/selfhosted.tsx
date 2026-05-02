@@ -704,7 +704,7 @@ export function Selfhosted() {
                 accentClassName="text-fuchsia-500"
               />
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   tone="plum"
                   label={t("sections.pterodactyl.metrics.total")}
@@ -819,7 +819,7 @@ export function Selfhosted() {
                       <div
                         data-animate="selfhosted-card"
                         key={server.identifier}
-                        className="group/srv relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-2xl border border-fuchsia-200/30 bg-white/50 p-5 backdrop-blur-xl transition duration-300 hover:border-fuchsia-300/50 hover:shadow-lg dark:border-fuchsia-500/10 dark:bg-neutral-900/40 dark:hover:border-fuchsia-500/25 sm:flex-row sm:items-start sm:p-6"
+                        className="group/srv relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-2xl border border-fuchsia-200/30 bg-white/50 p-5 backdrop-blur-xl transition duration-300 hover:border-fuchsia-300/50 hover:shadow-lg dark:border-fuchsia-500/10 dark:bg-neutral-900/40 dark:hover:border-fuchsia-500/25 md:flex-row md:items-start md:p-6"
                       >
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover/srv:opacity-100 dark:from-fuchsia-500/4" />
                           <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-fuchsia-500/10 text-fuchsia-600 ring-1 ring-fuchsia-500/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-300 dark:ring-fuchsia-500/15">
@@ -886,7 +886,7 @@ export function Selfhosted() {
                 accentClassName="text-sky-500"
               />
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   tone="sky"
                   label={t("sections.jellyfin.metrics.active")}

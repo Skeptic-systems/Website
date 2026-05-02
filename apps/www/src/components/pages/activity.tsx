@@ -584,7 +584,7 @@ export function Activity() {
             <SectionHeader accent={t("sections.topTracksAccent")} title={t("sections.topTracks")} />
             <div
               data-animate="tracks-wrapper"
-              className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
+              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
             >
               {isTopTracksLoading
                 ? Array.from({ length: 5 }).map((_, index) => (

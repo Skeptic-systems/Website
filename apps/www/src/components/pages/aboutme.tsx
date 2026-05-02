@@ -65,7 +65,7 @@ export function AboutMe() {
         <div className="mx-auto w-full max-w-7xl">
           <div
             data-animate="about-tiles"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             <GlowTile
               data-animate="about-tile"
