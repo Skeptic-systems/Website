@@ -2,6 +2,7 @@
 
 import { IconPalette } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { ACCENT_KEYS, type AccentKey, useAccent } from "@/components/providers/accent-provider";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,9 @@ const ACCENT_LABEL_KEYS: Record<AccentKey, string> = {
   green: "options.green",
   orange: "options.orange",
   purple: "options.purple",
+  red: "options.red",
+  white: "options.white",
+  black: "options.black",
 };
 
 const ACCENT_SWATCH: Record<AccentKey, { light: string; dark: string }> = {
@@ -21,13 +25,27 @@ const ACCENT_SWATCH: Record<AccentKey, { light: string; dark: string }> = {
   green: { light: "#16a34a", dark: "#4ade80" },
   orange: { light: "#ea580c", dark: "#fb923c" },
   purple: { light: "#9333ea", dark: "#c084fc" },
+  red: { light: "#dc2626", dark: "#f87171" },
+  white: { light: "#737373", dark: "#ffffff" },
+  black: { light: "#000000", dark: "#999999" },
 };
 
 export function AccentToggle() {
   const t = useTranslations("navbar.accent");
   const { accent, setAccent, isReady } = useAccent();
+  const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const HIDDEN_BY_THEME: Record<string, AccentKey> = { dark: "black", light: "white" };
+  const hiddenKey = resolvedTheme ? HIDDEN_BY_THEME[resolvedTheme] : undefined;
+  const visibleKeys = ACCENT_KEYS.filter((k) => k !== hiddenKey);
+
+  useEffect(() => {
+    if (hiddenKey && accent === hiddenKey) {
+      setAccent("default");
+    }
+  }, [hiddenKey, accent, setAccent]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,7 +85,7 @@ export function AccentToggle() {
       {open ? (
         <div className="absolute right-0 z-50 mt-2 w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
           <div className="flex flex-col gap-1">
-            {ACCENT_KEYS.map((key) => {
+            {visibleKeys.map((key) => {
               const isActive = accent === key;
               const swatch = ACCENT_SWATCH[key];
               return (

@@ -7,8 +7,8 @@ import { useTheme } from "next-themes";
 
 import { indieFlower } from "@/app/fonts";
 
-const arrowFilterDark = "brightness(0) invert(0.78) sepia(0.4) hue-rotate(220deg) saturate(2) brightness(0.9)";
-const arrowFilterLight = "brightness(0) invert(0.35) sepia(0.6) hue-rotate(230deg) saturate(3) brightness(0.7)";
+const arrowFilterDark = "brightness(0) invert(0.83)";
+const arrowFilterLight = "brightness(0) invert(0.2)";
 
 export function OnboardingHints() {
   const t = useTranslations("onboarding");
@@ -23,7 +23,7 @@ export function OnboardingHints() {
 
   const isDark = mounted && resolvedTheme === "dark";
   const arrowFilter = isDark ? arrowFilterDark : arrowFilterLight;
-  const textColor = isDark ? "text-[#c4b0e0]" : "text-[#6b4fa0]";
+  const textColor = isDark ? "text-neutral-300" : "text-neutral-800";
 
   useEffect(() => {
     const onScroll = () => {

@@ -126,10 +126,6 @@ export const terminalModerationEnv = {
   debugVerbose: parseBooleanEnv(readOptionalEnv("TERMINAL_AI_DEBUG")),
 };
 
-export const terminalRetentionEnv = {
-  retentionDays: readNumericEnv("TERMINAL_RETENTION_DAYS"),
-};
-
 export const spotifyEnv = {
   clientId: readEnv("SPOTIFY_CLIENT_ID"),
   clientSecret: readEnv("SPOTIFY_CLIENT_SECRET"),

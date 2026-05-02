@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { desc, eq, lt } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { terminalMessages } from "../db/schema";
 import { redis } from "../lib/redis";
@@ -7,7 +7,7 @@ import { readReportCounts } from "./terminal-message-report-store";
 
 type TerminalMessageRecord = {
   id: string;
-  sessionId: string;
+  sessionId: string | null;
   textDefault: string;
   textEn: string;
   textDe: string;
@@ -175,10 +175,6 @@ export const rebuildTerminalMessageCache = async (): Promise<void> => {
   const counts = await readReportCounts(rows.map((row) => row.id));
   const records = rows.map((row) => toTerminalMessageRecord(row, counts.get(row.id) ?? 0));
   await cacheMessages(records);
-};
-
-export const pruneTerminalMessages = async (cutoff: Date): Promise<void> => {
-  await db.delete(terminalMessages).where(lt(terminalMessages.createdAt, cutoff));
 };
 
 export const updateTerminalMessage = async (

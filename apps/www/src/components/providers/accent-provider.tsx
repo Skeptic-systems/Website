@@ -13,7 +13,7 @@ import {
 const ACCENT_ATTRIBUTE = "data-accent";
 const ACCENT_STORAGE_KEY = "www-accent";
 
-export const ACCENT_KEYS = ["default", "blue", "green", "orange", "purple"] as const;
+export const ACCENT_KEYS = ["default", "blue", "green", "orange", "purple", "red", "white", "black"] as const;
 
 export type AccentKey = (typeof ACCENT_KEYS)[number];
 

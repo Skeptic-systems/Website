@@ -94,6 +94,27 @@
     --accent-dark-foreground: 240 10% 3.9%;
   }
 
+  :root[data-accent="red"] {
+    --accent-light: 0 84% 50%;
+    --accent-light-foreground: 0 0% 100%;
+    --accent-dark: 0 90% 68%;
+    --accent-dark-foreground: 240 10% 3.9%;
+  }
+
+  :root[data-accent="white"] {
+    --accent-light: 0 0% 45%;
+    --accent-light-foreground: 0 0% 100%;
+    --accent-dark: 0 0% 100%;
+    --accent-dark-foreground: 240 10% 3.9%;
+  }
+
+  :root[data-accent="black"] {
+    --accent-light: 0 0% 0%;
+    --accent-light-foreground: 0 0% 100%;
+    --accent-dark: 0 0% 60%;
+    --accent-dark-foreground: 240 10% 3.9%;
+  }
+
   /* Neutral accent when no explicit accent is selected */
   :root:not([data-accent]) {
     --accent-light: 0 0% 96%; /* neutral-100 */

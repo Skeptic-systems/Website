@@ -154,6 +154,7 @@ export function StarField() {
       className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
       style={{ opacity: mounted ? 1 : 0 }}
       aria-hidden="true"
+      tabIndex={-1}
     />
   );
 }

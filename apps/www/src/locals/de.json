@@ -51,7 +51,10 @@
         "blue": "Blau",
         "green": "Grün",
         "orange": "Orange",
-        "purple": "Lila"
+        "purple": "Lila",
+        "red": "Rot",
+        "white": "Weiß",
+        "black": "Schwarz"
       }
     },
     "locale": {

@@ -94,7 +94,7 @@ export function Hero() {
         </h1>
         <p
           ref={subtitleRef}
-          className={`${geist.className} mx-auto mt-8 max-w-lg text-center text-xs sm:text-sm tracking-[0.18em] opacity-0 text-neutral-600 dark:text-neutral-300`}
+          className={`${geist.className} mx-auto mt-8 max-w-lg text-center text-xs sm:text-sm tracking-[0.18em] opacity-0 text-neutral-800 dark:text-neutral-300`}
         >
           {t("subtitle")}
         </p>
