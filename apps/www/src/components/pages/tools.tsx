@@ -36,7 +36,6 @@ import {
 import { geist } from "@/app/fonts";
 import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
-  gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
@@ -402,77 +401,42 @@ const TOOL_SECTIONS = [
 export function Tools() {
   const t = useTranslations("tools");
   const toolsAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
-    const { triggerStart, ease } = gsapSectionConfig;
-    const fadeIn = (element: HTMLElement | null, start: string = triggerStart, delay = 0) => {
-      if (!element) {
-        return;
-      }
-      gsap.fromTo(
-        element,
-        { y: 40, opacity: 0, filter: "blur(6px)" },
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.7,
-          ease,
-          delay,
-          scrollTrigger: {
-            trigger: element,
-            start,
-            once: true,
-          },
-          clearProps: "all",
-        },
-      );
-    };
+    const ease = "power2.out";
 
-    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+    const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
+    if (heading) {
+      gsap.fromTo(heading, { y: 20, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.45, ease,
+        scrollTrigger: { trigger: heading, start: "top 88%", once: true },
+        clearProps: "all",
+      });
+    }
 
     const copies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
     copies.forEach((copy, index) => {
-      fadeIn(copy, "top 82%", index * 0.05);
+      gsap.fromTo(copy, { y: 12, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.3, ease, delay: index * 0.04,
+        scrollTrigger: { trigger: copy, start: "top 88%", once: true },
+        clearProps: "all",
+      });
     });
 
     const sections = node.querySelectorAll<HTMLElement>("[data-animate='tool-section']");
-      sections.forEach((block) => {
-      gsap.fromTo(
-        block,
-        { y: 60, opacity: 0, scale: 0.97 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-            duration: 0.82,
-          ease,
-          scrollTrigger: {
-            trigger: block,
-            start: "top 80%",
-            once: true,
-          },
-          clearProps: "transform,opacity",
-        },
-      );
+    sections.forEach((block) => {
+      gsap.fromTo(block, { y: 35, opacity: 0, scale: 0.98 }, {
+        y: 0, opacity: 1, scale: 1, duration: 0.5, ease,
+        scrollTrigger: { trigger: block, start: "top 82%", once: true },
+        clearProps: "transform,opacity",
+      });
 
       const cards = block.querySelectorAll<HTMLElement>("[data-animate='tool-card']");
       if (cards.length > 0) {
-        gsap.fromTo(
-          cards,
-          { y: 32, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.64,
-            ease,
-            stagger: 0.05,
-            scrollTrigger: {
-              trigger: block,
-              start: "top 78%",
-              once: true,
-            },
-            clearProps: "transform,opacity",
-          },
-        );
+        gsap.fromTo(cards, { y: 16, opacity: 0, scale: 0.95 }, {
+          y: 0, opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)",
+          stagger: 0.03,
+          scrollTrigger: { trigger: block, start: "top 80%", once: true },
+          clearProps: "transform,opacity",
+        });
       }
     });
   }, []);
@@ -538,48 +502,57 @@ function ToolSection({ section, t }: ToolSectionProps) {
   return (
     <section
       data-animate="tool-section"
-      className={cn(
-        "group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/80 shadow-[0_50px_140px_-80px_rgba(15,23,42,0.65)] backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-[0_60px_160px_-80px_rgba(15,23,42,0.7)] dark:border-neutral-800/70 dark:bg-neutral-950/40",
-        section.borderClass
-      )}
+      className="group relative overflow-hidden rounded-2xl transition-transform duration-500 hover:-translate-y-1"
     >
-      <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-90", section.backgroundClass)} />
-      <div className="pointer-events-none absolute inset-0">
-        <div className={cn("absolute -left-24 top-[-30%] h-72 w-72 rounded-full blur-[140px]", section.haloClass)} />
-        <div className={cn("absolute -right-16 bottom-[-35%] h-72 w-72 rounded-full blur-[160px]", section.haloClass)} />
-      </div>
-      <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/20 dark:border-white/10" />
+      <div className="relative flex flex-col gap-0 lg:flex-row">
+        <div
+          className={cn(
+            "relative flex flex-col justify-center gap-4 rounded-t-2xl border border-b-0 px-8 py-10 backdrop-blur-xl sm:px-10 sm:py-12 lg:w-[340px] lg:shrink-0 lg:rounded-l-2xl lg:rounded-tr-none lg:border-b lg:border-r-0 xl:w-[380px]",
+            "bg-white/70 dark:bg-neutral-950/60",
+            section.borderClass,
+          )}
+        >
+          <div className="pointer-events-none absolute inset-0 rounded-t-2xl lg:rounded-l-2xl lg:rounded-tr-none">
+            <div className={cn("absolute -left-16 -top-16 h-48 w-48 rounded-full blur-[100px] opacity-60", section.haloClass)} />
+          </div>
+          <div className="relative">
+            <span
+              className={cn(
+                geist.className,
+                "inline-block text-[0.65rem] font-semibold uppercase tracking-[0.35em]",
+                section.accentClass,
+              )}
+            >
+              {label}
+            </span>
+            <h3
+              className={cn(
+                geist.className,
+                "mt-3 text-2xl font-bold tracking-tight text-neutral-900 sm:text-[1.75rem] dark:text-neutral-50",
+              )}
+            >
+              {headline}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">{description}</p>
+          </div>
+        </div>
 
-      <div className="relative grid gap-10 px-8 py-12 sm:px-12 lg:grid-cols-[minmax(0,0.78fr)_1fr] xl:grid-cols-[minmax(0,0.72fr)_1fr]">
-        <header className="flex flex-col gap-4 text-left">
-          <span
-            className={cn(
-              geist.className,
-              "inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
-              section.accentClass
-            )}
-          >
-            {label}
-          </span>
-          <h3
-            className={cn(
-              geist.className,
-              "text-3xl font-semibold tracking-tight text-neutral-900 sm:text-[2.1rem] dark:text-neutral-50"
-            )}
-          >
-            {headline}
-          </h3>
-          <p className="max-w-xl text-sm text-neutral-600 sm:text-base dark:text-neutral-300">{description}</p>
-        </header>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-          {section.items.map((item) => (
-            <ToolLinkCard
-              key={`${section.key}-${item.key}`}
-              item={item}
-              label={t(`categories.${section.key}.items.${item.key}`)}
-            />
-          ))}
+        <div
+          className={cn(
+            "flex-1 rounded-b-2xl border border-t-0 bg-white/50 px-6 py-8 backdrop-blur-xl sm:px-8 sm:py-10 lg:rounded-r-2xl lg:rounded-bl-none lg:border-l-0 lg:border-t",
+            "dark:bg-neutral-950/30",
+            section.borderClass,
+          )}
+        >
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+            {section.items.map((item) => (
+              <ToolLinkCard
+                key={`${section.key}-${item.key}`}
+                item={item}
+                label={t(`categories.${section.key}.items.${item.key}`)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -600,23 +573,22 @@ function ToolLinkCard({ item, label }: ToolLinkCardProps) {
       prefetch={false}
       target={isPlaceholder ? undefined : "_blank"}
       rel={isPlaceholder ? undefined : "noreferrer noopener"}
-      className="group/card relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-neutral-100/60 dark:focus-visible:ring-offset-neutral-950"
+      className="group/card relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/60 focus-visible:ring-offset-1 dark:focus-visible:ring-neutral-100/60"
     >
       <motion.div
         data-animate="tool-card"
-        whileHover={{ y: -3, scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        transition={{ type: "spring", stiffness: 320, damping: 26 }}
-        className="relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/85 p-4 text-center shadow-sm backdrop-blur-md transition dark:border-neutral-800/60 dark:bg-neutral-900/60"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        className="relative flex flex-col items-center gap-2.5 overflow-hidden rounded-xl p-3 text-center transition sm:p-4"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-2xl border border-white/25 dark:border-white/10" />
         <div
           className={cn(
-            "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition duration-500 group-hover/card:opacity-100",
-            item.accentClass
+            "pointer-events-none absolute inset-0 rounded-xl opacity-0 transition duration-300 group-hover/card:opacity-100",
+            "bg-neutral-100/70 dark:bg-white/5",
           )}
         />
-        <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-lg ring-1 ring-white/20 transition group-hover/card:-translate-y-0.5 dark:bg-white/10 dark:text-white">
+        <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-neutral-900/90 shadow-md ring-1 ring-white/10 transition-transform group-hover/card:-translate-y-0.5 dark:bg-white/10 sm:h-12 sm:w-12">
           {item.image ? (
             <Image
               src={item.image.src}
@@ -624,14 +596,14 @@ function ToolLinkCard({ item, label }: ToolLinkCardProps) {
               width={48}
               height={48}
               loading="lazy"
-              className="h-8 w-8 object-contain"
+              className="h-7 w-7 object-contain sm:h-8 sm:w-8"
               draggable={false}
             />
           ) : (
-            renderIcon(item.icon, "h-6 w-6")
+            renderIcon(item.icon, "h-5 w-5 sm:h-6 sm:w-6")
           )}
         </div>
-        <span className="text-sm font-medium text-neutral-700 transition group-hover/card:text-neutral-900 dark:text-neutral-200 dark:group-hover/card:text-neutral-50">
+        <span className="relative text-[0.7rem] font-medium leading-tight text-neutral-600 transition group-hover/card:text-neutral-900 dark:text-neutral-400 dark:group-hover/card:text-neutral-100 sm:text-xs">
           {label}
         </span>
       </motion.div>

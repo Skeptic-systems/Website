@@ -8,7 +8,6 @@ import { geist } from "@/app/fonts";
 import { GlowTile } from "@/components/ui/glow-tile";
 import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
-  gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
@@ -16,50 +15,26 @@ import {
 export function AboutMe() {
   const t = useTranslations("about");
   const aboutAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
+    const ease = "power2.out";
+
     const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
     if (heading) {
-      gsap.fromTo(
-        heading,
-        { y: 48, opacity: 0, filter: "blur(8px)" },
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.75,
-          ease: gsapSectionConfig.ease,
-          scrollTrigger: {
-            trigger: heading,
-            start: gsapSectionConfig.triggerStart,
-            once: true,
-          },
-          clearProps: "all",
-        },
-      );
+      gsap.fromTo(heading, { y: 20, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.45, ease,
+        scrollTrigger: { trigger: heading, start: "top 88%", once: true },
+        clearProps: "all",
+      });
     }
 
     const tiles = node.querySelectorAll<HTMLElement>("[data-animate='about-tile']");
     if (tiles.length > 0) {
-      const trigger =
-        node.querySelector("[data-animate='about-tiles']") ?? heading ?? node;
-      gsap.fromTo(
-        tiles,
-        { y: 52, opacity: 0, scale: 0.94, rotateX: -4 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          rotateX: 0,
-          duration: 0.72,
-          ease: gsapSectionConfig.ease,
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger,
-            start: "top 75%",
-            once: true,
-          },
-          clearProps: "transform,opacity",
-        },
-      );
+      const trigger = node.querySelector("[data-animate='about-tiles']") ?? heading ?? node;
+      gsap.fromTo(tiles, { y: 24, opacity: 0, scale: 0.96 }, {
+        y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.2)",
+        stagger: 0.06,
+        scrollTrigger: { trigger, start: "top 80%", once: true },
+        clearProps: "transform,opacity",
+      });
     }
   }, []);
   const sectionRef = useGsapSection<HTMLDivElement>(aboutAnimation);

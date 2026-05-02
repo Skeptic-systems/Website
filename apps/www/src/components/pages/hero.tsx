@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { gsap } from "gsap";
 
@@ -8,6 +8,13 @@ export function Hero() {
   const t = useTranslations("hero");
   const title = t("title");
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const wordCounts = new Map<string, number>();
   const wordEntries = title.split(" ").map((word) => {
@@ -43,10 +50,10 @@ export function Hero() {
     "bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 dark:from-white dark:via-neutral-200 dark:to-white";
 
   return (
-    <section className="relative flex min-h-screen w-full items-center justify-center bg-white dark:bg-black">
-      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+    <section className="relative -mt-20 flex min-h-[calc(100vh+5rem)] w-full items-center justify-center bg-white pt-20 dark:bg-transparent">
+      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_0.6px,transparent_0.6px)]" />
       <div className="accent-glow-layer" />
-      <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black/80 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       <div className="relative z-10 w-full px-4 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
         <h1
           ref={headingRef}
@@ -74,6 +81,17 @@ export function Hero() {
             </div>
           ))}
         </h1>
+      </div>
+
+      <div
+        className={`absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 transition-opacity duration-700 sm:bottom-24 ${
+          scrolled ? "pointer-events-none opacity-0" : "opacity-100"
+        }`}
+      >
+        <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-neutral-400/60 p-1.5 dark:border-neutral-500/50 sm:h-12 sm:w-7">
+          <div className="h-2 w-2 animate-scroll-bounce rounded-full bg-neutral-500 dark:bg-neutral-400 sm:h-2.5 sm:w-2.5" />
+        </div>
+        <span className="sr-only">{t("scrollHint")}</span>
       </div>
     </section>
   );

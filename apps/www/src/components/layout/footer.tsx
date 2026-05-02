@@ -69,7 +69,7 @@ export function Footer() {
   }, [secretActive]);
 
   return (
-    <footer className="w-full border-t border-neutral-800 bg-neutral-950">
+    <footer className="relative z-10 w-full border-t border-neutral-800 bg-neutral-950">
       <div className="mx-auto w-full max-w-6xl px-6 py-8 lg:px-8 lg:py-10">
         <div className="flex flex-col gap-8 md:grid md:grid-cols-[auto_1fr_auto] md:items-center md:gap-10">
           <nav aria-label={t("navigation.title")} className="flex flex-col gap-3">

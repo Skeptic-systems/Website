@@ -9,7 +9,8 @@
     }
   },
   "hero": {
-    "title": "Skeptic Systems"
+    "title": "Skeptic Systems",
+    "scrollHint": "Scroll down"
   },
   "home": {
     "sections": {
@@ -489,7 +490,6 @@
         },
         "server": {
           "heading": "Server",
-          "version": "Version",
           "os": "Operating system"
         },
         "sessions": {
@@ -512,7 +512,7 @@
   "projects": {
     "title": "Projects",
     "accent": "GitHub archive",
-    "subtitle": "Selected repositories",
+    "subtitle": "Curious what I can build? Browse the work and see for yourself.",
     "description": "Dive into my curated mix of experiments, client work, and open-source contributions.",
     "states": {
       "loading": "Loading repositories...",
