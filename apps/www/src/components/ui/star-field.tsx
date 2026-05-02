@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "next-themes";
 
 type Star = {
   x: number;
@@ -25,10 +24,10 @@ function createStars(width: number, height: number): Star[] {
       y: Math.random() * height,
       size: Math.random() * 2 + 0.8,
       baseOpacity: Math.random() * 0.6 + 0.25,
-      twinkleSpeed: Math.random() * 0.004 + 0.002,
+      twinkleSpeed: Math.random() * 0.008 + 0.004,
       twinkleOffset: Math.random() * Math.PI * 2,
-      driftX: (Math.random() - 0.5) * 0.5,
-      driftY: (Math.random() - 0.5) * 0.12,
+      driftX: (Math.random() - 0.5) * 1.2,
+      driftY: (Math.random() - 0.5) * 0.3,
     });
   }
   for (let i = 0; i < GLOW_STAR_COUNT; i++) {
@@ -37,10 +36,10 @@ function createStars(width: number, height: number): Star[] {
       y: Math.random() * height,
       size: Math.random() * 2.5 + 2.5,
       baseOpacity: Math.random() * 0.35 + 0.2,
-      twinkleSpeed: Math.random() * 0.003 + 0.001,
+      twinkleSpeed: Math.random() * 0.006 + 0.003,
       twinkleOffset: Math.random() * Math.PI * 2,
-      driftX: (Math.random() - 0.5) * 0.25,
-      driftY: (Math.random() - 0.5) * 0.08,
+      driftX: (Math.random() - 0.5) * 0.6,
+      driftY: (Math.random() - 0.5) * 0.2,
     });
   }
   return stars;
@@ -50,7 +49,6 @@ export function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const starsRef = useRef<Star[]>([]);
   const animationRef = useRef<number>(0);
-  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -70,21 +68,25 @@ export function StarField() {
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
+      const w = document.documentElement.clientWidth;
+      const h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      starsRef.current = createStars(window.innerWidth, window.innerHeight);
+      starsRef.current = createStars(w, h);
     };
 
     resize();
     window.addEventListener("resize", resize);
 
     const draw = (time: number) => {
-      const w = window.innerWidth;
+      const w = document.documentElement.clientWidth;
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
+
+      const dark = document.documentElement.classList.contains("dark");
 
       for (const star of starsRef.current) {
         const twinkle = prefersReduced
@@ -98,24 +100,38 @@ export function StarField() {
 
         const x = prefersReduced
           ? star.x
-          : ((star.x + star.driftX * (time * 0.01)) % (w + 20)) - 10;
+          : ((star.x + star.driftX * (time * 0.02)) % (w + 20)) - 10;
 
         const y = prefersReduced
           ? star.y
-          : star.y + Math.sin(time * 0.001 + star.twinkleOffset) * 3.5;
+          : star.y + Math.sin(time * 0.002 + star.twinkleOffset) * 5;
 
-        if (star.size > 2.5) {
-          const gradient = ctx.createRadialGradient(x, y, 0, x, y, star.size * 3.5);
-          gradient.addColorStop(0, `rgba(200, 220, 255, ${opacity * 0.9})`);
-          gradient.addColorStop(0.25, `rgba(180, 200, 255, ${opacity * 0.35})`);
-          gradient.addColorStop(1, "rgba(180, 200, 255, 0)");
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(x, y, star.size * 3.5, 0, Math.PI * 2);
-          ctx.fill();
+        if (dark) {
+          if (star.size > 2.5) {
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, star.size * 3.5);
+            gradient.addColorStop(0, `rgba(200, 220, 255, ${opacity * 0.9})`);
+            gradient.addColorStop(0.25, `rgba(180, 200, 255, ${opacity * 0.35})`);
+            gradient.addColorStop(1, "rgba(180, 200, 255, 0)");
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, star.size * 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.fillStyle = `rgba(220, 230, 255, ${opacity})`;
+        } else {
+          if (star.size > 2.5) {
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, star.size * 3);
+            gradient.addColorStop(0, `rgba(100, 70, 160, ${opacity * 0.7})`);
+            gradient.addColorStop(0.3, `rgba(80, 60, 140, ${opacity * 0.25})`);
+            gradient.addColorStop(1, "rgba(80, 60, 140, 0)");
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, star.size * 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.fillStyle = `rgba(90, 60, 150, ${opacity * 0.85})`;
         }
 
-        ctx.fillStyle = `rgba(220, 230, 255, ${opacity})`;
         ctx.beginPath();
         ctx.arc(x, y, star.size, 0, Math.PI * 2);
         ctx.fill();
@@ -132,13 +148,11 @@ export function StarField() {
     };
   }, []);
 
-  const isDark = mounted && resolvedTheme === "dark";
-
   return (
     <canvas
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
-      style={{ opacity: mounted ? (isDark ? 1 : 0) : 0 }}
+      style={{ opacity: mounted ? 1 : 0 }}
       aria-hidden="true"
     />
   );

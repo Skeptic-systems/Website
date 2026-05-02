@@ -10,7 +10,12 @@
   },
   "hero": {
     "title": "Skeptic Systems",
+    "subtitle": "Virtualization / Containerization / Networking / Coding",
     "scrollHint": "Nach unten scrollen"
+  },
+  "onboarding": {
+    "accentHint": "Wähle hier deine Akzentfarbe!",
+    "localeHint": "Wechsle hier deine Sprache!"
   },
   "home": {
     "sections": {
@@ -130,6 +135,10 @@
     }
   },
   "dashboard": {
+    "onboarding": {
+      "accentHint": "Wähle hier deine Akzentfarbe!",
+      "localeHint": "Wechsle hier deine Sprache!"
+    },
     "accent": "STEUERUNG",
     "title": "Internes Dashboard",
     "subtitle": "Moderiere das öffentliche Terminal und verwalte vertrauenswürdige Accounts.",

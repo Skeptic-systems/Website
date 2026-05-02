@@ -8,4 +8,11 @@ export const geist = localFont({
   display: "swap",
 });
 
+export const indieFlower = localFont({
+  src: [
+    { path: "../../public/font/IndieFlower/IndieFlower-Regular.ttf", weight: "400", style: "normal" }
+  ],
+  display: "swap",
+});
+
 

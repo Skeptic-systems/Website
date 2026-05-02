@@ -10,7 +10,12 @@
   },
   "hero": {
     "title": "Skeptic Systems",
+    "subtitle": "Virtualization / Containerization / Networking / Coding",
     "scrollHint": "Scroll down"
+  },
+  "onboarding": {
+    "accentHint": "Choose your accent color here!",
+    "localeHint": "Switch your language here!"
   },
   "home": {
     "sections": {
@@ -130,6 +135,10 @@
     }
   },
   "dashboard": {
+    "onboarding": {
+      "accentHint": "Choose your accent color here!",
+      "localeHint": "Switch your language here!"
+    },
     "accent": "CONTROL",
     "title": "Internal dashboard",
     "subtitle": "Moderate the public terminal and manage trusted accounts.",

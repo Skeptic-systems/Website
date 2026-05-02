@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { gsap } from "gsap";
 
+import { geist } from "@/app/fonts";
+
 export function Hero() {
   const t = useTranslations("hero");
   const title = t("title");
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -42,18 +45,26 @@ export function Hero() {
       stagger: 0.035,
       delay: 0.15,
     });
+
+    if (subtitleRef.current) {
+      gsap.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", delay: 0.9 },
+      );
+    }
   }, []);
 
   const primaryWordGradient =
-    "bg-gradient-to-b from-[#4a4a55] via-[#2b2a33] to-[#09080d] dark:from-white dark:via-neutral-200 dark:to-white";
+    "bg-gradient-to-r from-[#D24444] via-[#a03498] to-[#7950F2]";
   const secondaryWordGradient =
-    "bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 dark:from-white dark:via-neutral-200 dark:to-white";
+    "bg-gradient-to-r from-[#7950F2] via-[#6040e0] to-[#4060f0]";
 
   return (
-    <section className="relative -mt-20 flex min-h-[calc(100vh+5rem)] w-full items-center justify-center bg-white pt-20 dark:bg-transparent">
-      <div className="absolute inset-0 [background-size:28px_28px] [background-image:radial-gradient(#b9b9b9_1px,transparent_1px)] dark:[background-image:radial-gradient(#404040_0.6px,transparent_0.6px)]" />
+    <section className="relative -mt-20 flex min-h-[calc(100vh+5rem)] w-full items-center justify-center bg-transparent pt-20">
+      <div className="absolute inset-0 [background-size:28px_28px] dark:[background-image:radial-gradient(#404040_0.6px,transparent_0.6px)]" />
       <div className="accent-glow-layer" />
-      <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black/80 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <div className="pointer-events-none absolute inset-0 bg-white/80 dark:bg-black/80 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       <div className="relative z-10 w-full px-4 sm:px-8 -mt-20 sm:-mt-28 md:-mt-40">
         <h1
           ref={headingRef}
@@ -61,18 +72,18 @@ export function Hero() {
           aria-label={title}
         >
           {wordEntries.map((entry, wordIdx) => (
-            <div key={entry.key} className="overflow-hidden">
+            <div key={entry.key} className="overflow-visible">
               <span
-                className={`block align-baseline whitespace-nowrap text-transparent ${wordIdx === 0 ? primaryWordGradient : secondaryWordGradient} bg-clip-text text-[clamp(5rem,20vw,6rem)] sm:text-[6.5rem] md:text-[7.5rem] lg:text-[8.5rem] xl:text-[9.5rem] 2xl:text-[11rem] ${
-                  wordIdx === 0 ? "mb-1 sm:mb-2" : "pb-[0.22em] leading-[1.2] text-stroke-hero"
+                className={`block align-baseline whitespace-nowrap ${wordIdx === 0 ? primaryWordGradient : secondaryWordGradient} text-stroke-hero text-[clamp(3.5rem,14vw,5rem)] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[7.5rem] xl:text-[8rem] 2xl:text-[9rem] ${
+                  wordIdx === 0 ? "mb-1 sm:mb-2" : "pb-[0.22em] leading-[1.2]"
                 }`}
               >
                 {entry.letters.map((letter) => (
                   <span
                     key={letter.key}
-                    className={`char inline-block text-transparent bg-clip-text will-change-transform ${
+                    className={`char inline-block will-change-transform ${
                       wordIdx === 0 ? primaryWordGradient : secondaryWordGradient
-                    } -mx-[0.08em] px-[0.08em] pt-[0.12em] pb-[0.18em] -mt-[0.12em] -mb-[0.18em] leading-[1.15]`}
+                    } text-stroke-hero -mx-[0.08em] px-[0.08em] pt-[0.15em] pb-[0.25em] -mt-[0.15em] -mb-[0.25em] leading-[1.2]`}
                   >
                     {letter.char}
                   </span>
@@ -81,6 +92,12 @@ export function Hero() {
             </div>
           ))}
         </h1>
+        <p
+          ref={subtitleRef}
+          className={`${geist.className} mx-auto mt-8 max-w-lg text-center text-xs sm:text-sm tracking-[0.18em] opacity-0 text-neutral-600 dark:text-neutral-300`}
+        >
+          {t("subtitle")}
+        </p>
       </div>
 
       <div

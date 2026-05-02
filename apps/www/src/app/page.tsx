@@ -8,11 +8,13 @@ import { Projects } from "@/components/pages/projects";
 import { Selfhosted } from "@/components/pages/selfhosted";
 import { Footer } from "@/components/layout/footer";
 import { StarField } from "@/components/ui/star-field";
+import { OnboardingHints } from "@/components/ui/onboarding-hints";
 
 export default function HomePage() {
   return (
     <main className="w-full">
       <StarField />
+      <OnboardingHints />
       <Hero />
       <AboutMe />
       <Activity />

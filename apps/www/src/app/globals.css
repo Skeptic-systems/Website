@@ -135,30 +135,26 @@
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: clip;
   }
 }
 
 @layer utilities {
-  /* Stronger, responsive stroke for hero headline */
   .text-stroke-hero {
-    -webkit-text-stroke: clamp(1px, 0.35vw, 6px) rgba(9, 8, 13, 0.45);
-    /* Fallback for browsers without text-stroke */
-    text-shadow:
-      0 0 1px rgba(9, 8, 13, 0.4),
-      0 0 3px rgba(9, 8, 13, 0.3),
-      0 0 5px rgba(9, 8, 13, 0.22);
+    color: white;
+    -webkit-text-stroke: clamp(4px, 0.5vw, 7px) transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-shadow: none;
   }
   .dark .text-stroke-hero {
-    -webkit-text-stroke: clamp(1px, 0.35vw, 6px) rgba(0, 0, 0, 0.65);
-    text-shadow:
-      0 0 1px rgba(0, 0, 0, 0.6),
-      0 0 2px rgba(0, 0, 0, 0.6),
-      0 0 3px rgba(0, 0, 0, 0.6);
+    color: #1a1028;
   }
 
   /* Subtle accent glow overlay, only visible when an accent is selected */
