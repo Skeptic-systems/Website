@@ -133,7 +133,7 @@ jobs:
 
       - name: Build and push website image
         if: ${{ (github.event.inputs.target == 'both' || github.event.inputs.target == 'website') && matrix.id == 'website' }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
@@ -151,7 +151,7 @@ jobs:
 
       - name: Build and push api image
         if: ${{ (github.event.inputs.target == 'both' || github.event.inputs.target == 'api') && matrix.id == 'api' }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
