@@ -103,7 +103,7 @@ jobs:
     steps:
       - name: Checkout repository
         if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
         if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
