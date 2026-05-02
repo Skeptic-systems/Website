@@ -126,7 +126,7 @@ jobs:
 
       - name: Log in to Docker Hub
         if: ${{ github.event.inputs.target == 'both' || github.event.inputs.target == matrix.id }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
