@@ -35,8 +35,7 @@ export const terminalSessions = pgTable("terminal_sessions", {
 export const terminalMessages = pgTable("terminal_messages", {
   id: text("id").primaryKey(),
   sessionId: text("session_id")
-    .notNull()
-    .references(() => terminalSessions.id, { onDelete: "cascade" }),
+    .references(() => terminalSessions.id, { onDelete: "set null" }),
   textDefault: text("text_default").notNull(),
   textEn: text("text_en"),
   textDe: text("text_de"),

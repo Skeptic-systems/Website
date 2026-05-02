@@ -9,7 +9,13 @@
     }
   },
   "hero": {
-    "title": "Skeptic Systems"
+    "title": "Skeptic Systems",
+    "subtitle": "Virtualization / Containerization / Networking / Coding",
+    "scrollHint": "Nach unten scrollen"
+  },
+  "onboarding": {
+    "accentHint": "Wähle hier deine Akzentfarbe!",
+    "localeHint": "Wechsle hier deine Sprache!"
   },
   "home": {
     "sections": {
@@ -45,7 +51,10 @@
         "blue": "Blau",
         "green": "Grün",
         "orange": "Orange",
-        "purple": "Lila"
+        "purple": "Lila",
+        "red": "Rot",
+        "white": "Weiß",
+        "black": "Schwarz"
       }
     },
     "locale": {
@@ -129,6 +138,10 @@
     }
   },
   "dashboard": {
+    "onboarding": {
+      "accentHint": "Wähle hier deine Akzentfarbe!",
+      "localeHint": "Wechsle hier deine Sprache!"
+    },
     "accent": "STEUERUNG",
     "title": "Internes Dashboard",
     "subtitle": "Moderiere das öffentliche Terminal und verwalte vertrauenswürdige Accounts.",
@@ -269,7 +282,7 @@
       "three": "Lernen",
       "developer": {
         "title": "Entwickler",
-        "body": "Ich bin Fullstack-Entwickler und arbeite an Frontend-, Backend- und Desktop-Apps mit Tauri 2.0. Meistens bewege ich mich in der TypeScript/JavaScript-Welt und lerne nebenbei Rust – einfach, um es interessant zu machen. Ich bin Open-Source-Enthusiast, und weiter unten auf der Seite findest du meine Projekte auf GitHub. Kurz gesagt: Ich arbeite gerne in allen Ebenen eines Projekts, statt nur in einer Ecke zu bleiben."
+        "body": "Ich bin Developer und arbeite an Frontend-, Backend- und Desktop-Apps mit Tauri 2.0. Meistens bewege ich mich in der TypeScript/JavaScript-Welt und lerne nebenbei Rust – einfach, um es interessant zu machen. Ich bin Open-Source-Enthusiast, und weiter unten auf der Seite findest du meine Projekte auf GitHub. Kurz gesagt: Ich arbeite gerne in allen Ebenen eines Projekts, statt nur in einer Ecke zu bleiben."
       },
       "integrator": {
         "title": "Systemintegrator",
@@ -489,7 +502,6 @@
         },
         "server": {
           "heading": "Server",
-          "version": "Version",
           "os": "Betriebssystem"
         },
         "sessions": {
@@ -512,7 +524,7 @@
   "projects": {
     "title": "Projekte",
     "accent": "GitHub-Archiv",
-    "subtitle": "Ausgewählte Repositories",
+    "subtitle": "Du willst wissen, was ich kann? Schau es dir an und überzeug dich selbst.",
     "description": "Tauche ein in meine Mischung aus Experimenten, Kundenprojekten und Open-Source-Beiträgen.",
     "states": {
       "loading": "Repositories werden geladen...",

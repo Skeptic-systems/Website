@@ -7,7 +7,6 @@ import { Clock, Cpu, FilmSlate, HardDrive, HardDrives, StackSimple, UsersThree }
 import { geist } from "@/app/fonts";
 import { sectionHeadingClass } from "@/components/common/section-heading";
 import {
-  gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
@@ -170,19 +169,26 @@ function SectionHeading({
 }
 
 function StatCard({ label, value, tone }: StatCardProps): ReactElement {
-  const toneClasses =
+  const accentBorder =
     tone === "plum"
-      ? "border-fuchsia-200/70 bg-white/80 text-neutral-900 dark:border-fuchsia-500/30 dark:bg-neutral-900/70 dark:text-neutral-50"
-      : "border-sky-200/70 bg-white/80 text-neutral-900 dark:border-sky-500/30 dark:bg-neutral-900/70 dark:text-neutral-50";
+      ? "border-fuchsia-300/40 dark:border-fuchsia-500/20"
+      : "border-sky-300/40 dark:border-sky-500/20";
+  const accentGlow =
+    tone === "plum"
+      ? "from-fuchsia-500/8 to-transparent dark:from-fuchsia-500/6"
+      : "from-sky-500/8 to-transparent dark:from-sky-500/6";
   return (
     <div
       data-animate="selfhosted-stat"
-      className={`w-full rounded-3xl border px-5 py-5 shadow-sm backdrop-blur-md sm:px-7 sm:py-6 ${toneClasses}`}
+      className={`group relative w-full overflow-hidden rounded-2xl border bg-white/60 px-5 py-5 backdrop-blur-md transition-shadow hover:shadow-lg dark:bg-neutral-900/50 sm:px-6 sm:py-6 ${accentBorder}`}
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-neutral-500 dark:text-neutral-400">
+      <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${accentGlow}`} />
+      <p className="relative text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-neutral-400 dark:text-neutral-500">
         {label}
       </p>
-      <p className={`${geist.className} mt-2 text-3xl font-semibold sm:text-4xl`}>{value}</p>
+      <p className={`${geist.className} relative mt-2 text-3xl font-bold tabular-nums text-neutral-900 dark:text-neutral-50 sm:text-4xl`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -597,97 +603,50 @@ export function Selfhosted() {
 
   const selfhostedAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
     ({ node, gsap }) => {
-      const { triggerStart, ease } = gsapSectionConfig;
-      const fadeIn = (element: HTMLElement | null, start: string = triggerStart, delay = 0) => {
-        if (!element) {
-          return;
-        }
-        gsap.fromTo(
-          element,
-          { y: 42, opacity: 0, filter: "blur(8px)" },
-          {
-            y: 0,
-            opacity: 1,
-            filter: "blur(0px)",
-            duration: 0.78,
-            ease,
-            delay,
-            scrollTrigger: {
-              trigger: element,
-              start,
-              once: true,
-            },
-            clearProps: "all",
-          },
-        );
-      };
+      const ease = "power2.out";
 
-      fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+      const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
+      if (heading) {
+        gsap.fromTo(heading, { y: 20, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.45, ease,
+          scrollTrigger: { trigger: heading, start: "top 88%", once: true },
+          clearProps: "all",
+        });
+      }
+
       const introCopies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
       introCopies.forEach((copy, index) => {
-        fadeIn(copy, "top 82%", index * 0.05);
+        gsap.fromTo(copy, { y: 14, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.35, ease, delay: index * 0.04,
+          scrollTrigger: { trigger: copy, start: "top 88%", once: true },
+          clearProps: "all",
+        });
       });
 
       const panels = node.querySelectorAll<HTMLElement>("[data-animate='selfhosted-panel']");
       panels.forEach((panel) => {
-        gsap.fromTo(
-          panel,
-          { y: 70, opacity: 0, scale: 0.97 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.85,
-            ease,
-            scrollTrigger: {
-              trigger: panel,
-              start: "top 80%",
-              once: true,
-            },
-            clearProps: "transform,opacity",
-          },
-        );
+        gsap.fromTo(panel, { y: 40, opacity: 0, scale: 0.98 }, {
+          y: 0, opacity: 1, scale: 1, duration: 0.5, ease,
+          scrollTrigger: { trigger: panel, start: "top 82%", once: true },
+          clearProps: "transform,opacity",
+        });
 
         const stats = panel.querySelectorAll<HTMLElement>("[data-animate='selfhosted-stat']");
         if (stats.length > 0) {
-          gsap.fromTo(
-            stats,
-            { y: 26, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.65,
-              ease,
-              stagger: 0.06,
-              scrollTrigger: {
-                trigger: panel,
-                start: "top 78%",
-                once: true,
-              },
-              clearProps: "transform,opacity",
-            },
-          );
+          gsap.fromTo(stats, { y: 16, opacity: 0 }, {
+            y: 0, opacity: 1, duration: 0.35, ease, stagger: 0.04,
+            scrollTrigger: { trigger: panel, start: "top 80%", once: true },
+            clearProps: "transform,opacity",
+          });
         }
 
         const cards = panel.querySelectorAll<HTMLElement>("[data-animate='selfhosted-card']");
         if (cards.length > 0) {
-          gsap.fromTo(
-            cards,
-            { y: 32, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.68,
-              ease,
-              stagger: 0.05,
-              scrollTrigger: {
-                trigger: panel,
-                start: "top 76%",
-                once: true,
-              },
-              clearProps: "transform,opacity",
-            },
-          );
+          gsap.fromTo(cards, { y: 20, opacity: 0 }, {
+            y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.04,
+            scrollTrigger: { trigger: panel, start: "top 78%", once: true },
+            clearProps: "transform,opacity",
+          });
         }
       });
     },
@@ -733,9 +692,10 @@ export function Selfhosted() {
         <div className="mx-auto w-full max-w-7xl space-y-24">
           <div
             data-animate="selfhosted-panel"
-            className="relative overflow-hidden rounded-[36px] border border-fuchsia-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-fuchsia-500/30 dark:bg-neutral-900/80 sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-fuchsia-200/40 bg-white/70 p-6 shadow-2xl backdrop-blur-2xl dark:border-fuchsia-500/15 dark:bg-neutral-950/60 sm:p-10"
           >
-            <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/10" />
+            <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-[120px] dark:bg-fuchsia-500/8" />
+            <div className="pointer-events-none absolute -left-16 bottom-[-10%] h-56 w-56 rounded-full bg-purple-500/10 blur-[100px] dark:bg-purple-500/6" />
             <div className="relative space-y-10">
               <SectionHeading
                 accent={t("sections.pterodactyl.accent")}
@@ -744,7 +704,7 @@ export function Selfhosted() {
                 accentClassName="text-fuchsia-500"
               />
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   tone="plum"
                   label={t("sections.pterodactyl.metrics.total")}
@@ -791,9 +751,17 @@ export function Selfhosted() {
                     {PTERODACTYL_SKELETON_KEYS.map((key) => (
                       <div
                         key={key}
-                        className="h-36 rounded-3xl border border-fuchsia-200/50 bg-white/60 shadow-inner dark:border-fuchsia-500/20 dark:bg-neutral-900/70"
+                        className="relative h-36 overflow-hidden rounded-3xl border border-fuchsia-200/50 bg-white/60 dark:border-fuchsia-500/20 dark:bg-neutral-900/70"
                       >
-                        <div className="h-full animate-pulse rounded-3xl bg-neutral-100/70 dark:bg-neutral-800/70" />
+                        <div className="space-y-3 p-5">
+                          <div className="h-4 w-1/3 rounded-full bg-fuchsia-200/40 dark:bg-fuchsia-500/15" />
+                          <div className="h-3 w-2/3 rounded-full bg-neutral-200/60 dark:bg-neutral-700/40" />
+                          <div className="mt-4 flex gap-3">
+                            <div className="h-3 w-16 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                            <div className="h-3 w-20 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                          </div>
+                        </div>
+                        <div className="animate-shimmer absolute inset-0" />
                       </div>
                     ))}
                   </div>
@@ -851,53 +819,47 @@ export function Selfhosted() {
                       <div
                         data-animate="selfhosted-card"
                         key={server.identifier}
-                        className="relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-3xl border border-fuchsia-200/60 bg-white/75 p-5 shadow-lg transition duration-200 hover:shadow-xl dark:border-fuchsia-500/20 dark:bg-neutral-900/80 sm:flex-row sm:items-start sm:p-6"
+                        className="group/srv relative flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-2xl border border-fuchsia-200/30 bg-white/50 p-5 backdrop-blur-xl transition duration-300 hover:border-fuchsia-300/50 hover:shadow-lg dark:border-fuchsia-500/10 dark:bg-neutral-900/40 dark:hover:border-fuchsia-500/25 md:flex-row md:items-start md:p-6"
                       >
-                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500/20 via-fuchsia-400/20 to-sky-400/30 text-fuchsia-600 dark:from-fuchsia-500/20 dark:to-sky-400/20">
-                            <HardDrives size={28} weight="fill" />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover/srv:opacity-100 dark:from-fuchsia-500/4" />
+                          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-fuchsia-500/10 text-fuchsia-600 ring-1 ring-fuchsia-500/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-300 dark:ring-fuchsia-500/15">
+                            <HardDrives size={24} weight="fill" />
                           </div>
-                          <div className="flex min-w-0 flex-1 flex-col gap-4">
+                          <div className="relative flex min-w-0 flex-1 flex-col gap-4">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                               <div className="min-w-0 space-y-1">
                                 <h4
-                                  className={`${geist.className} truncate text-xl font-semibold text-neutral-900 dark:text-neutral-50`}
+                                  className={`${geist.className} truncate text-lg font-bold text-neutral-900 dark:text-neutral-50`}
                                 >
                                   {server.name}
                                 </h4>
                                 {server.description ? (
-                                  <p className="truncate text-sm text-neutral-500 dark:text-neutral-400">
+                                  <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
                                     {server.description}
                                   </p>
                                 ) : null}
                               </div>
-                              <span className="inline-flex shrink-0 rounded-full border border-fuchsia-400/40 bg-fuchsia-100/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:border-fuchsia-500/20 dark:bg-fuchsia-500/10 dark:text-fuchsia-200">
+                              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-fuchsia-500/10 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.25em] text-fuchsia-600 dark:bg-fuchsia-500/15 dark:text-fuchsia-300">
+                                <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
                                 {server.state}
                               </span>
                             </div>
-                            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-                                <Cpu size={18} weight="bold" className="text-fuchsia-500" />
-                                <span>
-                                  {t("sections.pterodactyl.cards.limits.cpu")}: {cpuLimitLabel}
-                                </span>
+                            <div className="grid gap-2.5 text-[0.8rem] text-neutral-600 dark:text-neutral-400 md:grid-cols-2 xl:grid-cols-3">
+                              <div className="flex items-center gap-2">
+                                <Cpu size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
+                                <span>{t("sections.pterodactyl.cards.limits.cpu")}: {cpuLimitLabel}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-                                <StackSimple size={18} weight="bold" className="text-fuchsia-500" />
-                                <span>
-                                  {t("sections.pterodactyl.cards.limits.memory")}: {memoryLabel}
-                                </span>
+                              <div className="flex items-center gap-2">
+                                <StackSimple size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
+                                <span>{t("sections.pterodactyl.cards.limits.memory")}: {memoryLabel}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-                                <Clock size={18} weight="bold" className="text-fuchsia-500" />
-                                <span>
-                                  {t("sections.pterodactyl.cards.uptime")}: {uptimeLabel}
-                                </span>
+                              <div className="flex items-center gap-2">
+                                <Clock size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
+                                <span>{t("sections.pterodactyl.cards.uptime")}: {uptimeLabel}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300 md:col-span-2 xl:col-span-3">
-                                <HardDrive size={18} weight="bold" className="text-fuchsia-500" />
-                                <span>
-                                  {t("sections.pterodactyl.cards.limits.disk")}: {diskLabel}
-                                </span>
+                              <div className="flex items-center gap-2 md:col-span-2 xl:col-span-3">
+                                <HardDrive size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
+                                <span>{t("sections.pterodactyl.cards.limits.disk")}: {diskLabel}</span>
                               </div>
                             </div>
                           </div>
@@ -912,10 +874,10 @@ export function Selfhosted() {
 
           <div
             data-animate="selfhosted-panel"
-            className="relative overflow-hidden rounded-[36px] border border-sky-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-2xl dark:border-sky-500/30 dark:bg-neutral-900/80 sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-sky-200/40 bg-white/70 p-6 shadow-2xl backdrop-blur-2xl dark:border-sky-500/15 dark:bg-neutral-950/60 sm:p-10"
           >
-            <div className="pointer-events-none absolute -left-40 -top-10 h-72 w-72 rounded-full bg-sky-400/30 blur-3xl dark:bg-sky-500/20" />
-            <div className="pointer-events-none absolute -bottom-32 -right-16 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-500/10" />
+            <div className="pointer-events-none absolute -left-24 -top-16 h-80 w-80 rounded-full bg-sky-400/15 blur-[120px] dark:bg-sky-500/8" />
+            <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-indigo-500/10 blur-[100px] dark:bg-indigo-500/6" />
             <div className="relative space-y-10">
               <SectionHeading
                 accent={t("sections.jellyfin.accent")}
@@ -924,7 +886,7 @@ export function Selfhosted() {
                 accentClassName="text-sky-500"
               />
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   tone="sky"
                   label={t("sections.jellyfin.metrics.active")}
@@ -970,9 +932,17 @@ export function Selfhosted() {
                   {JELLYFIN_SKELETON_KEYS.map((key) => (
                     <div
                       key={key}
-                      className="h-36 rounded-3xl border border-sky-200/50 bg-white/60 shadow-inner dark:border-sky-500/20 dark:bg-neutral-900/70"
+                      className="relative h-36 overflow-hidden rounded-3xl border border-sky-200/50 bg-white/60 dark:border-sky-500/20 dark:bg-neutral-900/70"
                     >
-                      <div className="h-full animate-pulse rounded-3xl bg-neutral-100/70 dark:bg-neutral-800/70" />
+                      <div className="space-y-3 p-5">
+                        <div className="h-4 w-1/4 rounded-full bg-sky-200/40 dark:bg-sky-500/15" />
+                        <div className="h-3 w-1/2 rounded-full bg-neutral-200/60 dark:bg-neutral-700/40" />
+                        <div className="mt-4 flex gap-3">
+                          <div className="h-3 w-14 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                          <div className="h-3 w-18 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                        </div>
+                      </div>
+                      <div className="animate-shimmer absolute inset-0" />
                     </div>
                   ))}
                 </div>
@@ -986,132 +956,127 @@ export function Selfhosted() {
 
               {!isJellyfinLoading && !jellyfinError && jellyfinOverview ? (
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                  <div className="flex w-full min-w-0 flex-col gap-6 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
+                  <div className="flex w-full min-w-0 flex-col gap-6 overflow-hidden rounded-2xl border border-sky-200/30 bg-white/50 p-5 backdrop-blur-xl dark:border-sky-500/10 dark:bg-neutral-900/40 sm:p-6">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 via-blue-400/20 to-violet-400/30 text-sky-600 dark:from-sky-500/20 dark:to-violet-500/20">
-                        <FilmSlate size={28} weight="fill" />
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300 dark:ring-sky-500/15">
+                        <FilmSlate size={24} weight="fill" />
                       </div>
                       <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+                        <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
                           {t("sections.jellyfin.server.heading")}
                         </p>
                         <h4
-                          className={`${geist.className} mt-1 text-2xl font-semibold text-neutral-900 dark:text-neutral-50`}
+                          className={`${geist.className} mt-0.5 text-xl font-bold text-neutral-900 dark:text-neutral-50`}
                         >
                           {jellyfinOverview.server.name ?? t("common.placeholder")}
                         </h4>
                       </div>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-1 text-sm text-neutral-600 dark:text-neutral-300">
-                        <p className="uppercase tracking-[0.18em] text-neutral-400 dark:text-neutral-500">
-                          {t("sections.jellyfin.server.version")}
-                        </p>
-                        <p>{jellyfinOverview.server.version ?? t("common.placeholder")}</p>
-                      </div>
-                      <div className="space-y-1 text-sm text-neutral-600 dark:text-neutral-300">
-                        <p className="uppercase tracking-[0.18em] text-neutral-400 dark:text-neutral-500">
-                          {t("sections.jellyfin.server.os")}
-                        </p>
-                        <p>{jellyfinOverview.server.operatingSystem ?? t("common.placeholder")}</p>
-                      </div>
+                    <div className="space-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+                      <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+                        {t("sections.jellyfin.server.os")}
+                      </p>
+                      <p className="text-neutral-700 dark:text-neutral-300">{jellyfinOverview.server.operatingSystem ?? t("common.placeholder")}</p>
                     </div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
-                      {t("sections.jellyfin.sessions.title")}
-                    </p>
-                    <div className="space-y-4">
-                      {jellyfinSessions.length === 0 ? (
-                        <p className="rounded-2xl border border-sky-200/60 bg-white/60 p-4 text-sm text-neutral-600 shadow-sm dark:border-sky-500/20 dark:bg-neutral-900/70 dark:text-neutral-300">
-                          {t("sections.jellyfin.states.empty")}
-                        </p>
-                      ) : (
-                        jellyfinSessions.map((session) => {
-                          const stateKey = getSessionStateKey(session);
-                          const stateLabel = t(`sections.jellyfin.sessions.${stateKey}`);
-                          const progress = calculateSessionProgress(session);
-                          const subtitle = buildSessionSubtitle(session);
+                    <div>
+                      <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+                        {t("sections.jellyfin.sessions.title")}
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        {jellyfinSessions.length === 0 ? (
+                          <p className="rounded-xl border border-sky-200/30 bg-white/40 p-4 text-sm text-neutral-500 dark:border-sky-500/10 dark:bg-neutral-900/30 dark:text-neutral-400">
+                            {t("sections.jellyfin.states.empty")}
+                          </p>
+                        ) : (
+                          jellyfinSessions.map((session) => {
+                            const stateKey = getSessionStateKey(session);
+                            const stateLabel = t(`sections.jellyfin.sessions.${stateKey}`);
+                            const progress = calculateSessionProgress(session);
+                            const subtitle = buildSessionSubtitle(session);
 
-                          return (
-                            <div
-                              data-animate="selfhosted-card"
-                              key={session.id}
-                              className="rounded-2xl border border-sky-200/50 bg-white/70 p-4 shadow-sm transition duration-150 hover:shadow-md dark:border-sky-500/20 dark:bg-neutral-900/70"
-                            >
-                              <div className="flex flex-wrap items-start justify-between gap-4">
-                                <div className="min-w-[180px] space-y-1">
-                                  <p
-                                    className={`${geist.className} text-lg font-semibold text-neutral-900 dark:text-neutral-50`}
-                                  >
-                                    {session.userName ?? t("common.placeholder")}
-                                  </p>
-                                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                    {session.client ?? session.deviceName ?? t("common.placeholder")}
-                                  </p>
+                            return (
+                              <div
+                                data-animate="selfhosted-card"
+                                key={session.id}
+                                className="group/session rounded-xl border border-sky-200/25 bg-white/40 p-4 transition duration-300 hover:border-sky-300/40 hover:shadow-md dark:border-sky-500/8 dark:bg-neutral-900/30 dark:hover:border-sky-500/20"
+                              >
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                  <div className="min-w-[160px] space-y-0.5">
+                                    <p
+                                      className={`${geist.className} text-base font-bold text-neutral-900 dark:text-neutral-50`}
+                                    >
+                                      {session.userName ?? t("common.placeholder")}
+                                    </p>
+                                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                      {session.client ?? session.deviceName ?? t("common.placeholder")}
+                                    </p>
+                                  </div>
+                                  <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-500/10 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-[0.25em] text-sky-600 dark:bg-sky-500/15 dark:text-sky-300">
+                                    <span className={`h-1.5 w-1.5 rounded-full ${stateKey === "nowPlaying" ? "bg-sky-500 dark:bg-sky-400" : stateKey === "paused" ? "bg-amber-500 dark:bg-amber-400" : "bg-neutral-400 dark:bg-neutral-500"}`} />
+                                    {stateLabel}
+                                  </span>
                                 </div>
-                                <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
-                                  {stateLabel}
-                                </span>
-                              </div>
-                              <div className="mt-3 space-y-1 text-sm text-neutral-600 dark:text-neutral-300">
-                                {session.nowPlaying ? (
-                                  <p className="font-medium text-neutral-700 dark:text-neutral-200">
-                                    {session.nowPlaying.title ?? t("common.placeholder")}
-                                  </p>
+                                <div className="mt-2.5 space-y-0.5 text-sm text-neutral-600 dark:text-neutral-300">
+                                  {session.nowPlaying ? (
+                                    <p className="font-medium text-neutral-800 dark:text-neutral-200">
+                                      {session.nowPlaying.title ?? t("common.placeholder")}
+                                    </p>
+                                  ) : null}
+                                  {subtitle ? <p className="text-xs text-neutral-500 dark:text-neutral-400">{subtitle}</p> : null}
+                                </div>
+                                {progress !== null ? (
+                                  <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-neutral-200/50 dark:bg-neutral-800/60">
+                                    <div
+                                      className="h-full rounded-full bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 transition-all duration-500"
+                                      style={{ width: `${progress}%` }}
+                                    />
+                                  </div>
                                 ) : null}
-                                {subtitle ? <p>{subtitle}</p> : null}
                               </div>
-                              {progress !== null ? (
-                                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-neutral-200/70 dark:bg-neutral-800">
-                                  <div
-                                    className="h-full rounded-full bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400"
-                                    style={{ width: `${progress}%` }}
-                                  />
-                                </div>
-                              ) : null}
-                            </div>
-                          );
-                        })
-                      )}
+                            );
+                          })
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex w-full min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-sky-200/60 bg-white/75 p-5 shadow-lg dark:border-sky-500/20 dark:bg-neutral-900/80 sm:p-6">
+                  <div className="flex w-full min-w-0 flex-col gap-5 overflow-hidden rounded-2xl border border-sky-200/30 bg-white/50 p-5 backdrop-blur-xl dark:border-sky-500/10 dark:bg-neutral-900/40 sm:p-6">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 dark:bg-sky-500/20 dark:text-sky-200">
-                        <UsersThree size={24} weight="fill" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300 dark:ring-sky-500/15">
+                        <UsersThree size={20} weight="fill" />
                       </div>
                       <div>
-                        <p className="text-xs uppercase tracking-[0.18em] text-neutral-400 dark:text-neutral-500">
+                        <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
                           {t("sections.jellyfin.metrics.users")}
                         </p>
-                        <p className={`${geist.className} text-2xl font-semibold text-neutral-900 dark:text-neutral-50`}>
+                        <p className={`${geist.className} text-xl font-bold text-neutral-900 dark:text-neutral-50`}>
                           {jellyfinUsersCount}
                         </p>
                       </div>
                     </div>
-                    <div className="rounded-2xl border border-sky-200/60 bg-white/70 p-4 text-sm text-neutral-600 shadow-sm dark:border-sky-500/20 dark:bg-neutral-900/70 dark:text-neutral-300">
-                      <p className={`${geist.className} text-base font-semibold text-neutral-900 dark:text-neutral-100`}>
+                    <div className="rounded-xl border border-sky-200/25 bg-white/40 p-4 dark:border-sky-500/8 dark:bg-neutral-900/30">
+                      <p className={`${geist.className} text-sm font-bold text-neutral-900 dark:text-neutral-100`}>
                         {t("sections.jellyfin.metrics.media")}
                       </p>
-                      <ul className="mt-2 space-y-1">
-                        <li>
-                          {t("sections.jellyfin.library.movies")}:{" "}
-                          {jellyfinOverview.counts.libraries.movies}
+                      <ul className="mt-3 space-y-1.5 text-sm text-neutral-600 dark:text-neutral-400">
+                        <li className="flex items-center justify-between">
+                          <span>{t("sections.jellyfin.library.movies")}</span>
+                          <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">{jellyfinOverview.counts.libraries.movies}</span>
                         </li>
-                        <li>
-                          {t("sections.jellyfin.library.series")}:{" "}
-                          {jellyfinOverview.counts.libraries.series}
+                        <li className="flex items-center justify-between">
+                          <span>{t("sections.jellyfin.library.series")}</span>
+                          <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">{jellyfinOverview.counts.libraries.series}</span>
                         </li>
-                        <li>
-                          {t("sections.jellyfin.library.episodes")}:{" "}
-                          {jellyfinOverview.counts.libraries.episodes}
+                        <li className="flex items-center justify-between">
+                          <span>{t("sections.jellyfin.library.episodes")}</span>
+                          <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">{jellyfinOverview.counts.libraries.episodes}</span>
                         </li>
-                        <li>
-                          {t("sections.jellyfin.library.songs")}:{" "}
-                          {jellyfinOverview.counts.libraries.songs}
+                        <li className="flex items-center justify-between">
+                          <span>{t("sections.jellyfin.library.songs")}</span>
+                          <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">{jellyfinOverview.counts.libraries.songs}</span>
                         </li>
                       </ul>
                     </div>
-                    <p className="text-xs text-neutral-400 dark:text-neutral-500">
+                    <p className="text-[0.65rem] text-neutral-400 dark:text-neutral-500">
                       {t("sections.jellyfin.generatedAt", {
                         timestamp: jellyfinGeneratedAtLabel ?? t("common.placeholder"),
                       })}

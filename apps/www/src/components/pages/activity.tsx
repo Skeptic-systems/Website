@@ -8,7 +8,6 @@ import { useTranslations } from "next-intl";
 import { geist } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
 import {
-  gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
@@ -422,101 +421,55 @@ export function Activity() {
 
   const activityAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(
     ({ node, gsap }) => {
-      const { triggerStart, ease } = gsapSectionConfig;
-      const animateBlock = (element: HTMLElement | null, start: string = triggerStart) => {
-        if (!element) {
-          return;
-        }
-        gsap.fromTo(
-          element,
-          { y: 48, opacity: 0, filter: "blur(8px)" },
-          {
-            y: 0,
-            opacity: 1,
-            filter: "blur(0px)",
-            duration: 0.78,
-            ease,
-            scrollTrigger: {
-              trigger: element,
-              start,
-              once: true,
-            },
-            clearProps: "all",
-          },
-        );
-      };
+      const ease = "power2.out";
 
-      animateBlock(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+      const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
+      if (heading) {
+        gsap.fromTo(heading, { y: 20, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.45, ease,
+          scrollTrigger: { trigger: heading, start: "top 88%", once: true },
+          clearProps: "all",
+        });
+      }
 
       const subheaders = node.querySelectorAll<HTMLElement>("[data-animate='subheader']");
       subheaders.forEach((block) => {
-        animateBlock(block, "top 85%");
+        gsap.fromTo(block, { y: 16, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.35, ease,
+          scrollTrigger: { trigger: block, start: "top 88%", once: true },
+          clearProps: "all",
+        });
       });
 
       const panels = node.querySelectorAll<HTMLElement>("[data-animate='panel']");
       panels.forEach((panel) => {
-        gsap.fromTo(
-          panel,
-          { y: 60, opacity: 0, scale: 0.94, filter: "blur(8px)" },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 0.82,
-            ease,
-            scrollTrigger: {
-              trigger: panel,
-              start: "top 80%",
-              once: true,
-            },
-            clearProps: "transform,opacity",
-          },
-        );
+        gsap.fromTo(panel, { y: 30, opacity: 0, scale: 0.97 }, {
+          y: 0, opacity: 1, scale: 1, duration: 0.5, ease,
+          scrollTrigger: { trigger: panel, start: "top 82%", once: true },
+          clearProps: "transform,opacity",
+        });
       });
 
       const trackWrapper = node.querySelector<HTMLElement>("[data-animate='tracks-wrapper']");
       const trackCards = node.querySelectorAll<HTMLElement>("[data-animate='track-card']");
       if (trackWrapper && trackCards.length > 0) {
-        gsap.fromTo(
-          trackCards,
-          { y: 40, opacity: 0, scale: 0.95 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.68,
-            ease,
-            stagger: 0.07,
-            scrollTrigger: {
-              trigger: trackWrapper,
-              start: "top 78%",
-              once: true,
-            },
-            clearProps: "transform,opacity",
-          },
-        );
+        gsap.fromTo(trackCards, { y: 20, opacity: 0, scale: 0.96 }, {
+          y: 0, opacity: 1, scale: 1, duration: 0.4, ease,
+          stagger: 0.05,
+          scrollTrigger: { trigger: trackWrapper, start: "top 82%", once: true },
+          clearProps: "transform,opacity",
+        });
       }
 
       const presenceWrapper = node.querySelector<HTMLElement>("[data-animate='presence-wrapper']");
       const presenceCards = node.querySelectorAll<HTMLElement>("[data-animate='presence-card']");
       if (presenceWrapper && presenceCards.length > 0) {
-        gsap.fromTo(
-          presenceCards,
-          { y: 32, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.64,
-            ease,
-            stagger: 0.06,
-            scrollTrigger: {
-              trigger: presenceWrapper,
-              start: "top 80%",
-              once: true,
-            },
-            clearProps: "transform,opacity",
-          },
+        gsap.fromTo(presenceCards, { y: 18, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.35, ease,
+          stagger: 0.04,
+          scrollTrigger: { trigger: presenceWrapper, start: "top 82%", once: true },
+          clearProps: "transform,opacity",
+        },
         );
       }
     },
@@ -631,15 +584,26 @@ export function Activity() {
             <SectionHeader accent={t("sections.topTracksAccent")} title={t("sections.topTracks")} />
             <div
               data-animate="tracks-wrapper"
-              className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
+              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
             >
               {isTopTracksLoading
                 ? Array.from({ length: 5 }).map((_, index) => (
                     <div
                       key={`track-skeleton-${index}`}
-                      className="min-h-[220px] rounded-3xl border border-neutral-200/70 bg-white/60 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-900/60"
+                      className="relative flex min-h-[240px] flex-col overflow-hidden rounded-3xl border border-neutral-200/70 bg-neutral-100/60 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-900/60"
                     >
-                      <div className="h-full animate-pulse rounded-3xl bg-neutral-100 dark:bg-neutral-800/70" />
+                      <div className="flex flex-1 flex-col justify-between p-6">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <div className="h-5 w-8 rounded-full bg-neutral-200/60 dark:bg-neutral-700/40" />
+                            <div className="h-3 w-20 rounded-full bg-emerald-200/40 dark:bg-emerald-500/15" />
+                          </div>
+                          <div className="h-5 w-3/4 rounded-full bg-neutral-200/70 dark:bg-neutral-700/50" />
+                          <div className="h-3 w-1/2 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                        </div>
+                        <div className="h-8 w-28 rounded-full bg-emerald-200/30 dark:bg-emerald-500/10" />
+                      </div>
+                      <div className="animate-shimmer absolute inset-0" />
                     </div>
                   ))
                 : null}
@@ -703,9 +667,14 @@ export function Activity() {
                   {Array.from({ length: 2 }).map((_, index) => (
                     <div
                       key={`presence-skeleton-${index}`}
-                      className="h-24 rounded-3xl border border-neutral-200/70 bg-white/60 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-900/60"
+                      className="relative flex h-24 gap-5 overflow-hidden rounded-3xl border border-neutral-200/70 bg-neutral-100/50 p-6 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-900/60"
                     >
-                      <div className="h-full animate-pulse rounded-3xl bg-neutral-100 dark:bg-neutral-800/70" />
+                      <div className="h-16 w-16 shrink-0 rounded-2xl bg-neutral-200/60 dark:bg-neutral-700/50" />
+                      <div className="flex min-w-0 flex-col justify-center gap-2">
+                        <div className="h-4 w-32 rounded-full bg-neutral-200/70 dark:bg-neutral-700/50" />
+                        <div className="h-3 w-48 rounded-full bg-neutral-200/50 dark:bg-neutral-700/30" />
+                      </div>
+                      <div className="animate-shimmer absolute inset-0" />
                     </div>
                   ))}
                 </div>

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import ReactMarkdown, { type Components } from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { CaretDown, CaretLeft, CaretRight, FileText, FolderSimple } from "phosphor-react";
 
@@ -153,85 +154,154 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
     return url.slice(0, lastSlash + 1);
   }, [readmeState.data]);
 
+  const isBadgeUrl = useCallback((url: string): boolean => {
+    const badgeHosts = [
+      "img.shields.io",
+      "shields.io",
+      "badge.fury.io",
+      "badgen.net",
+      "github.com/workflows",
+      "codecov.io",
+      "coveralls.io",
+      "travis-ci.org",
+      "travis-ci.com",
+      "circleci.com",
+      "dl.flathub.org/assets/badges",
+      "img.badgesize.io",
+    ];
+    try {
+      const parsed = new URL(url);
+      return badgeHosts.some((host) => parsed.hostname === host || parsed.hostname.endsWith(`.${host}`) || parsed.pathname.includes(host));
+    } catch {
+      return false;
+    }
+  }, []);
+
   const markdownComponents = useMemo<Components>(
     () => ({
-      h1: ({ node, ...props }) => (
-        <h1 className="mt-6 text-4xl font-semibold text-neutral-900 first:mt-0 dark:text-neutral-50" {...props} />
+      h1: ({ node: _node, ...props }) => (
+        <h1
+          className="mt-8 border-b border-neutral-200 pb-2 text-2xl font-semibold text-neutral-900 first:mt-0 dark:border-neutral-700 dark:text-neutral-50"
+          {...props}
+        />
       ),
-      h2: ({ node, ...props }) => (
-        <h2 className="mt-12 text-3xl font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
+      h2: ({ node: _node, ...props }) => (
+        <h2
+          className="mt-8 border-b border-neutral-200 pb-2 text-xl font-semibold text-neutral-900 dark:border-neutral-700 dark:text-neutral-50"
+          {...props}
+        />
       ),
-      h3: ({ node, ...props }) => (
-        <h3 className="mt-8 text-2xl font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
+      h3: ({ node: _node, ...props }) => (
+        <h3 className="mt-6 text-lg font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
       ),
-      p: ({ node, ...props }) => <p className="mt-5 text-base leading-7 text-neutral-700 dark:text-neutral-200" {...props} />,
-      a: ({ node, href, ...props }) => {
+      h4: ({ node: _node, ...props }) => (
+        <h4 className="mt-6 text-base font-semibold text-neutral-900 dark:text-neutral-50" {...props} />
+      ),
+      p: ({ node: _node, ...props }) => (
+        <p className="mt-4 text-sm leading-7 text-neutral-700 dark:text-neutral-200" {...props} />
+      ),
+      a: ({ node: _node, href, children, ...props }) => {
+        const isHashLink = (href ?? "").startsWith("#");
         const resolved = resolveRelativeUrl(readmeBase, href ?? "");
         return (
           <a
             {...props}
             href={resolved}
-            target="_blank"
-            rel="noreferrer"
-            className="text-emerald-500 underline decoration-dotted underline-offset-4 transition hover:text-emerald-400"
-          />
+            target={isHashLink ? undefined : "_blank"}
+            rel={isHashLink ? undefined : "noreferrer"}
+            className="text-[hsl(var(--accent))] underline decoration-dotted underline-offset-4 transition hover:opacity-80"
+          >
+            {children}
+          </a>
         );
       },
       code: ({ node, ...props }) => {
         const isInline = (node as { type?: string } | null | undefined)?.type === "inlineCode";
         return isInline ? (
           <code
-            className="rounded bg-neutral-100 px-1.5 py-0.5 text-[0.85em] font-semibold text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200"
+            className="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[0.85em] text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200"
             {...props}
           />
         ) : (
           <code
-            className="block overflow-x-auto rounded-3xl bg-neutral-100 p-5 text-[0.9em] text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
+            className="block overflow-x-auto text-[0.85em] text-neutral-800 dark:text-neutral-200"
             {...props}
           />
         );
       },
-      pre: ({ node, ...props }) => (
-        <pre className="mt-8 overflow-x-auto rounded-3xl bg-neutral-100 p-5 dark:bg-neutral-900" {...props} />
-      ),
-      ul: ({ node, ...props }) => <ul className="mt-5 list-disc space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
-      ol: ({ node, ...props }) => <ol className="mt-5 list-decimal space-y-3 pl-7 text-base text-neutral-700 dark:text-neutral-200" {...props} />,
-      li: ({ node, ...props }) => <li {...props} />,
-      blockquote: ({ node, ...props }) => (
-        <blockquote
-          className="mt-6 border-l-4 border-neutral-200 pl-4 text-base italic text-neutral-600 dark:border-neutral-700 dark:text-neutral-300"
+      pre: ({ node: _node, ...props }) => (
+        <pre
+          className="mt-4 overflow-x-auto rounded-lg border border-neutral-200/70 bg-neutral-50 p-4 text-sm dark:border-neutral-700/60 dark:bg-neutral-900/80"
           {...props}
         />
       ),
-      img: ({ node, src, alt, ...props }) => {
+      ul: ({ node: _node, ...props }) => (
+        <ul className="mt-4 list-disc space-y-1 pl-6 text-sm text-neutral-700 dark:text-neutral-200" {...props} />
+      ),
+      ol: ({ node: _node, ...props }) => (
+        <ol className="mt-4 list-decimal space-y-1 pl-6 text-sm text-neutral-700 dark:text-neutral-200" {...props} />
+      ),
+      li: ({ node: _node, ...props }) => <li className="leading-7" {...props} />,
+      blockquote: ({ node: _node, ...props }) => (
+        <blockquote
+          className="mt-4 border-l-4 border-neutral-200 pl-4 text-sm text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"
+          {...props}
+        />
+      ),
+      hr: ({ node: _node, ...props }) => (
+        <hr className="my-6 border-neutral-200 dark:border-neutral-700" {...props} />
+      ),
+      img: ({ node: _node, src, alt, ...props }) => {
         const srcString = typeof src === "string" ? src : "";
         const resolved = resolveRelativeUrl(readmeBase, srcString);
+
+        if (!resolved) {
+          return null;
+        }
+
+        if (isBadgeUrl(resolved)) {
+          return (
+            <img
+              src={resolved}
+              alt={alt ?? ""}
+              loading="lazy"
+              decoding="async"
+              className="inline-block h-5 align-middle"
+              {...props}
+            />
+          );
+        }
+
         return (
-          <Image
+          <img
             src={resolved}
             alt={alt ?? ""}
-            unoptimized
-            width={1200}
-            height={700}
-            className="mt-8 h-auto w-full rounded-3xl border border-neutral-200/70 object-contain dark:border-neutral-700/60"
+            loading="lazy"
+            decoding="async"
+            className="mt-4 h-auto max-w-full rounded-lg border border-neutral-200/70 object-contain dark:border-neutral-700/60"
+            {...props}
           />
         );
       },
-      table: ({ node, ...props }) => (
-        <div className="mt-8 overflow-x-auto rounded-3xl border border-neutral-200/70 dark:border-neutral-700/60">
+      table: ({ node: _node, ...props }) => (
+        <div className="mt-4 overflow-x-auto rounded-lg border border-neutral-200/70 dark:border-neutral-700/60">
           <table className="min-w-full divide-y divide-neutral-200 text-sm dark:divide-neutral-700" {...props} />
         </div>
       ),
-      thead: ({ node, ...props }) => (
-        <thead className="bg-neutral-100/70 dark:bg-neutral-800/70" {...props} />
+      thead: ({ node: _node, ...props }) => (
+        <thead className="bg-neutral-50 dark:bg-neutral-800/70" {...props} />
       ),
-      tbody: ({ node, ...props }) => <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700" {...props} />,
-      th: ({ node, ...props }) => (
-        <th className="px-3 py-3 text-left font-semibold text-neutral-700 dark:text-neutral-200" {...props} />
+      tbody: ({ node: _node, ...props }) => (
+        <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700" {...props} />
       ),
-      td: ({ node, ...props }) => <td className="px-3 py-3 text-neutral-600 dark:text-neutral-300" {...props} />,
+      th: ({ node: _node, ...props }) => (
+        <th className="px-3 py-2 text-left text-xs font-semibold text-neutral-700 dark:text-neutral-200" {...props} />
+      ),
+      td: ({ node: _node, ...props }) => (
+        <td className="px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300" {...props} />
+      ),
     }),
-    [readmeBase]
+    [isBadgeUrl, readmeBase]
   );
 
   const handleTogglePath = useCallback(
@@ -480,7 +550,11 @@ export function ProjectDetail({ repository }: ProjectDetailProps) {
 
                 {readmeState.status === "loaded" && readmeState.data ? (
                   readmeState.data.content.trim().length > 0 ? (
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                      components={markdownComponents}
+                    >
                       {readmeState.data.content}
                     </ReactMarkdown>
                   ) : (

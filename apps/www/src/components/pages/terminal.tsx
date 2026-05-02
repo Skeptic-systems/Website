@@ -7,7 +7,6 @@ import { Flag } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
 import {
-  gsapSectionConfig,
   type GsapSectionSetup,
   useGsapSection,
 } from "@/lib/gsap-animations";
@@ -634,58 +633,42 @@ export function Terminal() {
   ]);
 
   const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
-    const { triggerStart, ease } = gsapSectionConfig;
-    const fadeIn = (element: HTMLElement | null, start: string = triggerStart) => {
-      if (!element) {
-        return;
-      }
-      gsap.fromTo(
-        element,
-        { y: 40, opacity: 0, filter: "blur(8px)" },
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.78,
-          ease,
-          scrollTrigger: {
-            trigger: element,
-            start,
-            once: true,
-          },
-          clearProps: "all",
-        },
-      );
-    };
+    const ease = "power2.out";
 
-    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-accent']"), "top 85%");
-    fadeIn(node.querySelector<HTMLElement>("[data-animate='section-heading']"));
+    const accent = node.querySelector<HTMLElement>("[data-animate='section-accent']");
+    if (accent) {
+      gsap.fromTo(accent, { y: 14, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.35, ease,
+        scrollTrigger: { trigger: accent, start: "top 88%", once: true },
+        clearProps: "all",
+      });
+    }
+
+    const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
+    if (heading) {
+      gsap.fromTo(heading, { y: 20, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.45, ease,
+        scrollTrigger: { trigger: heading, start: "top 88%", once: true },
+        clearProps: "all",
+      });
+    }
 
     const copies = node.querySelectorAll<HTMLElement>("[data-animate='section-copy']");
-    copies.forEach((copy, index) => {
-      fadeIn(copy, index === 0 ? "top 82%" : "top 80%");
+    copies.forEach((copy) => {
+      gsap.fromTo(copy, { y: 12, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.3, ease,
+        scrollTrigger: { trigger: copy, start: "top 88%", once: true },
+        clearProps: "all",
+      });
     });
 
     const shell = node.querySelector<HTMLElement>("[data-animate='terminal-shell']");
     if (shell) {
-      gsap.fromTo(
-        shell,
-        { y: 80, opacity: 0, scale: 0.92, filter: "blur(10px)" },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.9,
-          ease,
-          scrollTrigger: {
-            trigger: shell,
-            start: "top 78%",
-            once: true,
-          },
-          clearProps: "transform,opacity",
-        },
-      );
+      gsap.fromTo(shell, { y: 40, opacity: 0, scale: 0.96 }, {
+        y: 0, opacity: 1, scale: 1, duration: 0.55, ease,
+        scrollTrigger: { trigger: shell, start: "top 82%", once: true },
+        clearProps: "transform,opacity",
+      });
     }
   }, []);
   const sectionRef = useGsapSection<HTMLDivElement>(terminalAnimation);

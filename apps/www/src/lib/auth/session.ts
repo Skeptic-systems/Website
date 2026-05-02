@@ -2,17 +2,15 @@ import { cookies } from "next/headers";
 
 import type { AuthenticatedProfile } from "./types";
 
-const apiBaseCandidates = [
-  process.env.NEXT_PUBLIC_API_URL,
-  process.env.NEXT_INTERNAL_API_URL,
-].filter((value): value is string => typeof value === "string" && value.length > 0);
-
-if (apiBaseCandidates.length === 0) {
-  throw new Error("Missing NEXT_PUBLIC_API_URL (or NEXT_INTERNAL_API_URL) for auth session lookups");
-}
-
 type ProfileResponse = {
   user: AuthenticatedProfile;
+};
+
+const resolveApiBaseCandidates = (): string[] => {
+  return [
+    process.env.NEXT_PUBLIC_API_URL,
+    process.env.NEXT_INTERNAL_API_URL,
+  ].filter((value): value is string => typeof value === "string" && value.length > 0);
 };
 
 const fetchProfileFromBase = async (
@@ -48,6 +46,12 @@ export const readServerProfile = async (): Promise<AuthenticatedProfile | null> 
     return null;
   }
 
+  const apiBaseCandidates = resolveApiBaseCandidates();
+
+  if (apiBaseCandidates.length === 0) {
+    throw new Error("Missing NEXT_PUBLIC_API_URL (or NEXT_INTERNAL_API_URL) for auth session lookups");
+  }
+
   for (const baseUrl of apiBaseCandidates) {
     try {
       const profile = await fetchProfileFromBase(baseUrl, serializedCookies);
@@ -63,4 +67,3 @@ export const readServerProfile = async (): Promise<AuthenticatedProfile | null> 
 
   return null;
 };
-

@@ -576,13 +576,27 @@ export async function ensureTerminalTables(): Promise<void> {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS terminal_messages (
       id TEXT PRIMARY KEY,
-      session_id TEXT NOT NULL REFERENCES terminal_sessions(id) ON DELETE CASCADE,
+      session_id TEXT REFERENCES terminal_sessions(id) ON DELETE SET NULL,
       text_default TEXT NOT NULL,
       text_en TEXT,
       text_de TEXT,
       created_at TIMESTAMP NOT NULL DEFAULT NOW()
     );
   `);
+
+  await db.execute(sql`
+    ALTER TABLE terminal_messages ALTER COLUMN session_id DROP NOT NULL;
+  `).catch(() => {});
+
+  await db.execute(sql`
+    ALTER TABLE terminal_messages DROP CONSTRAINT IF EXISTS terminal_messages_session_id_terminal_sessions_id_fk;
+  `).catch(() => {});
+
+  await db.execute(sql`
+    ALTER TABLE terminal_messages
+      ADD CONSTRAINT terminal_messages_session_id_terminal_sessions_id_fk
+      FOREIGN KEY (session_id) REFERENCES terminal_sessions(id) ON DELETE SET NULL;
+  `).catch(() => {});
 
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS terminal_sessions_expires_idx ON terminal_sessions (expires_at);

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { apiBaseUrl } from "@/lib/api";
+import { getApiBaseUrl } from "@/lib/api";
 import { authClient } from "@/lib/auth/client";
 
 type FeedbackState = {
@@ -13,7 +13,7 @@ type FeedbackState = {
   text: string;
 };
 
-const ownerBootstrapEndpoint = `${apiBaseUrl}/auth/bootstrap-owner`;
+const resolveOwnerBootstrapEndpoint = (): string => `${getApiBaseUrl()}/auth/bootstrap-owner`;
 
 type OwnerStateResponse = {
   ownerExists: boolean;
@@ -42,7 +42,7 @@ export function LoginForm() {
 
     const loadOwnerState = async () => {
       try {
-        const response = await fetch(ownerBootstrapEndpoint, {
+        const response = await fetch(resolveOwnerBootstrapEndpoint(), {
           credentials: "include",
           signal: controller.signal,
         });
@@ -192,7 +192,7 @@ export function LoginForm() {
 
     startOwnerTransition(async () => {
       try {
-        const response = await fetch(ownerBootstrapEndpoint, {
+        const response = await fetch(resolveOwnerBootstrapEndpoint(), {
           method: "POST",
           credentials: "include",
           headers: {
