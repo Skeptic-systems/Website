@@ -66,6 +66,46 @@ const terminalRoute = createRoute({
   },
 });
 
+const vaultRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/vault",
+  staticData: {
+    title: "Vault | Skeptic Systems",
+    description: "Secure utilities, converters, and AI skills in one curated workspace.",
+    image: socialImage,
+  },
+});
+
+const vaultToolRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/vault/$slug",
+  staticData: {
+    title: "Vault Tool | Skeptic Systems",
+    description: "Browser-side utilities for certificates, Docker, and cron scheduling.",
+    image: socialImage,
+  },
+});
+
+const skillsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/skills",
+  staticData: {
+    title: "AI Skills | Skeptic Systems",
+    description: "Browse, copy, and download Cursor-ready skill markdown from the vault.",
+    image: socialImage,
+  },
+});
+
+const skillDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/skills/$slug",
+  staticData: {
+    title: "AI Skill | Skeptic Systems",
+    description: "Preview and download a Cursor-ready skill markdown file.",
+    image: socialImage,
+  },
+});
+
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "*",
@@ -82,6 +122,10 @@ const routeTree = rootRoute.addChildren([
   privacyRoute,
   projectsRoute,
   projectDetailRoute,
+  vaultRoute,
+  vaultToolRoute,
+  skillsRoute,
+  skillDetailRoute,
   terminalRoute,
   notFoundRoute,
 ]);

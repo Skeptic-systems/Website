@@ -27,6 +27,7 @@
     "links": {
       "about": "Über mich",
       "tools": "Tools",
+      "vault": "Tresor",
       "selfhosted": "Selfhosted"
     },
     "cta": {
@@ -521,6 +522,273 @@
     }
   }
   ,
+  "skills": {
+    "meta": {
+      "title": "AI Skills",
+      "description": "Skills durchsuchen, kopieren und Cursor-ready Markdown aus dem Tresor herunterladen."
+    },
+    "actions": {
+      "backToVault": "Zurück zum Tresor",
+      "copyRaw": "Raw kopieren",
+      "download": "Download",
+      "copied": "Kopiert",
+      "copyFailed": "Kopieren fehlgeschlagen",
+      "browseAll": "Alle Skills ansehen",
+      "openSkills": "Skills-Bibliothek öffnen"
+    },
+    "sidebar": {
+      "filterPlaceholder": "Notizen filtern...",
+      "vaultRoot": "Vault root",
+      "sectionLabel": "AI Skills",
+      "fileCount": "{count, plural, one {# Notiz} other {# Notizen}}",
+      "toggle": "Skill-Liste umschalten"
+    },
+    "viewer": {
+      "created": "Erstellt",
+      "updated": "Aktualisiert",
+      "tags": "Tags"
+    },
+    "toc": {
+      "title": "Auf dieser Seite"
+    },
+    "states": {
+      "empty": "Noch keine Skills verfügbar.",
+      "noMatches": "Keine Skills passen zum Filter."
+    },
+    "detail": {
+      "notFoundAccent": "Skill fehlt",
+      "notFoundTitle": "Diesen Skill konnten wir nicht finden.",
+      "notFoundBody": "Der Link ist vielleicht veraltet oder die Datei wurde entfernt. Kehre zur Skills-Bibliothek zurück."
+    }
+  },
+  "vault": {
+    "meta": {
+      "title": "Tresor",
+      "badge": "Sichere Utilities",
+      "tagline": "Private Tools, Converter und AI Skills in einem ruhigen Workspace.",
+      "description": "Ein kuratierter Tresor für alltägliche Engineering-Helfer — von Zertifikats-Workflows bis Cron-Syntax, plus wiederverwendbare AI Skills für deinen Editor.",
+      "previewPath": "vault://workspace",
+      "previewChips": {
+        "localFirst": "Lokal",
+        "noUploads": "Ohne Uploads",
+        "curated": "Kuratiert"
+      }
+    },
+    "actions": {
+      "back": "Zur Startseite",
+      "backToVault": "Zurück zum Tresor",
+      "openTool": "Tool öffnen",
+      "comingSoon": "Demnächst"
+    },
+    "aiSkills": {
+      "label": "AI Skills",
+      "headline": "Wiederverwendbare Intelligenz für deinen Workflow",
+      "description": "Kuratierte Cursor Skills und Prompt-Packs für Entwicklung, Automation, Infrastruktur und Code Review — bereit für deinen Editor.",
+      "browseDescription": "Öffne die Skills-Bibliothek, um Markdown anzusehen, Raw-Text zu kopieren oder Dateien für deinen Editor herunterzuladen."
+    },
+    "converters": {
+      "label": "Converter",
+      "headline": "Kleine Tools, null Reibung",
+      "description": "Browser-Utilities, die Formate übersetzen, die du täglich brauchst — ohne Uploads, ohne Accounts, einfach einfügen und konvertieren."
+    },
+    "tools": {
+      "certConverter": {
+        "title": "Cert Converter",
+        "badge": "TLS / PEM",
+        "description": "Konvertiere zwischen PEM, DER, PKCS#12 und gebündelten Zertifikatsketten mit klarer Validierung.",
+        "comingSoon": "Zertifikats-Parsing und Export-Flows werden gerade angebunden."
+      },
+      "dockerCompose": {
+        "title": "Docker Run → Compose",
+        "badge": "Container",
+        "description": "Wandle einen docker-run-Befehl in eine saubere, editierbare docker-compose.yml mit sinnvollen Defaults.",
+        "comingSoon": "Run-Flag-Parsing und Compose-Generierung sind in Arbeit."
+      },
+      "crontabConverter": {
+        "title": "Crontab Converter",
+        "badge": "Scheduling",
+        "description": "Übersetze Cron-Ausdrücke in lesbare Zeitpläne und zurück — mit Timezone-Hinweisen.",
+        "comingSoon": "Expression-Parsing und natürliche Sprachausgabe folgen bald."
+      }
+    },
+    "toolPage": {
+      "status": "In Entwicklung",
+      "comingSoonTitle": "Dieses Tool ist fast fertig",
+      "comingSoonBody": "Die Oberfläche ist vorbereitet und erscheint hier demnächst. Kehre zur Tresor-Übersicht zurück, um andere Utilities zu entdecken."
+    },
+    "detail": {
+      "notFoundAccent": "Utility fehlt",
+      "notFoundTitle": "Diesen Tresor-Eintrag konnten wir nicht finden.",
+      "notFoundBody": "Der Link ist vielleicht veraltet oder das Tool wurde noch nicht veröffentlicht. Kehre zur Tresor-Übersicht zurück."
+    }
+  },
+  "certConverter": {
+    "categories": {
+      "source": {
+        "certs": "Zertifikate",
+        "keys": "Schlüssel",
+        "requests": "Anfragen",
+        "multi": "Mehrere Dateien",
+        "fresh": "Neu erstellen"
+      },
+      "target": {
+        "convert": "Format-Konvertierung",
+        "bundle": "Bündeln",
+        "keys": "Schlüssel-Operationen",
+        "generate": "Generieren",
+        "inspect": "Prüfen & Verifizieren"
+      }
+    },
+    "source": {
+      "label": "Ich habe",
+      "pemCert": "PEM-Zertifikat",
+      "pemCertHint": "Du hast eine .pem- oder .crt-Datei (Base64-Textformat)",
+      "derCert": "DER-Zertifikat",
+      "derCertHint": "Du hast eine .der- oder .cer-Datei (Binärformat)",
+      "pkcs12": "PKCS#12 / PFX",
+      "pkcs12Hint": "Du hast eine .p12- oder .pfx-Datei mit Zertifikat und Schlüssel",
+      "pkcs7": "PKCS#7 / P7B",
+      "pkcs7Hint": "Du hast einen .p7b-Container mit einem oder mehreren Zertifikaten",
+      "privateKey": "Privater Schlüssel",
+      "privateKeyHint": "Du hast eine unverschlüsselte .key-Datei (PEM-Format)",
+      "encryptedKey": "Verschlüsselter Schlüssel",
+      "encryptedKeyHint": "Du hast eine passwortgeschützte .key-Datei",
+      "csr": "CSR",
+      "csrHint": "Du hast eine .csr-Datei (Zertifikatsanforderung)",
+      "certAndKey": "Zertifikat + Schlüssel",
+      "certAndKeyHint": "Du hast separate .pem-Zertifikat- und .key-Dateien",
+      "multiplePem": "Mehrere PEM-Dateien",
+      "multiplePemHint": "Du hast Server-Zert., Intermediate und Root-CA als einzelne Dateien",
+      "none": "Nichts",
+      "noneHint": "Privaten Schlüssel, CSR oder selbstsigniertes Zertifikat von Grund auf erstellen"
+    },
+    "target": {
+      "label": "Ich will",
+      "placeholder": "Wähle zuerst aus, was du hast",
+      "pemCert": "PEM-Zertifikat",
+      "pemCertHint": "Eine .pem/.crt-Datei im Base64-Textformat erhalten",
+      "derCert": "DER-Zertifikat",
+      "derCertHint": "Eine .der/.cer-Datei im Binärformat erhalten",
+      "pkcs7": "PKCS#7 / P7B",
+      "pkcs7Hint": "Zertifikat(e) in einen .p7b-Container verpacken",
+      "pkcs12": "PKCS#12 / PFX-Bundle",
+      "pkcs12Hint": "Ein .p12/.pfx-Bundle für Windows, Java oder Browser-Import erstellen",
+      "chainBundle": "Vollständige Kette (chain.pem)",
+      "chainBundleHint": "Leaf + Intermediate + Root-CA zu einer fullchain.pem zusammenfügen",
+      "publicKey": "Öffentlicher Schlüssel",
+      "publicKeyHint": "Den öffentlichen Schlüssel aus dem privaten extrahieren",
+      "decryptedKey": "Schlüssel entschlüsseln",
+      "decryptedKeyHint": "Passphrase vom verschlüsselten Schlüssel entfernen",
+      "encryptedKey": "Schlüssel verschlüsseln",
+      "encryptedKeyHint": "Schlüssel mit AES-256-Passphrase schützen",
+      "pkcs8Key": "PKCS#8-Format",
+      "pkcs8KeyHint": "Schlüssel ins PKCS#8-Standardformat konvertieren",
+      "csr": "CSR (Signierungsanfrage)",
+      "csrHint": "Anfrage erstellen, um sie deiner CA zum Signieren zu geben",
+      "csrAndKey": "CSR + Neuer Schlüssel",
+      "csrAndKeyHint": "Schlüssel und CSR in einem Schritt erzeugen — fertig für deine CA",
+      "selfSigned": "Selbstsigniertes Zert. + Schlüssel",
+      "selfSignedHint": "Neuen Schlüssel und selbstsigniertes Zertifikat für Tests oder intern erstellen",
+      "selfSignedFromKey": "Selbstsigniertes Zertifikat",
+      "selfSignedFromKeyHint": "Zertifikat mit dem vorhandenen privaten Schlüssel signieren",
+      "selfSignedFromCsr": "CSR signieren (selbstsigniert)",
+      "selfSignedFromCsrHint": "CSR mit eigenem Schlüssel statt einer CA signieren",
+      "rsaKey": "RSA-Schlüssel",
+      "rsaKeyHint": "Neues RSA-Schlüsselpaar generieren (2048 oder 4096 Bit)",
+      "ecKey": "EC-Schlüssel",
+      "ecKeyHint": "Neues Elliptic-Curve-Schlüsselpaar generieren (P-256, P-384, P-521)",
+      "certDetails": "Zertifikat anzeigen",
+      "certDetailsHint": "Subject, Issuer, Gültigkeit und SANs anzeigen",
+      "expiryCheck": "Ablauf prüfen",
+      "expiryCheckHint": "Anzeigen, wann dieses Zertifikat abläuft",
+      "fingerprint": "SHA-256-Fingerabdruck",
+      "fingerprintHint": "Fingerabdruck des Zertifikats zur Verifizierung berechnen",
+      "keyMatch": "Schlüssel-Zuordnung prüfen",
+      "keyMatchHint": "Prüfen, ob Zertifikat und privater Schlüssel zusammengehören",
+      "verifyChain": "Kette verifizieren",
+      "verifyChainHint": "Zertifikat gegen seine CA-Kette validieren",
+      "viewCsr": "CSR anzeigen",
+      "viewCsrHint": "Inhalt einer CSR dekodieren und verifizieren"
+    },
+    "params": {
+      "label": "Parameter",
+      "showSubject": "Subject-Felder anzeigen (CN, O, C, ...)",
+      "hideSubject": "Subject-Felder ausblenden",
+      "fields": {
+        "inputFile": "Eingabedatei",
+        "outputFile": "Ausgabedatei",
+        "keyFile": "Schlüsseldatei",
+        "caFile": "Root-CA-Datei",
+        "chainFiles": "CA-Chain- / Bundle-Datei",
+        "intermediateCaFile": "Intermediate-CA-Datei",
+        "password": "Passphrase (Eingabe)",
+        "outPassword": "Passphrase (Ausgabe)",
+        "cn": "Common Name (CN)",
+        "org": "Organisation (O)",
+        "ou": "Organisationseinheit (OU)",
+        "country": "Land (C)",
+        "state": "Bundesland (ST)",
+        "locality": "Ort (L)",
+        "email": "E-Mail",
+        "san": "Subject Alt Names (SAN)",
+        "days": "Gültigkeit (Tage)",
+        "keySize": "Schlüsselgröße (Bit)",
+        "curve": "EC-Kurve",
+        "hash": "Hash-Algorithmus"
+      },
+      "placeholders": {
+        "inputFile": "cert.pem",
+        "outputFile": "output.pem",
+        "keyFile": "private.key",
+        "caFile": "rootca.pem",
+        "chainFiles": "ca-chain.pem",
+        "intermediateCaFile": "intermediate.pem (optional)",
+        "password": "Passphrase eingeben",
+        "outPassword": "Export-Passphrase eingeben",
+        "cn": "example.com",
+        "org": "Meine Firma",
+        "ou": "Technik",
+        "country": "DE",
+        "state": "Bayern",
+        "locality": "Erlangen",
+        "email": "admin@example.com",
+        "san": "www.example.com, api.example.com, 10.0.0.1",
+        "days": "365",
+        "keySize": "2048",
+        "curve": "prime256v1",
+        "hash": "sha256"
+      }
+    },
+    "output": {
+      "label": "Generierter Befehl",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    }
+  },
+  "vaultHighlight": {
+    "label": "Tresor",
+    "headline": "Tresor",
+    "description": "Ein kuratierter Workspace mit Browser-Utilities, Format-Convertern und wiederverwendbaren AI Skills — privat, lokal und sofort nutzbar.",
+    "cta": "Zum Tresor",
+    "items": {
+      "aiSkills": {
+        "title": "AI Skills",
+        "description": "Cursor-ready Skill-Markdown zum Ansehen, Kopieren oder Herunterladen."
+      },
+      "certConverter": {
+        "title": "Cert Converter",
+        "description": "Konvertiere zwischen PEM-, DER- und PKCS#12-Zertifikatsformaten."
+      },
+      "dockerCompose": {
+        "title": "Docker Run → Compose",
+        "description": "Wandle einen docker-run-Befehl in eine saubere Compose-Datei um."
+      },
+      "crontabConverter": {
+        "title": "Crontab Converter",
+        "description": "Übersetze Cron-Ausdrücke in verständliche Zeitpläne."
+      }
+    }
+  },
   "projects": {
     "title": "Projekte",
     "accent": "GitHub-Archiv",
@@ -731,6 +999,101 @@
       "madeWith": "Mit <heart></heart> gemacht von Skeptic",
       "copyright": "\u00A9 Skeptic Systems {start} - {end}",
       "secret": "Moneymarc aka Monetenmarc ist der Beste"
+    }
+  },
+  "dockerComposeConverter": {
+    "input": {
+      "label": "Docker Run Befehl",
+      "placeholder": "docker run -d --name myapp -p 8080:80 nginx:alpine",
+      "hint": "Füge oben einen vollständigen docker-run-Befehl ein. Er wird in Echtzeit in eine docker-compose.yml konvertiert.",
+      "example": "Beispiel",
+      "clear": "Leeren"
+    },
+    "output": {
+      "label": "Generierte Compose-Datei",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    },
+    "warnings": {
+      "label": "Konvertierungshinweise"
+    }
+  },
+  "crontabConverter": {
+    "modes": {
+      "build": "Erstellen",
+      "read": "Erklären"
+    },
+    "build": {
+      "presetLabel": "Zeitplan-Typ",
+      "presets": {
+        "everyMinute": "Jede Minute",
+        "everyNMinutes": "Alle N Min.",
+        "everyHour": "Stündlich",
+        "everyNHours": "Alle N Std.",
+        "dailyAt": "Täglich",
+        "weeklyOn": "Wöchentlich",
+        "monthlyOn": "Monatlich",
+        "custom": "Benutzerdefiniert"
+      },
+      "paramsLabel": "Parameter",
+      "fields": {
+        "minute": "Minute",
+        "hour": "Stunde",
+        "dayOfWeek": "Wochentag",
+        "dayOfMonth": "Tag im Monat",
+        "intervalMinutes": "Alle N Minuten",
+        "intervalHours": "Alle N Stunden"
+      }
+    },
+    "read": {
+      "label": "Cron-Ausdruck",
+      "placeholder": "*/5 * * * *",
+      "errors": "Validierungsfehler"
+    },
+    "output": {
+      "label": "Generierter Ausdruck",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    },
+    "weekdays": {
+      "sun": "Sonntag",
+      "mon": "Montag",
+      "tue": "Dienstag",
+      "wed": "Mittwoch",
+      "thu": "Donnerstag",
+      "fri": "Freitag",
+      "sat": "Samstag"
+    },
+    "cheatsheet": {
+      "title": "Spickzettel",
+      "fieldOrder": "Feldreihenfolge",
+      "fields": {
+        "minute": "MIN",
+        "hour": "STD",
+        "dayOfMonth": "TAG",
+        "month": "MON",
+        "dayOfWeek": "WT"
+      },
+      "tokens": "Sonderzeichen",
+      "tokenMeaning": {
+        "asterisk": "Beliebiger Wert",
+        "comma": "Aufzählung (z. B. 1,3,5)",
+        "dash": "Bereich (z. B. 1-5)",
+        "slash": "Schritt (z. B. */5 = alle 5)"
+      },
+      "examples": "Häufige Beispiele",
+      "desc": {
+        "everyMinute": "Jede Minute",
+        "every5Min": "Alle 5 Minuten",
+        "everyHour": "Jede volle Stunde",
+        "every2Hours": "Alle 2 Stunden",
+        "midnight": "Täglich um Mitternacht",
+        "weekdays9am": "Werktags um 09:00",
+        "monthlyFirst": "Am 1. jedes Monats um Mitternacht",
+        "weeklySunday": "Jeden Sonntag um Mitternacht",
+        "bimonthly": "Am 1. & 15. um 04:30",
+        "yearly": "Jährlich am 1. Januar um Mitternacht"
+      }
     }
   }
 }
