@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useCallback, type ComponentType } from "react";
+import { useCallback, type ReactNode } from "react";
 import { motion } from "motion/react";
 import {
   IconCertificate,
   IconClock,
   IconBrandDocker,
+  IconTerminal2,
 } from "@tabler/icons-react";
 import { Brain, CaretRight } from "phosphor-react";
 
@@ -20,13 +21,12 @@ import {
 import { buildVaultToolHref, VAULT_TOOLS } from "@/lib/vault";
 import { cn } from "@/lib/utils";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type IconComponent = ComponentType<Record<string, any>>;
+type IconRenderer = (props: { className: string }) => ReactNode;
 
 type VaultHighlightItem = {
   key: string;
   href: string;
-  icon: IconComponent;
+  icon: IconRenderer;
   accent: string;
   glow: string;
 };
@@ -35,30 +35,37 @@ const HIGHLIGHT_ITEMS: readonly VaultHighlightItem[] = [
   {
     key: "aiSkills",
     href: "/skills",
-    icon: Brain,
+    icon: ({ className }) => <Brain className={className} weight="fill" />,
     accent: "text-amber-500 dark:text-amber-300",
     glow: "rgba(245, 158, 11, 0.15)",
   },
   {
     key: "certConverter",
     href: buildVaultToolHref(VAULT_TOOLS[0]),
-    icon: IconCertificate,
+    icon: ({ className }) => <IconCertificate className={className} stroke={1.5} />,
     accent: VAULT_TOOLS[0].palette.accent,
     glow: VAULT_TOOLS[0].palette.glow,
   },
   {
     key: "dockerCompose",
     href: buildVaultToolHref(VAULT_TOOLS[1]),
-    icon: IconBrandDocker,
+    icon: ({ className }) => <IconBrandDocker className={className} stroke={1.5} />,
     accent: VAULT_TOOLS[1].palette.accent,
     glow: VAULT_TOOLS[1].palette.glow,
   },
   {
     key: "crontabConverter",
     href: buildVaultToolHref(VAULT_TOOLS[2]),
-    icon: IconClock,
+    icon: ({ className }) => <IconClock className={className} stroke={1.5} />,
     accent: VAULT_TOOLS[2].palette.accent,
     glow: VAULT_TOOLS[2].palette.glow,
+  },
+  {
+    key: "quickCommands",
+    href: buildVaultToolHref(VAULT_TOOLS[3]),
+    icon: ({ className }) => <IconTerminal2 className={className} stroke={1.5} />,
+    accent: VAULT_TOOLS[3].palette.accent,
+    glow: VAULT_TOOLS[3].palette.glow,
   },
 ] as const;
 
@@ -128,7 +135,7 @@ export function VaultHighlight() {
             </p>
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto mt-14 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {HIGHLIGHT_ITEMS.map((item) => (
               <VaultHighlightCard key={item.key} item={item} t={t} />
             ))}
@@ -177,7 +184,7 @@ function VaultHighlightCard({ item, t }: VaultHighlightCardProps) {
               item.accent,
             )}
           >
-            <item.icon className="h-5 w-5" stroke={1.5} weight="fill" size={20} />
+            {item.icon({ className: "h-5 w-5" })}
           </div>
           <CaretRight
             className="h-4 w-4 text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300"

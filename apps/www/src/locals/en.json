@@ -609,6 +609,12 @@
         "badge": "Scheduling",
         "description": "Translate cron expressions into human-readable schedules and back again, with timezone hints.",
         "comingSoon": "Expression parsing and natural-language output are on the way."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "badge": "Shell Library",
+        "description": "Store recurring shell commands as curated snippets with syntax highlighting and copy actions.",
+        "comingSoon": "More commands will be added over time."
       }
     },
     "toolPage": {
@@ -786,6 +792,10 @@
       "crontabConverter": {
         "title": "Crontab Converter",
         "description": "Translate cron expressions into human-readable schedules."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "description": "Keep recurring shell commands highlighted and ready to copy."
       }
     }
   },
@@ -1093,6 +1103,25 @@
         "weeklySunday": "Every Sunday at midnight",
         "bimonthly": "1st & 15th at 04:30",
         "yearly": "Yearly on Jan 1st at midnight"
+      }
+    }
+  }
+  ,
+  "quickCommands": {
+    "library": "Command Library",
+    "copy": "Copy",
+    "copied": "Copied",
+    "count": "{count, plural, one {# command} other {# commands}}",
+    "commands": {
+      "debianDockerBootstrap": {
+        "title": "Docker install",
+        "description": "Installs curl and sudo, downloads the official Docker installer, runs it, and removes the script afterwards.",
+        "badge": "Docker Setup"
+      },
+      "jellyfinTsToMp4": {
+        "title": "Jellyfin TS to MP4",
+        "description": "Converts .ts files in the Jellyfin movies folder to .mp4 and removes each original after a successful conversion.",
+        "badge": "Jellyfin"
       }
     }
   }

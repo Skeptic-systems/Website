@@ -7,11 +7,13 @@ import {
   IconCertificate,
   IconClock,
   IconBrandDocker,
+  IconTerminal2,
 } from "@tabler/icons-react";
 import {
   Brain,
   CaretLeft,
   CaretRight,
+  type IconWeight,
   LockKey,
 } from "phosphor-react";
 
@@ -28,12 +30,13 @@ import {
 } from "@/lib/vault";
 import { cn } from "@/lib/utils";
 
-type IconComponent = ComponentType<{ className?: string; stroke?: number; weight?: string; size?: number }>;
+type IconComponent = ComponentType<{ className?: string; stroke?: number; weight?: IconWeight; size?: number }>;
 
 const TOOL_ICONS: Record<VaultToolKey, IconComponent> = {
   certConverter: IconCertificate,
   dockerCompose: IconBrandDocker,
   crontabConverter: IconClock,
+  quickCommands: IconTerminal2,
 };
 
 export function VaultPageContent() {
@@ -165,6 +168,9 @@ export function VaultPageContent() {
                     </Link>
                     <Link href="/vault/crontab-converter" className="block transition hover:text-white">
                       crontab-converter/
+                    </Link>
+                    <Link href="/vault/quick-commands" className="block transition hover:text-white">
+                      quick-commands/
                     </Link>
                   </div>
 

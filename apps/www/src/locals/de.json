@@ -609,6 +609,12 @@
         "badge": "Scheduling",
         "description": "Übersetze Cron-Ausdrücke in lesbare Zeitpläne und zurück — mit Timezone-Hinweisen.",
         "comingSoon": "Expression-Parsing und natürliche Sprachausgabe folgen bald."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "badge": "Shell Library",
+        "description": "Speichere wiederkehrende Shell-Befehle als kuratierte Snippets mit Syntax-Highlighting und Copy-Button.",
+        "comingSoon": "Weitere Commands werden laufend ergänzt."
       }
     },
     "toolPage": {
@@ -786,6 +792,10 @@
       "crontabConverter": {
         "title": "Crontab Converter",
         "description": "Übersetze Cron-Ausdrücke in verständliche Zeitpläne."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "description": "Wiederkehrende Shell-Befehle sauber markieren und sofort kopieren."
       }
     }
   },
@@ -1093,6 +1103,25 @@
         "weeklySunday": "Jeden Sonntag um Mitternacht",
         "bimonthly": "Am 1. & 15. um 04:30",
         "yearly": "Jährlich am 1. Januar um Mitternacht"
+      }
+    }
+  }
+  ,
+  "quickCommands": {
+    "library": "Command Library",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "count": "{count, plural, one {# Befehl} other {# Befehle}}",
+    "commands": {
+      "debianDockerBootstrap": {
+        "title": "Docker install",
+        "description": "Installiert curl und sudo, lädt das offizielle Docker-Installationsscript, führt es aus und räumt die Script-Datei wieder auf.",
+        "badge": "Docker Setup"
+      },
+      "jellyfinTsToMp4": {
+        "title": "Jellyfin TS zu MP4",
+        "description": "Wandelt .ts-Dateien im Jellyfin-Movie-Ordner zu .mp4 um und entfernt die Originaldatei nach erfolgreicher Konvertierung.",
+        "badge": "Jellyfin"
       }
     }
   }

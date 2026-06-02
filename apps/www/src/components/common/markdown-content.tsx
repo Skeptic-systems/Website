@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 
 export type MarkdownHeadingId = {
   id: string;
+  text: string;
   level: 2 | 3;
 };
 

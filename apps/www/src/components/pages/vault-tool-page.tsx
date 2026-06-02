@@ -1,6 +1,11 @@
 "use client";
 
-import { IconBrandDocker, IconCertificate, IconClock } from "@tabler/icons-react";
+import {
+  IconBrandDocker,
+  IconCertificate,
+  IconClock,
+  IconTerminal2,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { CaretLeft, LockKey } from "phosphor-react";
@@ -10,6 +15,7 @@ import { geist } from "@/app/fonts";
 import { CertConverter } from "@/components/pages/vault-tools/cert-converter";
 import { CrontabConverter } from "@/components/pages/vault-tools/crontab-converter";
 import { DockerComposeConverter } from "@/components/pages/vault-tools/docker-compose-converter";
+import { QuickCommands } from "@/components/pages/vault-tools/quick-commands";
 import { cn } from "@/lib/utils";
 import type { VaultToolDefinition, VaultToolKey } from "@/lib/vault";
 
@@ -19,6 +25,7 @@ const TOOL_ICONS: Record<VaultToolKey, IconComponent> = {
   certConverter: IconCertificate,
   dockerCompose: IconBrandDocker,
   crontabConverter: IconClock,
+  quickCommands: IconTerminal2,
 };
 
 type VaultToolPageContentProps = {
@@ -29,6 +36,7 @@ const TOOL_COMPONENTS: Partial<Record<VaultToolKey, React.ComponentType>> = {
   certConverter: CertConverter,
   dockerCompose: DockerComposeConverter,
   crontabConverter: CrontabConverter,
+  quickCommands: QuickCommands,
 };
 
 export function VaultToolPageContent({ tool }: VaultToolPageContentProps) {

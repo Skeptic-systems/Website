@@ -1,4 +1,8 @@
-export type VaultToolKey = "certConverter" | "dockerCompose" | "crontabConverter";
+export type VaultToolKey =
+  | "certConverter"
+  | "dockerCompose"
+  | "crontabConverter"
+  | "quickCommands";
 
 export type VaultPalette = {
   glow: string;
@@ -42,6 +46,16 @@ export const VAULT_TOOLS: readonly VaultToolDefinition[] = [
       border: "rgba(167, 139, 250, 0.35)",
       accent: "text-violet-500 dark:text-violet-300",
       halo: "bg-violet-500/20",
+    },
+  },
+  {
+    key: "quickCommands",
+    slug: "quick-commands",
+    palette: {
+      glow: "rgba(251, 146, 60, 0.18)",
+      border: "rgba(251, 146, 60, 0.32)",
+      accent: "text-orange-500 dark:text-orange-300",
+      halo: "bg-orange-500/20",
     },
   },
 ] as const;
