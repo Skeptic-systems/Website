@@ -137,10 +137,10 @@ export const discordEnv = {
   apiBaseUrl: readOptionalEnv("LANYARD_API_BASE_URL") ?? "https://api.lanyard.rest",
 };
 
-export const pterodactylEnv = {
-  apiBaseUrl: readEnv("PTERODACTYL_API_URL"),
-  apiKey: readEnv("PTERODACTYL_API_KEY"),
-  siteIdentifier: readOptionalEnv("PTERODACTYL_SITE_IDENTIFIER"),
+export const pelicanEnv = {
+  apiBaseUrl: readEnv("PELICAN_API_URL"),
+  apiKey: readEnv("PELICAN_API_KEY"),
+  siteIdentifier: readOptionalEnv("PELICAN_SITE_IDENTIFIER"),
 };
 
 export const jellyfinEnv = {

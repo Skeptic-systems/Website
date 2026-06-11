@@ -463,10 +463,10 @@
       "placeholder": "—"
     },
     "sections": {
-      "pterodactyl": {
-        "title": "Pterodactyl",
+      "pelican": {
+        "title": "Pelican",
         "accent": "Game-Server-Flotte",
-        "description": "Mit Pterodactyl und Wings starten meine Game-Server in Sekunden, mit abgestimmten Limits und automatisierten Wartungsjobs.",
+        "description": "Mit Pelican und Wings starten meine Game-Server in Sekunden, mit abgestimmten Limits, automatisierten Wartungsjobs und Plugin-Support.",
         "metrics": {
           "total": "Server insgesamt",
           "active": "Gerade aktiv",
@@ -474,7 +474,7 @@
           "cpu": "Durchschnittliche CPU-Last"
         },
         "states": {
-          "error": "Die Pterodactyl-Server konnten gerade nicht geladen werden.",
+          "error": "Die Pelican-Server konnten gerade nicht geladen werden.",
           "empty": "Momentan läuft kein Server."
         },
         "cards": {
@@ -546,6 +546,7 @@
     "viewer": {
       "created": "Erstellt",
       "updated": "Aktualisiert",
+      "reference": "Inspiration",
       "tags": "Tags"
     },
     "toc": {
@@ -1112,6 +1113,14 @@
     "copy": "Kopieren",
     "copied": "Kopiert",
     "count": "{count, plural, one {# Befehl} other {# Befehle}}",
+    "snippetCount": "{count, plural, one {# Shell} other {# Shells}}",
+    "languages": {
+      "shell": "Shell",
+      "powershell": "PowerShell"
+    },
+    "categories": {
+      "codexInstall": "Codex installieren"
+    },
     "commands": {
       "debianDockerBootstrap": {
         "title": "Docker install",
@@ -1122,6 +1131,15 @@
         "title": "Jellyfin TS zu MP4",
         "description": "Wandelt .ts-Dateien im Jellyfin-Movie-Ordner zu .mp4 um und entfernt die Originaldatei nach erfolgreicher Konvertierung.",
         "badge": "Jellyfin"
+      },
+      "codexInstall": {
+        "title": "Codex installieren",
+        "description": "Installiert Codex und setzt den codex-Aufruf für Bash oder PowerShell mit --yolo.",
+        "badge": "PowerShell",
+        "snippets": {
+          "bash": "Bash",
+          "powershell": "PowerShell"
+        }
       }
     }
   }

@@ -1,9 +1,9 @@
-import { pterodactylEnv } from "../config/env";
+import { pelicanEnv } from "../config/env";
 
 const APPLICATION_API_PREFIX = "/api/application";
 const WINGS_API_PREFIX = "/api/servers";
 
-type PterodactylPagination = {
+type PelicanPagination = {
   total: number;
   count: number;
   per_page: number;
@@ -11,13 +11,13 @@ type PterodactylPagination = {
   total_pages: number;
 };
 
-type PterodactylApplicationServerLimits = {
+type PelicanApplicationServerLimits = {
   memory: number;
   disk: number;
   cpu: number;
 };
 
-type PterodactylApplicationServerAttributes = {
+type PelicanApplicationServerAttributes = {
   id: number;
   uuid: string;
   identifier: string;
@@ -25,7 +25,7 @@ type PterodactylApplicationServerAttributes = {
   description: string | null;
   suspended: boolean;
   node: number;
-  limits: PterodactylApplicationServerLimits & {
+  limits: PelicanApplicationServerLimits & {
     swap: number;
     io: number;
     threads: string | null;
@@ -33,53 +33,54 @@ type PterodactylApplicationServerAttributes = {
   };
 };
 
-type PterodactylApplicationServer = {
+type PelicanApplicationServer = {
   object: string;
-  attributes: PterodactylApplicationServerAttributes;
+  attributes: PelicanApplicationServerAttributes;
 };
 
-type PterodactylNode = {
+type PelicanNode = {
   id: number;
   fqdn: string;
   scheme: string;
   daemonListen: number;
+  daemonConnect: number | null;
 };
 
-type PterodactylNodeResponse = {
+type PelicanNodeResponse = {
   object: string;
   attributes: Record<string, unknown>;
 };
 
-type PterodactylNodeConfiguration = {
+type PelicanNodeConfiguration = {
   token: string;
 };
 
-type PterodactylNodeConfigurationResponse = {
+type PelicanNodeConfigurationResponse = {
   token?: unknown;
 };
 
-type PterodactylNodeConnection = {
+type PelicanNodeConnection = {
   baseUrl: string;
   token: string;
 };
 
-type PterodactylApplicationServersResponse = {
-  data: PterodactylApplicationServer[];
+type PelicanApplicationServersResponse = {
+  data: PelicanApplicationServer[];
   meta: {
-    pagination: PterodactylPagination;
+    pagination: PelicanPagination;
   };
 };
 
-type PterodactylNetworkStats = {
+type PelicanNetworkStats = {
   rx_bytes: number | null;
   tx_bytes: number | null;
 };
 
-type PterodactylUtilizationResources = {
+type PelicanUtilizationResources = {
   memory_bytes: number;
   cpu_absolute: number;
   disk_bytes: number;
-  network?: PterodactylNetworkStats | null;
+  network?: PelicanNetworkStats | null;
   uptime: number | null;
 };
 
@@ -102,11 +103,11 @@ type WingsServerDetails = {
   utilization?: WingsUtilizationPayload | null;
 };
 
-type PterodactylRequestOptions = {
+type PelicanRequestOptions = {
   search?: Record<string, string>;
 };
 
-export type PterodactylServerResources = {
+export type PelicanServerResources = {
   identifier: string;
   state: string;
   isSuspended: boolean;
@@ -120,7 +121,7 @@ export type PterodactylServerResources = {
   uptime: number | null;
 };
 
-export type PterodactylServerMetadata = {
+export type PelicanServerMetadata = {
   id: number;
   identifier: string;
   uuid: string;
@@ -134,25 +135,26 @@ export type PterodactylServerMetadata = {
   };
 };
 
-export type PterodactylActiveServer = PterodactylServerMetadata & {
+export type PelicanActiveServer = PelicanServerMetadata & {
   state: string;
   uptime: number | null;
 };
 
-export type PterodactylServersOverview = {
+export type PelicanServersOverview = {
   totalServers: number;
   activeServersCount: number;
-  activeServers: PterodactylActiveServer[];
+  activeServers: PelicanActiveServer[];
+  telemetryAvailable: boolean;
 };
 
 const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, "");
 
-const createPterodactylUrl = (path: string): URL => {
+const createPelicanUrl = (path: string): URL => {
   if (!path.startsWith("/")) {
-    throw new Error(`Pterodactyl path must start with "/": ${path}`);
+    throw new Error(`Pelican path must start with "/": ${path}`);
   }
 
-  const url = new URL(pterodactylEnv.apiBaseUrl);
+  const url = new URL(pelicanEnv.apiBaseUrl);
   const basePath = url.pathname === "/" ? "" : trimTrailingSlash(url.pathname);
   url.pathname = `${basePath}${path}`;
   url.search = "";
@@ -160,8 +162,8 @@ const createPterodactylUrl = (path: string): URL => {
   return url;
 };
 
-const requestPterodactyl = async <T>(path: string, options?: PterodactylRequestOptions): Promise<T> => {
-  const url = createPterodactylUrl(path);
+const requestPelican = async <T>(path: string, options?: PelicanRequestOptions): Promise<T> => {
+  const url = createPelicanUrl(path);
 
   if (options?.search) {
     for (const [key, value] of Object.entries(options.search)) {
@@ -172,7 +174,7 @@ const requestPterodactyl = async <T>(path: string, options?: PterodactylRequestO
   const response = await fetch(url, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${pterodactylEnv.apiKey}`,
+      Authorization: `Bearer ${pelicanEnv.apiKey}`,
       Accept: "application/json",
     },
   });
@@ -181,7 +183,7 @@ const requestPterodactyl = async <T>(path: string, options?: PterodactylRequestO
     const body = await response.text();
     const preview = body.length > 200 ? `${body.slice(0, 200)}…` : body;
     throw new Error(
-      `Failed to fetch Pterodactyl path ${path}: ${response.status} ${response.statusText} - ${preview}`
+      `Failed to fetch Pelican path ${path}: ${response.status} ${response.statusText} - ${preview}`
     );
   }
 
@@ -190,7 +192,7 @@ const requestPterodactyl = async <T>(path: string, options?: PterodactylRequestO
 
 const ensureNumber = (value: unknown, label: string): number => {
   if (typeof value !== "number" || Number.isNaN(value)) {
-    throw new Error(`Invalid numeric value for ${label} in Pterodactyl response`);
+    throw new Error(`Invalid numeric value for ${label} in Pelican response`);
   }
 
   return value;
@@ -202,7 +204,7 @@ const ensureOptionalNumber = (value: unknown, label: string): number | null => {
   }
 
   if (typeof value !== "number" || Number.isNaN(value)) {
-    throw new Error(`Invalid numeric value for ${label} in Pterodactyl response`);
+    throw new Error(`Invalid numeric value for ${label} in Pelican response`);
   }
 
   return value;
@@ -210,23 +212,23 @@ const ensureOptionalNumber = (value: unknown, label: string): number | null => {
 
 const ensureString = (value: unknown, label: string): string => {
   if (typeof value !== "string" || value.length === 0) {
-    throw new Error(`Invalid string value for ${label} in Pterodactyl response`);
+    throw new Error(`Invalid string value for ${label} in Pelican response`);
   }
 
   return value;
 };
 
-const ensureServerLimits = (value: unknown): PterodactylApplicationServerLimits & {
+const ensureServerLimits = (value: unknown): PelicanApplicationServerLimits & {
   swap: number;
   io: number;
   threads: string | null;
   oom_disabled: boolean;
 } => {
   if (typeof value !== "object" || value === null) {
-    throw new Error("Pterodactyl server limits payload is malformed");
+    throw new Error("Pelican server limits payload is malformed");
   }
 
-  const limits = value as PterodactylApplicationServerLimits & {
+  const limits = value as PelicanApplicationServerLimits & {
     swap: number;
     io: number;
     threads: string | null;
@@ -245,7 +247,7 @@ const ensureServerLimits = (value: unknown): PterodactylApplicationServerLimits 
   };
 };
 
-const ensureServerAttributes = (value: unknown): PterodactylApplicationServerAttributes => {
+const ensureServerAttributes = (value: unknown): PelicanApplicationServerAttributes => {
   if (
     typeof value !== "object" ||
     value === null ||
@@ -255,10 +257,10 @@ const ensureServerAttributes = (value: unknown): PterodactylApplicationServerAtt
     !("limits" in value) ||
     !("id" in value)
   ) {
-    throw new Error("Pterodactyl server attributes are malformed");
+    throw new Error("Pelican server attributes are malformed");
   }
 
-  const attributes = value as PterodactylApplicationServerAttributes;
+  const attributes = value as PelicanApplicationServerAttributes;
 
   return {
     id: ensureNumber(attributes.id, "attributes.id"),
@@ -275,9 +277,9 @@ const ensureServerAttributes = (value: unknown): PterodactylApplicationServerAtt
   };
 };
 
-const ensureNodeAttributes = (value: unknown): PterodactylNode => {
+const ensureNodeAttributes = (value: unknown): PelicanNode => {
   if (typeof value !== "object" || value === null) {
-    throw new Error("Pterodactyl node payload is malformed");
+    throw new Error("Pelican node payload is malformed");
   }
 
   const payload = value as Record<string, unknown>;
@@ -287,15 +289,16 @@ const ensureNodeAttributes = (value: unknown): PterodactylNode => {
     fqdn: ensureString(payload["fqdn"], "attributes.fqdn"),
     scheme: ensureString(payload["scheme"], "attributes.scheme"),
     daemonListen: ensureNumber(payload["daemon_listen"], "attributes.daemon_listen"),
+    daemonConnect: ensureOptionalNumber(payload["daemon_connect"], "attributes.daemon_connect"),
   };
 };
 
-const ensureNodeConfiguration = (value: unknown): PterodactylNodeConfiguration => {
+const ensureNodeConfiguration = (value: unknown): PelicanNodeConfiguration => {
   if (typeof value !== "object" || value === null) {
-    throw new Error("Pterodactyl node configuration payload is malformed");
+    throw new Error("Pelican node configuration payload is malformed");
   }
 
-  const payload = value as PterodactylNodeConfigurationResponse;
+  const payload = value as PelicanNodeConfigurationResponse;
   const token = ensureString(payload.token, "token");
 
   return { token };
@@ -309,7 +312,7 @@ const ensureWingsUtilization = (value: unknown): WingsServerDetails => {
   return value as WingsServerDetails;
 };
 
-const ensureWingsUtilizationResources = (value: WingsUtilizationPayload | null | undefined): PterodactylUtilizationResources => {
+const ensureWingsUtilizationResources = (value: WingsUtilizationPayload | null | undefined): PelicanUtilizationResources => {
   if (!value || typeof value !== "object") {
     throw new Error("Wings utilization resources are missing");
   }
@@ -330,41 +333,42 @@ const ensureWingsUtilizationResources = (value: WingsUtilizationPayload | null |
   };
 };
 
-const buildWingsBaseUrl = (node: PterodactylNode): string => {
-  const portSegment = node.daemonListen ? `:${node.daemonListen}` : "";
+const buildWingsBaseUrl = (node: PelicanNode): string => {
+  const port = node.daemonConnect ?? node.daemonListen;
+  const portSegment = port ? `:${port}` : "";
   return `${node.scheme}://${node.fqdn}${portSegment}`;
 };
 
-const nodeAttributesCache = new Map<number, Promise<PterodactylNode>>();
-const nodeConnectionCache = new Map<number, Promise<PterodactylNodeConnection>>();
+const nodeAttributesCache = new Map<number, Promise<PelicanNode>>();
+const nodeConnectionCache = new Map<number, Promise<PelicanNodeConnection>>();
 
-const fetchPterodactylNode = async (nodeId: number): Promise<PterodactylNode> => {
-  const response = await requestPterodactyl<PterodactylNodeResponse>(`${APPLICATION_API_PREFIX}/nodes/${nodeId}`);
+const fetchPelicanNode = async (nodeId: number): Promise<PelicanNode> => {
+  const response = await requestPelican<PelicanNodeResponse>(`${APPLICATION_API_PREFIX}/nodes/${nodeId}`);
 
   if (typeof response !== "object" || response === null || typeof response.attributes !== "object") {
-    throw new Error(`Pterodactyl node ${nodeId} response is malformed`);
+    throw new Error(`Pelican node ${nodeId} response is malformed`);
   }
 
   return ensureNodeAttributes(response.attributes);
 };
 
-const fetchPterodactylNodeConfiguration = async (nodeId: number): Promise<PterodactylNodeConfiguration> => {
-  const response = await requestPterodactyl<PterodactylNodeConfigurationResponse>(
+const fetchPelicanNodeConfiguration = async (nodeId: number): Promise<PelicanNodeConfiguration> => {
+  const response = await requestPelican<PelicanNodeConfigurationResponse>(
     `${APPLICATION_API_PREFIX}/nodes/${nodeId}/configuration`
   );
 
   return ensureNodeConfiguration(response);
 };
 
-const resolveNodeConnection = async (nodeId: number): Promise<PterodactylNodeConnection> => {
+const resolveNodeConnection = async (nodeId: number): Promise<PelicanNodeConnection> => {
   if (!nodeConnectionCache.has(nodeId)) {
-    const promise = (async (): Promise<PterodactylNodeConnection> => {
+    const promise = (async (): Promise<PelicanNodeConnection> => {
       if (!nodeAttributesCache.has(nodeId)) {
-        nodeAttributesCache.set(nodeId, fetchPterodactylNode(nodeId));
+        nodeAttributesCache.set(nodeId, fetchPelicanNode(nodeId));
       }
 
       const node = await nodeAttributesCache.get(nodeId)!;
-      const configuration = await fetchPterodactylNodeConfiguration(nodeId);
+      const configuration = await fetchPelicanNodeConfiguration(nodeId);
 
       return {
         baseUrl: buildWingsBaseUrl(node),
@@ -379,8 +383,8 @@ const resolveNodeConnection = async (nodeId: number): Promise<PterodactylNodeCon
 };
 
 const mapServerMetadata = (
-  attributes: PterodactylApplicationServerAttributes
-): PterodactylServerMetadata => ({
+  attributes: PelicanApplicationServerAttributes
+): PelicanServerMetadata => ({
   id: attributes.id,
   identifier: attributes.identifier,
   uuid: attributes.uuid,
@@ -396,8 +400,8 @@ const mapServerMetadata = (
 
 const fetchApplicationServerListPage = async (
   page: number
-): Promise<PterodactylApplicationServersResponse> => {
-  const response = await requestPterodactyl<PterodactylApplicationServersResponse>(
+): Promise<PelicanApplicationServersResponse> => {
+  const response = await requestPelican<PelicanApplicationServersResponse>(
     APPLICATION_API_PREFIX + "/servers",
     {
       search: { page: String(page) },
@@ -405,7 +409,7 @@ const fetchApplicationServerListPage = async (
   );
 
   if (!Array.isArray(response.data)) {
-    throw new Error("Pterodactyl server list response is missing data array");
+    throw new Error("Pelican server list response is missing data array");
   }
 
   if (
@@ -414,7 +418,7 @@ const fetchApplicationServerListPage = async (
     typeof response.meta.pagination !== "object" ||
     response.meta.pagination === null
   ) {
-    throw new Error("Pterodactyl server list response is missing pagination metadata");
+    throw new Error("Pelican server list response is missing pagination metadata");
   }
 
   return response;
@@ -422,7 +426,7 @@ const fetchApplicationServerListPage = async (
 
 const fetchAllApplicationServers = async (): Promise<{
   total: number;
-  servers: PterodactylApplicationServerAttributes[];
+  servers: PelicanApplicationServerAttributes[];
 }> => {
   const firstPage = await fetchApplicationServerListPage(1);
   const pagination = firstPage.meta.pagination;
@@ -445,8 +449,8 @@ const fetchAllApplicationServers = async (): Promise<{
 };
 
 const fetchApplicationServerUtilization = async (
-  server: PterodactylApplicationServerAttributes
-): Promise<PterodactylServerResources> => {
+  server: PelicanApplicationServerAttributes
+): Promise<PelicanServerResources> => {
   const { baseUrl, token } = await resolveNodeConnection(server.node);
   const wingsUrl = new URL(`${WINGS_API_PREFIX}/${server.uuid}`, baseUrl);
 
@@ -499,9 +503,9 @@ const fetchApplicationServerUtilization = async (
   };
 };
 
-export const fetchPterodactylServerResources = async (
+export const fetchPelicanServerResources = async (
   serverIdentifier: string
-): Promise<PterodactylServerResources> => {
+): Promise<PelicanServerResources> => {
   const trimmedIdentifier = serverIdentifier.trim();
 
   if (trimmedIdentifier.length === 0) {
@@ -523,7 +527,7 @@ export const fetchPterodactylServerResources = async (
   return fetchApplicationServerUtilization(match);
 };
 
-export const fetchPterodactylServersOverview = async (): Promise<PterodactylServersOverview> => {
+export const fetchPelicanServersOverview = async (): Promise<PelicanServersOverview> => {
   const { total, servers } = await fetchAllApplicationServers();
 
   if (servers.length === 0) {
@@ -531,49 +535,62 @@ export const fetchPterodactylServersOverview = async (): Promise<PterodactylServ
       totalServers: total,
       activeServersCount: 0,
       activeServers: [],
+      telemetryAvailable: false,
     };
   }
 
   const utilizations = await Promise.all(
     servers.map(async (server) => {
       const metadata = mapServerMetadata(server);
-      const resources = await fetchApplicationServerUtilization(server);
-      return {
-        metadata,
-        resources,
-      };
+      try {
+        const resources = await fetchApplicationServerUtilization(server);
+        return {
+          metadata,
+          resources,
+        };
+      } catch {
+        return {
+          metadata,
+          resources: null,
+        };
+      }
     })
   );
 
+  const telemetryAvailable = utilizations.some((entry) => entry.resources !== null);
   const activeServers = utilizations
     .filter(
       (entry) =>
-        entry.resources.state === "running" && !entry.resources.isSuspended && !entry.metadata.isSuspended
+        entry.resources !== null &&
+        entry.resources.state === "running" &&
+        !entry.resources.isSuspended &&
+        !entry.metadata.isSuspended
     )
     .map((entry) => ({
       ...entry.metadata,
-      state: entry.resources.state,
-      uptime: entry.resources.uptime,
+      state: entry.resources!.state,
+      uptime: entry.resources!.uptime,
     }));
 
   return {
     totalServers: total,
     activeServersCount: activeServers.length,
     activeServers,
+    telemetryAvailable,
   };
 };
 
-export const fetchPterodactylActiveServers = async (): Promise<PterodactylActiveServer[]> => {
-  const overview = await fetchPterodactylServersOverview();
+export const fetchPelicanActiveServers = async (): Promise<PelicanActiveServer[]> => {
+  const overview = await fetchPelicanServersOverview();
   return overview.activeServers;
 };
 
-export const fetchPterodactylTotalServers = async (): Promise<number> => {
+export const fetchPelicanTotalServers = async (): Promise<number> => {
   const firstPage = await fetchApplicationServerListPage(1);
   return ensureNumber(firstPage.meta.pagination.total, "meta.pagination.total");
 };
 
-export const verifyPterodactylConnection = async (): Promise<void> => {
+export const verifyPelicanConnection = async (): Promise<void> => {
   await fetchApplicationServerListPage(1);
 };
 

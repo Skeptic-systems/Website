@@ -53,7 +53,10 @@ export function VaultToolPageContent({ tool }: VaultToolPageContentProps) {
 
       <section className="relative z-10 px-6 py-24 sm:py-28">
         <div
-          className={cn("mx-auto w-full space-y-10", hasImplementation ? "max-w-5xl" : "max-w-3xl")}
+          className={cn(
+            "mx-auto w-full space-y-10",
+            hasImplementation ? "max-w-6xl xl:max-w-7xl" : "max-w-3xl"
+          )}
         >
           <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/70 p-8 shadow-xl backdrop-blur-xl dark:border-neutral-800/70 dark:bg-neutral-950/60 sm:p-10">
             <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[var(--accent-glow)]/20 blur-[100px]" />

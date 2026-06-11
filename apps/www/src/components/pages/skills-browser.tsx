@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
+  ArrowSquareOut,
   CaretLeft,
   Copy,
   DownloadSimple,
@@ -31,6 +32,7 @@ type SkillsBrowserProps = {
 
 const SKILL_VIEWER_SCROLL_PADDING = 112;
 const TOC_SCROLL_LOCK_MS = 900;
+const SKILLS_DIRECTORY_URL = "https://www.skills.sh/";
 
 function getHeadingTopInScrollContainer(
   scrollContainer: HTMLElement,
@@ -443,6 +445,15 @@ function SkillsViewer({
                   {t("viewer.updated")} · {skill.frontmatter.updated}
                 </span>
               ) : null}
+              <a
+                href={SKILLS_DIRECTORY_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 transition hover:text-neutral-900 dark:hover:text-neutral-100"
+              >
+                <ArrowSquareOut className="h-3 w-3" />
+                {t("viewer.reference")} - skills.sh
+              </a>
             </div>
 
             {skill.frontmatter.tags.length > 0 ? (

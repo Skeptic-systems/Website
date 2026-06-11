@@ -7,13 +7,13 @@ import { rewriteAuthCookies } from "./lib/cookies";
 import { authRoutes } from "./routes/auth";
 import { discordRoutes } from "./routes/discord";
 import { githubRoutes } from "./routes/github";
-import { pterodactylRoutes } from "./routes/pterodactyl";
+import { pelicanRoutes } from "./routes/pelican";
 import { jellyfinRoutes } from "./routes/jellyfin";
 import { spotifyRoutes } from "./routes/spotify";
 import { terminalRoutes } from "./routes/terminal";
 import { verifyDiscordConnection } from "./services/discord";
 import { verifyGitHubConnection } from "./services/github";
-import { verifyPterodactylConnection } from "./services/pterodactyl";
+import { verifyPelicanConnection } from "./services/pelican";
 import { verifyJellyfinConnection } from "./services/jellyfin";
 import { verifySpotifyConnection } from "./services/spotify";
 import { verifyRedisConnection } from "./services/redis";
@@ -52,7 +52,7 @@ app.route("/auth", authRoutes);
 app.route("/github", githubRoutes);
 app.route("/spotify", spotifyRoutes);
 app.route("/discord", discordRoutes);
-app.route("/pterodactyl", pterodactylRoutes);
+app.route("/pelican", pelicanRoutes);
 app.route("/jellyfin", jellyfinRoutes);
 app.route("/terminal", terminalRoutes);
 
@@ -91,18 +91,23 @@ const registeredRoutes = [
   },
   {
     method: "GET",
-    path: "/pterodactyl/servers/:identifier/resources",
-    description: "Pterodactyl server resources",
+    path: "/pelican/servers/:identifier/resources",
+    description: "Pelican server resources",
   },
   {
     method: "GET",
-    path: "/pterodactyl/active-server",
-    description: "Active Pterodactyl servers",
+    path: "/pelican/active-server",
+    description: "Active Pelican servers",
   },
   {
     method: "GET",
-    path: "/pterodactyl/total-number",
-    description: "Total Pterodactyl servers",
+    path: "/pelican/total-number",
+    description: "Total Pelican servers",
+  },
+  {
+    method: "GET",
+    path: "/pelican/servers/overview",
+    description: "Pelican server overview",
   },
   {
     method: "GET",
@@ -198,11 +203,11 @@ const runStartupChecks = async (): Promise<void> => {
   }
 
   try {
-    await verifyPterodactylConnection();
-    console.log("🟥 Pterodactyl panel reachable");
+    await verifyPelicanConnection();
+    console.log("🟥 Pelican panel reachable");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    console.error(`⚠️ Pterodactyl connection check failed: ${message}`);
+    console.error(`⚠️ Pelican connection check failed: ${message}`);
   }
 
   try {

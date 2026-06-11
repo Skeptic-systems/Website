@@ -463,10 +463,10 @@
       "placeholder": "—"
     },
     "sections": {
-      "pterodactyl": {
-        "title": "Pterodactyl",
+      "pelican": {
+        "title": "Pelican",
         "accent": "Game server fleet",
-        "description": "Powered by Pterodactyl and Wings, this cluster keeps game servers ready to spin up in seconds with tuned limits and automated housekeeping.",
+        "description": "Powered by Pelican and Wings, this cluster keeps game servers ready to spin up in seconds with tuned limits, automated housekeeping, and plugin support.",
         "metrics": {
           "total": "Total servers",
           "active": "Active now",
@@ -474,7 +474,7 @@
           "cpu": "Average CPU load"
         },
         "states": {
-          "error": "We couldn't load the Pterodactyl servers right now.",
+          "error": "We couldn't load the Pelican servers right now.",
           "empty": "No servers are running at the moment."
         },
         "cards": {
@@ -546,6 +546,7 @@
     "viewer": {
       "created": "Created",
       "updated": "Updated",
+      "reference": "Inspiration",
       "tags": "Tags"
     },
     "toc": {
@@ -1112,6 +1113,14 @@
     "copy": "Copy",
     "copied": "Copied",
     "count": "{count, plural, one {# command} other {# commands}}",
+    "snippetCount": "{count, plural, one {# shell} other {# shells}}",
+    "languages": {
+      "shell": "Shell",
+      "powershell": "PowerShell"
+    },
+    "categories": {
+      "codexInstall": "Install Codex"
+    },
     "commands": {
       "debianDockerBootstrap": {
         "title": "Docker install",
@@ -1122,6 +1131,15 @@
         "title": "Jellyfin TS to MP4",
         "description": "Converts .ts files in the Jellyfin movies folder to .mp4 and removes each original after a successful conversion.",
         "badge": "Jellyfin"
+      },
+      "codexInstall": {
+        "title": "Install Codex",
+        "description": "Installs Codex and sets the codex command for Bash or PowerShell with --yolo.",
+        "badge": "PowerShell",
+        "snippets": {
+          "bash": "Bash",
+          "powershell": "PowerShell"
+        }
       }
     }
   }

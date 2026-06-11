@@ -13,25 +13,25 @@ import {
 import { requestJson } from "@/lib/request";
 import { useSectionIntersection } from "@/lib/use-section-intersection";
 
-type PterodactylServerLimits = {
+type PelicanServerLimits = {
   memory: number;
   disk: number;
   cpu: number;
 };
 
-type PterodactylActiveServer = {
+type PelicanActiveServer = {
   id: number;
   identifier: string;
   uuid: string;
   name: string;
   description: string | null;
   isSuspended: boolean;
-  limits: PterodactylServerLimits;
+  limits: PelicanServerLimits;
   state: string;
   uptime: number | null;
 };
 
-type PterodactylServerResources = {
+type PelicanServerResources = {
   identifier: string;
   state: string;
   isSuspended: boolean;
@@ -45,16 +45,16 @@ type PterodactylServerResources = {
   uptime: number | null;
 };
 
-type PterodactylActiveServersResponse = {
-  servers: PterodactylActiveServer[];
+type PelicanActiveServersResponse = {
+  servers: PelicanActiveServer[];
 };
 
-type PterodactylTotalServersResponse = {
+type PelicanTotalServersResponse = {
   total: number;
 };
 
-type PterodactylServerResourcesResponse = {
-  resources: PterodactylServerResources;
+type PelicanServerResourcesResponse = {
+  resources: PelicanServerResources;
 };
 
 type JellyfinLibraryCounts = {
@@ -138,7 +138,7 @@ type StatCardProps = {
   tone: "plum" | "sky";
 };
 
-const PTERODACTYL_SKELETON_KEYS = ["ptero-alpha", "ptero-beta", "ptero-gamma", "ptero-delta"];
+const PELICAN_SKELETON_KEYS = ["pelican-alpha", "pelican-beta", "pelican-gamma", "pelican-delta"];
 const JELLYFIN_SKELETON_KEYS = ["jellyfin-primary", "jellyfin-secondary"];
 const BYTES_PER_MEB = 1024 * 1024;
 const TICKS_PER_SECOND = 10_000_000;
@@ -336,15 +336,15 @@ export function Selfhosted() {
     throw new Error("Missing NEXT_PUBLIC_API_URL environment variable");
   }
 
-  const [isPterodactylLoading, setIsPterodactylLoading] = useState(true);
-  const [pterodactylError, setPterodactylError] = useState(false);
-  const [pterodactylServers, setPterodactylServers] = useState<PterodactylActiveServer[]>([]);
-  const [pterodactylTotal, setPterodactylTotal] = useState<number | null>(null);
-  const [pterodactylResources, setPterodactylResources] = useState<Record<
+  const [isPelicanLoading, setIsPelicanLoading] = useState(true);
+  const [pelicanError, setPelicanError] = useState(false);
+  const [pelicanServers, setPelicanServers] = useState<PelicanActiveServer[]>([]);
+  const [pelicanTotal, setPelicanTotal] = useState<number | null>(null);
+  const [pelicanResources, setPelicanResources] = useState<Record<
     string,
-    PterodactylServerResources
+    PelicanServerResources
   >>({});
-  const [isPterodactylResourcesLoading, setIsPterodactylResourcesLoading] = useState(false);
+  const [isPelicanResourcesLoading, setIsPelicanResourcesLoading] = useState(false);
 
   const [isJellyfinLoading, setIsJellyfinLoading] = useState(true);
   const [jellyfinError, setJellyfinError] = useState(false);
@@ -359,14 +359,14 @@ export function Selfhosted() {
     let isMounted = true;
     const controller = new AbortController();
 
-    setIsPterodactylLoading(true);
-    setPterodactylError(false);
+    setIsPelicanLoading(true);
+    setPelicanError(false);
 
     Promise.all([
-      requestJson<PterodactylActiveServersResponse>(`${apiBase}/pterodactyl/active-server`, {
+      requestJson<PelicanActiveServersResponse>(`${apiBase}/pelican/active-server`, {
         signal: controller.signal,
       }),
-      requestJson<PterodactylTotalServersResponse>(`${apiBase}/pterodactyl/total-number`, {
+      requestJson<PelicanTotalServersResponse>(`${apiBase}/pelican/total-number`, {
         signal: controller.signal,
       }),
     ])
@@ -376,24 +376,24 @@ export function Selfhosted() {
         }
 
         if (!active) {
-          setPterodactylError(true);
-          setPterodactylServers([]);
+          setPelicanError(true);
+          setPelicanServers([]);
         } else {
-          setPterodactylServers(Array.isArray(active.servers) ? active.servers : []);
+          setPelicanServers(Array.isArray(active.servers) ? active.servers : []);
         }
 
-        setPterodactylTotal(total?.total ?? null);
+        setPelicanTotal(total?.total ?? null);
       })
       .catch((error) => {
         console.error(error);
         if (isMounted) {
-          setPterodactylError(true);
-          setPterodactylServers([]);
+          setPelicanError(true);
+          setPelicanServers([]);
         }
       })
       .finally(() => {
         if (isMounted) {
-          setIsPterodactylLoading(false);
+          setIsPelicanLoading(false);
         }
       });
 
@@ -408,22 +408,22 @@ export function Selfhosted() {
       return;
     }
 
-    if (pterodactylServers.length === 0) {
-      setPterodactylResources({});
-      setIsPterodactylResourcesLoading(false);
+    if (pelicanServers.length === 0) {
+      setPelicanResources({});
+      setIsPelicanResourcesLoading(false);
       return;
     }
 
     let isMounted = true;
     const controller = new AbortController();
 
-    setIsPterodactylResourcesLoading(true);
+    setIsPelicanResourcesLoading(true);
 
     const run = async () => {
       const entries = await Promise.all(
-        pterodactylServers.map(async (server) => {
-          const response = await requestJson<PterodactylServerResourcesResponse>(
-            `${apiBase}/pterodactyl/servers/${server.identifier}/resources`,
+        pelicanServers.map(async (server) => {
+          const response = await requestJson<PelicanServerResourcesResponse>(
+            `${apiBase}/pelican/servers/${server.identifier}/resources`,
             { signal: controller.signal }
           );
 
@@ -439,7 +439,7 @@ export function Selfhosted() {
         return;
       }
 
-      const mapped: Record<string, PterodactylServerResources> = {};
+      const mapped: Record<string, PelicanServerResources> = {};
 
       for (const entry of entries) {
         if (!entry) {
@@ -450,19 +450,19 @@ export function Selfhosted() {
         mapped[identifier] = resources;
       }
 
-      setPterodactylResources(mapped);
+      setPelicanResources(mapped);
     };
 
     run()
       .catch((error) => {
         console.error(error);
         if (isMounted) {
-          setPterodactylResources({});
+          setPelicanResources({});
         }
       })
       .finally(() => {
         if (isMounted) {
-          setIsPterodactylResourcesLoading(false);
+          setIsPelicanResourcesLoading(false);
         }
       });
 
@@ -470,7 +470,7 @@ export function Selfhosted() {
       isMounted = false;
       controller.abort();
     };
-  }, [apiBase, pterodactylServers, shouldLoadSelfhosted]);
+  }, [apiBase, pelicanServers, shouldLoadSelfhosted]);
 
   useEffect(() => {
     if (!shouldLoadSelfhosted) {
@@ -525,26 +525,39 @@ export function Selfhosted() {
     };
   }, [apiBase, shouldLoadSelfhosted]);
 
-  const pterodactylMemoryTotal = useMemo(() => {
-    return pterodactylServers.reduce((total, server) => {
-      const resources = pterodactylResources[server.identifier];
-      if (!resources) {
+  const pelicanMemoryTotal = useMemo(() => {
+    return pelicanServers.reduce((total, server) => {
+      const resources = pelicanResources[server.identifier];
+      if (resources) {
+        return total + resources.memoryBytes;
+      }
+
+      if (server.limits.memory <= 0) {
         return total;
       }
-      return total + resources.memoryBytes;
-    }, 0);
-  }, [pterodactylResources, pterodactylServers]);
 
-  const pterodactylCpuAverage = useMemo(() => {
-    const summary = pterodactylServers.reduce(
+      return total + server.limits.memory * BYTES_PER_MEB;
+    }, 0);
+  }, [pelicanResources, pelicanServers]);
+
+  const pelicanCpuAverage = useMemo(() => {
+    const summary = pelicanServers.reduce(
       (accumulator, server) => {
-        const resources = pterodactylResources[server.identifier];
-        if (!resources) {
+        const resources = pelicanResources[server.identifier];
+
+        if (resources) {
+          return {
+            sum: accumulator.sum + resources.cpuPercent,
+            count: accumulator.count + 1,
+          };
+        }
+
+        if (server.limits.cpu <= 0) {
           return accumulator;
         }
 
         return {
-          sum: accumulator.sum + resources.cpuPercent,
+          sum: accumulator.sum + server.limits.cpu,
           count: accumulator.count + 1,
         };
       },
@@ -556,7 +569,7 @@ export function Selfhosted() {
     }
 
     return summary.sum / summary.count;
-  }, [pterodactylResources, pterodactylServers]);
+  }, [pelicanResources, pelicanServers]);
 
   const jellyfinLibraryCount = useMemo(() => {
     if (!jellyfinOverview) {
@@ -597,7 +610,7 @@ export function Selfhosted() {
     return date.toLocaleString();
   }, [jellyfinOverview]);
 
-  const pterodactylSignature = pterodactylServers.map((server) => server.identifier).join("|");
+  const pelicanSignature = pelicanServers.map((server) => server.identifier).join("|");
   const jellyfinSessionsSignature = jellyfinSessions.map((session) => session.id).join("|");
   const jellyfinOverviewKey = jellyfinOverview?.generatedAt ?? "none";
 
@@ -650,7 +663,7 @@ export function Selfhosted() {
         }
       });
     },
-    [jellyfinOverviewKey, jellyfinSessionsSignature, pterodactylSignature],
+    [jellyfinOverviewKey, jellyfinSessionsSignature, pelicanSignature],
   );
 
   const sectionRef = useGsapSection<HTMLDivElement>(selfhostedAnimation);
@@ -698,57 +711,57 @@ export function Selfhosted() {
             <div className="pointer-events-none absolute -left-16 bottom-[-10%] h-56 w-56 rounded-full bg-purple-500/10 blur-[100px] dark:bg-purple-500/6" />
             <div className="relative space-y-10">
               <SectionHeading
-                accent={t("sections.pterodactyl.accent")}
-                title={t("sections.pterodactyl.title")}
-                description={t("sections.pterodactyl.description")}
+                accent={t("sections.pelican.accent")}
+                title={t("sections.pelican.title")}
+                description={t("sections.pelican.description")}
                 accentClassName="text-fuchsia-500"
               />
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   tone="plum"
-                  label={t("sections.pterodactyl.metrics.total")}
+                  label={t("sections.pelican.metrics.total")}
                   value={
-                    isPterodactylLoading && pterodactylTotal === null
+                    isPelicanLoading && pelicanTotal === null
                       ? tCommon("loading")
-                      : pterodactylTotal !== null
-                        ? String(pterodactylTotal)
+                      : pelicanTotal !== null
+                        ? String(pelicanTotal)
                         : t("common.placeholder")
                   }
                 />
                 <StatCard
                   tone="plum"
-                  label={t("sections.pterodactyl.metrics.active")}
+                  label={t("sections.pelican.metrics.active")}
                   value={
-                    isPterodactylLoading ? tCommon("loading") : String(pterodactylServers.length)
+                    isPelicanLoading ? tCommon("loading") : String(pelicanServers.length)
                   }
                 />
                 <StatCard
                   tone="plum"
-                  label={t("sections.pterodactyl.metrics.resources")}
+                  label={t("sections.pelican.metrics.resources")}
                   value={
-                    isPterodactylResourcesLoading
+                    isPelicanResourcesLoading
                       ? tCommon("loading")
-                      : formatBytes(pterodactylMemoryTotal)
+                      : formatBytes(pelicanMemoryTotal)
                   }
                 />
                 <StatCard
                   tone="plum"
-                  label={t("sections.pterodactyl.metrics.cpu")}
+                  label={t("sections.pelican.metrics.cpu")}
                   value={
-                    isPterodactylResourcesLoading
+                    isPelicanResourcesLoading
                       ? tCommon("loading")
-                      : pterodactylCpuAverage !== null
-                        ? formatPercent(pterodactylCpuAverage, t("common.placeholder"))
+                      : pelicanCpuAverage !== null
+                        ? formatPercent(pelicanCpuAverage, t("common.placeholder"))
                         : t("common.placeholder")
                   }
                 />
               </div>
 
               <div className="space-y-6">
-                {isPterodactylLoading ? (
+                {isPelicanLoading ? (
                   <div className="grid gap-6 md:grid-cols-2">
-                    {PTERODACTYL_SKELETON_KEYS.map((key) => (
+                    {PELICAN_SKELETON_KEYS.map((key) => (
                       <div
                         key={key}
                         className="relative h-36 overflow-hidden rounded-3xl border border-fuchsia-200/50 bg-white/60 dark:border-fuchsia-500/20 dark:bg-neutral-900/70"
@@ -767,22 +780,22 @@ export function Selfhosted() {
                   </div>
                 ) : null}
 
-                {!isPterodactylLoading && pterodactylError ? (
+                {!isPelicanLoading && pelicanError ? (
                   <p className="rounded-3xl border border-fuchsia-200/50 bg-white/70 p-6 text-sm text-neutral-600 shadow-sm dark:border-fuchsia-500/20 dark:bg-neutral-900/70 dark:text-neutral-300">
-                    {t("sections.pterodactyl.states.error")}
+                    {t("sections.pelican.states.error")}
                   </p>
                 ) : null}
 
-                {!isPterodactylLoading && !pterodactylError && pterodactylServers.length === 0 ? (
+                {!isPelicanLoading && !pelicanError && pelicanServers.length === 0 ? (
                   <p className="rounded-3xl border border-fuchsia-200/50 bg-white/70 p-6 text-sm text-neutral-600 shadow-sm dark:border-fuchsia-500/20 dark:bg-neutral-900/70 dark:text-neutral-300">
-                    {t("sections.pterodactyl.states.empty")}
+                    {t("sections.pelican.states.empty")}
                   </p>
                 ) : null}
 
-                {!isPterodactylLoading && !pterodactylError && pterodactylServers.length > 0 ? (
+                {!isPelicanLoading && !pelicanError && pelicanServers.length > 0 ? (
                   <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
-                    {pterodactylServers.map((server) => {
-                      const resources = pterodactylResources[server.identifier] ?? null;
+                    {pelicanServers.map((server) => {
+                      const resources = pelicanResources[server.identifier] ?? null;
                       const uptimeSeconds = resources?.uptime ?? server.uptime ?? null;
                       const uptimeLabel = formatDurationFromSeconds(
                         uptimeSeconds,
@@ -801,19 +814,26 @@ export function Selfhosted() {
                       const memoryLabel = resources
                         ? memoryLimitBytes
                           ? `${formatBytes(resources.memoryBytes)} / ${formatBytes(memoryLimitBytes)}`
-                          : t("sections.pterodactyl.cards.limits.unlimited")
-                        : t("common.placeholder");
+                          : t("sections.pelican.cards.limits.unlimited")
+                        : memoryLimitBytes
+                          ? formatBytes(memoryLimitBytes)
+                          : t("sections.pelican.cards.limits.unlimited");
 
                       const diskLabel = resources
                         ? diskLimitBytes
                           ? `${formatBytes(resources.diskBytes)} / ${formatBytes(diskLimitBytes)}`
-                          : t("sections.pterodactyl.cards.limits.unlimited")
-                        : t("common.placeholder");
+                          : t("sections.pelican.cards.limits.unlimited")
+                        : diskLimitBytes
+                          ? formatBytes(diskLimitBytes)
+                          : t("sections.pelican.cards.limits.unlimited");
 
-                      const cpuLimitLabel =
-                        server.limits.cpu > 0
+                      const cpuLimitLabel = resources
+                        ? server.limits.cpu > 0
                           ? `${cpuLabel} / ${server.limits.cpu}%`
-                          : cpuLabel;
+                          : cpuLabel
+                        : server.limits.cpu > 0
+                          ? `${server.limits.cpu}%`
+                          : t("sections.pelican.cards.limits.unlimited");
 
                     return (
                       <div
@@ -847,19 +867,19 @@ export function Selfhosted() {
                             <div className="grid gap-2.5 text-[0.8rem] text-neutral-600 dark:text-neutral-400 md:grid-cols-2 xl:grid-cols-3">
                               <div className="flex items-center gap-2">
                                 <Cpu size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
-                                <span>{t("sections.pterodactyl.cards.limits.cpu")}: {cpuLimitLabel}</span>
+                                <span>{t("sections.pelican.cards.limits.cpu")}: {cpuLimitLabel}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <StackSimple size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
-                                <span>{t("sections.pterodactyl.cards.limits.memory")}: {memoryLabel}</span>
+                                <span>{t("sections.pelican.cards.limits.memory")}: {memoryLabel}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Clock size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
-                                <span>{t("sections.pterodactyl.cards.uptime")}: {uptimeLabel}</span>
+                                <span>{t("sections.pelican.cards.uptime")}: {uptimeLabel}</span>
                               </div>
                               <div className="flex items-center gap-2 md:col-span-2 xl:col-span-3">
                                 <HardDrive size={15} weight="bold" className="shrink-0 text-fuchsia-500/70" />
-                                <span>{t("sections.pterodactyl.cards.limits.disk")}: {diskLabel}</span>
+                                <span>{t("sections.pelican.cards.limits.disk")}: {diskLabel}</span>
                               </div>
                             </div>
                           </div>
