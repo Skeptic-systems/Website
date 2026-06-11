@@ -678,7 +678,7 @@ export function Terminal() {
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <h2
             data-animate="section-heading"
-            className={sectionHeadingClass("text-neutral-900 dark:text-neutral-50")}
+            className={sectionHeadingClass()}
           >
             {t("title")}
           </h2>

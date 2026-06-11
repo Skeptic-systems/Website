@@ -96,6 +96,16 @@ const skillsRoute = createRoute({
   },
 });
 
+const skillsSetupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/skills/setup",
+  staticData: {
+    title: "Agent Skills Setup | Skeptic Systems",
+    description: "Set up a central .agents/skills directory and PowerShell shortcuts for reusable AI skills.",
+    image: socialImage,
+  },
+});
+
 const skillDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/skills/$slug",
@@ -125,6 +135,7 @@ const routeTree = rootRoute.addChildren([
   vaultRoute,
   vaultToolRoute,
   skillsRoute,
+  skillsSetupRoute,
   skillDetailRoute,
   terminalRoute,
   notFoundRoute,

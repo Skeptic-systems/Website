@@ -525,7 +525,7 @@
   "skills": {
     "meta": {
       "title": "AI Skills",
-      "description": "Browse, copy, and download Cursor-ready skill markdown from the vault."
+      "description": "Browse, copy, and download skill files."
     },
     "actions": {
       "backToVault": "Back to vault",
@@ -546,8 +546,97 @@
     "viewer": {
       "created": "Created",
       "updated": "Updated",
-      "reference": "Inspiration",
       "tags": "Tags"
+    },
+    "intro": {
+      "setup": {
+        "label": "Setup",
+        "title": "Central skills directory setup",
+        "description": "Link every agent's skill folder to one shared directory.",
+        "cta": "Open setup guide"
+      },
+      "registry": {
+        "label": "Registry",
+        "title": "Open skill registry",
+        "description": "Browse the open skills ecosystem.",
+        "cta": "Browse skills.sh"
+      }
+    },
+    "setup": {
+      "meta": {
+        "kicker": "Agent Skills Setup"
+      },
+      "actions": {
+        "back": "Back to skills",
+        "copy": "Copy script",
+        "copied": "Copied",
+        "download": "Download .ps1"
+      },
+      "hero": {
+        "label": "Central Agent Skills Directory",
+        "title": "One skills folder, every agent.",
+        "description": "Links Cursor, Claude, Codex, and other agent directories to a shared `~/.agents/skills` folder and adds PowerShell shortcuts.",
+        "stats": {
+          "centralPathLabel": "Central path",
+          "centralPathValue": "~/.agents/skills",
+          "agentTargetsLabel": "Agent targets",
+          "agentTargetsValue": "{count, plural, one {# linked folder} other {# linked folders}}",
+          "profileTargetsLabel": "Profiles",
+          "profileTargetsValue": "{count, plural, one {# profile patched} other {# profiles patched}}"
+        }
+      },
+      "notes": {
+        "targetsLabel": "Linked destinations",
+        "targetsTitle": "Known agent folders are pointed at one shared source.",
+        "safetyLabel": "Linking behavior",
+        "safetyTitle": "Backups first, symbolic links when possible.",
+        "safetyBody": "Existing folders are merged into the central directory before they are moved to backup. If real symbolic links are unavailable, the script falls back to junctions so the workflow still lands cleanly on Windows.",
+        "badges": {
+          "symbolicLinks": "Symbolic links",
+          "junctionFallback": "Junction fallback",
+          "profilePatch": "Profile patch"
+        }
+      },
+      "commands": {
+        "openSkills": {
+          "title": "Open the central folder",
+          "description": "Launches the shared `.agents/skills` directory directly in Explorer."
+        },
+        "skills": {
+          "title": "Short alias for the same folder",
+          "description": "Keeps the open action fast when you are already working inside PowerShell."
+        },
+        "showSkills": {
+          "title": "List every markdown skill",
+          "description": "Recursively prints the available `.md` files with relative and full paths."
+        },
+        "addSkill": {
+          "title": "Create a new skill file",
+          "description": "Prompts for a name, creates a starter markdown file, and opens it in VS Code or Notepad."
+        }
+      },
+      "script": {
+        "label": "Install script",
+        "title": "Run the full setup once, then keep working from one directory.",
+        "description": "The script below is the exact file offered for download. Copy it directly or grab the `.ps1` and run it inside PowerShell.",
+        "terminalTitle": "central-agent-skills.ps1"
+      },
+      "changes": {
+        "label": "What changes",
+        "title": "What this script changes on disk and in PowerShell.",
+        "items": {
+          "0": "Creates `.agents`, `.agents/skills`, and a backup directory under your home folder.",
+          "1": "Links a curated set of agent-specific `skills` directories back to the shared central path.",
+          "2": "Adds `open-skills`, `skills`, `show-skills`, and `add-skill` into both Windows PowerShell and PowerShell Core profiles when missing.",
+          "3": "Moves pre-existing folders into timestamped backups after safely merging their contents into the central skills directory."
+        }
+      },
+      "postflight": {
+        "label": "After running it",
+        "title": "What to verify next",
+        "body": "Open a fresh PowerShell session and call `skills` or `open-skills`. Then run `show-skills` to confirm the linked directories now resolve against the shared store.",
+        "footer": "If you want strict symbolic-link behavior only, rerun with `-StrictSymbolicLink`; otherwise the script will use junctions when Windows blocks symlink creation."
+      }
     },
     "toc": {
       "title": "On this page"
@@ -565,9 +654,9 @@
   "vault": {
     "meta": {
       "title": "Vault",
-      "badge": "Secure utilities",
-      "tagline": "Private tools, converters, and AI skills in one calm workspace.",
-      "description": "A curated locker for everyday engineering helpers — from certificate workflows to schedule syntax, plus reusable AI skills for your editor.",
+      "badge": "Utilities",
+      "tagline": "Tools, converters, and AI skills.",
+      "description": "Engineering utilities and AI skills.",
       "previewPath": "vault://workspace",
       "previewChips": {
         "localFirst": "Local-first",
@@ -583,9 +672,9 @@
     },
     "aiSkills": {
       "label": "AI Skills",
-      "headline": "Reusable intelligence for your workflow",
-      "description": "Curated Cursor skills and prompt packs for development, automation, infrastructure, and code review — ready to drop into your editor.",
-      "browseDescription": "Open the skills library to preview markdown, copy raw text, or download files for your editor."
+      "headline": "Agent skill files",
+      "description": "Skill files for Claude, Cursor, and other agents — preview, copy, or download.",
+      "browseDescription": "Open the skills library to preview, copy, or download files."
     },
     "converters": {
       "label": "Converters",
@@ -620,8 +709,8 @@
     },
     "toolPage": {
       "status": "In development",
-      "comingSoonTitle": "This tool is almost ready",
-      "comingSoonBody": "The interface is scaffolded and will land here soon. Return to the vault overview to explore other utilities."
+      "comingSoonTitle": "Coming soon",
+      "comingSoonBody": "This tool is still being built."
     },
     "detail": {
       "notFoundAccent": "Missing utility",
@@ -775,12 +864,12 @@
   "vaultHighlight": {
     "label": "Vault",
     "headline": "Vault",
-    "description": "A curated workspace of browser-side utilities, format converters, and reusable AI skills — private, local-first, and ready to use.",
+    "description": "Local-first utilities, format converters, and agent skill files.",
     "cta": "Explore the vault",
     "items": {
       "aiSkills": {
         "title": "AI Skills",
-        "description": "Cursor-ready skill markdown you can preview, copy, or download."
+        "description": "Skill files you can preview, copy, or download."
       },
       "certConverter": {
         "title": "Cert Converter",

@@ -122,7 +122,7 @@ export function VaultHighlight() {
           <div className="flex flex-col items-center gap-4 text-center">
             <h2
               data-animate="section-heading"
-              className={sectionHeadingClass("text-center text-neutral-900 dark:text-neutral-50")}
+              className={sectionHeadingClass("text-center")}
             >
               {t("headline")}
             </h2>
@@ -133,9 +133,14 @@ export function VaultHighlight() {
             >
               {t("description")}
             </p>
+
+            <div
+              data-animate="section-copy"
+              className="mt-2 h-px w-12 bg-gradient-to-r from-transparent via-neutral-400 to-transparent dark:via-neutral-600"
+            />
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {HIGHLIGHT_ITEMS.map((item) => (
               <VaultHighlightCard key={item.key} item={item} t={t} />
             ))}

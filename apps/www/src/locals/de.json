@@ -525,7 +525,7 @@
   "skills": {
     "meta": {
       "title": "AI Skills",
-      "description": "Skills durchsuchen, kopieren und Cursor-ready Markdown aus dem Tresor herunterladen."
+      "description": "Skill-Dateien durchsuchen, kopieren und herunterladen."
     },
     "actions": {
       "backToVault": "Zurück zum Tresor",
@@ -546,8 +546,97 @@
     "viewer": {
       "created": "Erstellt",
       "updated": "Aktualisiert",
-      "reference": "Inspiration",
       "tags": "Tags"
+    },
+    "intro": {
+      "setup": {
+        "label": "Setup",
+        "title": "Zentrales Skills-Verzeichnis einrichten",
+        "description": "Alle Agent-Skill-Ordner auf ein gemeinsames Verzeichnis verlinken.",
+        "cta": "Setup-Guide öffnen"
+      },
+      "registry": {
+        "label": "Registry",
+        "title": "Offene Skill-Registry",
+        "description": "Das offene Skills-Ökosystem durchsuchen.",
+        "cta": "skills.sh öffnen"
+      }
+    },
+    "setup": {
+      "meta": {
+        "kicker": "Agent Skills Setup"
+      },
+      "actions": {
+        "back": "Zurück zu den Skills",
+        "copy": "Skript kopieren",
+        "copied": "Kopiert",
+        "download": ".ps1 herunterladen"
+      },
+      "hero": {
+        "label": "Zentrales Agent-Skills-Verzeichnis",
+        "title": "Ein Skills-Ordner, jeder Agent.",
+        "description": "Verlinkt Cursor, Claude, Codex und andere Agent-Verzeichnisse auf einen gemeinsamen `~/.agents/skills`-Ordner und richtet PowerShell-Shortcuts ein.",
+        "stats": {
+          "centralPathLabel": "Zentraler Pfad",
+          "centralPathValue": "~/.agents/skills",
+          "agentTargetsLabel": "Agent-Ziele",
+          "agentTargetsValue": "{count, plural, one {# verlinkter Ordner} other {# verlinkte Ordner}}",
+          "profileTargetsLabel": "Profile",
+          "profileTargetsValue": "{count, plural, one {# Profil gepatcht} other {# Profile gepatcht}}"
+        }
+      },
+      "notes": {
+        "targetsLabel": "Verlinkte Ziele",
+        "targetsTitle": "Bekannte Agent-Ordner zeigen auf eine gemeinsame Quelle.",
+        "safetyLabel": "Link-Verhalten",
+        "safetyTitle": "Erst Backups, dann Symbolic Links wenn möglich.",
+        "safetyBody": "Bestehende Ordner werden vor dem Verschieben ins Backup mit dem zentralen Verzeichnis zusammengeführt. Wenn echte Symbolic Links nicht möglich sind, fällt das Skript auf Junctions zurück, damit der Workflow unter Windows trotzdem sauber funktioniert.",
+        "badges": {
+          "symbolicLinks": "Symbolic Links",
+          "junctionFallback": "Junction-Fallback",
+          "profilePatch": "Profil-Patch"
+        }
+      },
+      "commands": {
+        "openSkills": {
+          "title": "Öffnet den zentralen Ordner",
+          "description": "Startet das gemeinsame `.agents/skills`-Verzeichnis direkt im Explorer."
+        },
+        "skills": {
+          "title": "Kurzer Alias für denselben Ordner",
+          "description": "Hält das Öffnen schnell, wenn du bereits in PowerShell arbeitest."
+        },
+        "showSkills": {
+          "title": "Listet alle Markdown-Skills",
+          "description": "Gibt rekursiv alle verfügbaren `.md`-Dateien mit relativem und vollem Pfad aus."
+        },
+        "addSkill": {
+          "title": "Legt eine neue Skill-Datei an",
+          "description": "Fragt nach einem Namen, erstellt eine Starter-Markdown-Datei und öffnet sie in VS Code oder Notepad."
+        }
+      },
+      "script": {
+        "label": "Installationsskript",
+        "title": "Einmal das Setup ausführen, danach nur noch mit einem Verzeichnis arbeiten.",
+        "description": "Das Skript unten ist exakt die Datei, die auch zum Download angeboten wird. Du kannst es direkt kopieren oder als `.ps1` herunterladen und in PowerShell ausführen.",
+        "terminalTitle": "central-agent-skills.ps1"
+      },
+      "changes": {
+        "label": "Was verändert wird",
+        "title": "Was dieses Skript auf der Platte und in PowerShell anfasst.",
+        "items": {
+          "0": "Erstellt `.agents`, `.agents/skills` und ein Backup-Verzeichnis in deinem Home-Ordner.",
+          "1": "Verlinkt eine kuratierte Menge agentenspezifischer `skills`-Ordner zurück auf den gemeinsamen zentralen Pfad.",
+          "2": "Ergänzt `open-skills`, `skills`, `show-skills` und `add-skill` in Windows PowerShell und PowerShell Core, sofern sie noch fehlen.",
+          "3": "Verschiebt bereits vorhandene Ordner in zeitgestempelte Backups, nachdem deren Inhalt sicher in das zentrale Skills-Verzeichnis zusammengeführt wurde."
+        }
+      },
+      "postflight": {
+        "label": "Danach prüfen",
+        "title": "Was du im nächsten Schritt verifizieren solltest",
+        "body": "Öffne eine frische PowerShell-Sitzung und rufe `skills` oder `open-skills` auf. Danach zeigt dir `show-skills`, ob die verlinkten Ordner jetzt sauber gegen den gemeinsamen Store aufgelöst werden.",
+        "footer": "Wenn du ausschließlich striktes Symbolic-Link-Verhalten willst, führe das Skript mit `-StrictSymbolicLink` erneut aus. Andernfalls nutzt es Junctions, sobald Windows echte Symlinks blockiert."
+      }
     },
     "toc": {
       "title": "Auf dieser Seite"
@@ -565,9 +654,9 @@
   "vault": {
     "meta": {
       "title": "Tresor",
-      "badge": "Sichere Utilities",
-      "tagline": "Private Tools, Converter und AI Skills in einem ruhigen Workspace.",
-      "description": "Ein kuratierter Tresor für alltägliche Engineering-Helfer — von Zertifikats-Workflows bis Cron-Syntax, plus wiederverwendbare AI Skills für deinen Editor.",
+      "badge": "Utilities",
+      "tagline": "Tools, Converter und AI Skills.",
+      "description": "Engineering-Utilities und AI Skills.",
       "previewPath": "vault://workspace",
       "previewChips": {
         "localFirst": "Lokal",
@@ -583,9 +672,9 @@
     },
     "aiSkills": {
       "label": "AI Skills",
-      "headline": "Wiederverwendbare Intelligenz für deinen Workflow",
-      "description": "Kuratierte Cursor Skills und Prompt-Packs für Entwicklung, Automation, Infrastruktur und Code Review — bereit für deinen Editor.",
-      "browseDescription": "Öffne die Skills-Bibliothek, um Markdown anzusehen, Raw-Text zu kopieren oder Dateien für deinen Editor herunterzuladen."
+      "headline": "Agent-Skill-Dateien",
+      "description": "Skill-Dateien für Claude, Cursor und andere Agents — ansehen, kopieren oder herunterladen.",
+      "browseDescription": "Skills-Bibliothek öffnen zum Ansehen, Kopieren oder Herunterladen."
     },
     "converters": {
       "label": "Converter",
@@ -620,8 +709,8 @@
     },
     "toolPage": {
       "status": "In Entwicklung",
-      "comingSoonTitle": "Dieses Tool ist fast fertig",
-      "comingSoonBody": "Die Oberfläche ist vorbereitet und erscheint hier demnächst. Kehre zur Tresor-Übersicht zurück, um andere Utilities zu entdecken."
+      "comingSoonTitle": "Demnächst",
+      "comingSoonBody": "Dieses Tool wird noch gebaut."
     },
     "detail": {
       "notFoundAccent": "Utility fehlt",
@@ -775,12 +864,12 @@
   "vaultHighlight": {
     "label": "Tresor",
     "headline": "Tresor",
-    "description": "Ein kuratierter Workspace mit Browser-Utilities, Format-Convertern und wiederverwendbaren AI Skills — privat, lokal und sofort nutzbar.",
+    "description": "Lokale Utilities, Format-Converter und Agent-Skill-Dateien.",
     "cta": "Zum Tresor",
     "items": {
       "aiSkills": {
         "title": "AI Skills",
-        "description": "Cursor-ready Skill-Markdown zum Ansehen, Kopieren oder Herunterladen."
+        "description": "Skill-Dateien zum Ansehen, Kopieren oder Herunterladen."
       },
       "certConverter": {
         "title": "Cert Converter",

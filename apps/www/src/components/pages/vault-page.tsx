@@ -14,7 +14,6 @@ import {
   CaretLeft,
   CaretRight,
   type IconWeight,
-  LockKey,
 } from "phosphor-react";
 
 import { geist } from "@/app/fonts";
@@ -121,18 +120,10 @@ export function VaultPageContent() {
 
             <div className="relative grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div className="space-y-5">
-                <div
-                  data-animate="vault-hero"
-                  className="inline-flex items-center gap-2 rounded-full border border-neutral-200/70 bg-white/80 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-neutral-500 dark:border-neutral-700/70 dark:bg-neutral-900/70 dark:text-neutral-400"
-                >
-                  <LockKey className="h-3.5 w-3.5" weight="fill" />
-                  {t("meta.badge")}
-                </div>
-
                 <div className="space-y-3">
                   <h1
                     data-animate="vault-hero"
-                    className={sectionHeadingClass("text-left text-neutral-900 dark:text-neutral-50")}
+                    className={sectionHeadingClass("text-left")}
                   >
                     {t("meta.title")}
                   </h1>
@@ -174,17 +165,6 @@ export function VaultPageContent() {
                     </Link>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-400">
-                      {t("meta.previewChips.localFirst")}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-400">
-                      {t("meta.previewChips.noUploads")}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.25em] text-neutral-400">
-                      {t("meta.previewChips.curated")}
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -201,15 +181,7 @@ export function VaultPageContent() {
                 <Brain className="h-6 w-6" weight="fill" />
               </div>
               <div className="relative min-w-0 flex-1">
-                <span
-                  className={cn(
-                    geist.className,
-                    "text-[0.6rem] font-semibold uppercase tracking-[0.35em] text-amber-500 dark:text-amber-300",
-                  )}
-                >
-                  {t("aiSkills.label")}
-                </span>
-                <h2 className={`${geist.className} mt-1 text-lg font-bold text-neutral-900 dark:text-neutral-50`}>
+                <h2 className={`${geist.className} text-lg font-bold text-neutral-900 dark:text-neutral-50`}>
                   {t("aiSkills.headline")}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
@@ -243,16 +215,7 @@ export function VaultPageContent() {
                     <IconComponent className="h-6 w-6" stroke={1.5} />
                   </div>
                   <div className="relative min-w-0 flex-1">
-                    <span
-                      className={cn(
-                        geist.className,
-                        "text-[0.6rem] font-semibold uppercase tracking-[0.35em]",
-                        tool.palette.accent,
-                      )}
-                    >
-                      {t(`tools.${tool.key}.badge`)}
-                    </span>
-                    <h2 className={`${geist.className} mt-1 text-lg font-bold text-neutral-900 dark:text-neutral-50`}>
+                    <h2 className={`${geist.className} text-lg font-bold text-neutral-900 dark:text-neutral-50`}>
                       {t(`tools.${tool.key}.title`)}
                     </h2>
                     <p className="mt-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">

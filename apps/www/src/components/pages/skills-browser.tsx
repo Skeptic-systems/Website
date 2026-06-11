@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
-  ArrowSquareOut,
   CaretLeft,
   Copy,
   DownloadSimple,
@@ -13,9 +12,11 @@ import {
   MagnifyingGlass,
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "motion/react";
 
 import { geist } from "@/app/fonts";
 import { MarkdownContent } from "@/components/common/markdown-content";
+import { SkillsUtilityBanner } from "@/components/pages/skills-utility-banner";
 import {
   buildSkillDownloadHref,
   buildSkillPageHref,
@@ -32,7 +33,6 @@ type SkillsBrowserProps = {
 
 const SKILL_VIEWER_SCROLL_PADDING = 112;
 const TOC_SCROLL_LOCK_MS = 900;
-const SKILLS_DIRECTORY_URL = "https://www.skills.sh/";
 
 function getHeadingTopInScrollContainer(
   scrollContainer: HTMLElement,
@@ -215,14 +215,14 @@ export function SkillsBrowser({ skills, activeSkill }: SkillsBrowserProps) {
   const downloadLabel = `${activeSkill.slug}.md`;
 
   return (
-    <main className="relative flex h-screen w-full flex-col overflow-hidden bg-transparent">
+    <main className="relative flex min-h-screen w-full flex-col bg-transparent lg:h-screen lg:overflow-hidden">
       <div className="accent-glow-layer-right" />
       <div className="accent-glow-layer-left-lower" />
       <div className="pointer-events-none fixed inset-0 bg-white/80 dark:bg-black/80 [mask-image:radial-gradient(ellipse_at_center,transparent_18%,black)]" />
 
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col px-4 pt-16 pb-4 sm:px-6 sm:pt-20">
-        <div className="mx-auto grid min-h-0 w-full max-w-[1600px] flex-1 gap-x-3 gap-y-0 lg:grid-cols-[260px_minmax(0,1fr)_200px]">
-          <div className="mb-1.5 flex items-center justify-between lg:col-span-1">
+      <div className="relative z-10 flex flex-1 flex-col px-4 pt-16 pb-4 sm:px-6 sm:pt-20 lg:overflow-hidden">
+        <div className="mx-auto flex w-full max-w-[1600px] shrink-0 flex-col gap-3 pb-3">
+          <div className="flex items-center justify-between">
             <Link
               href="/vault"
               className="inline-flex items-center gap-1.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
@@ -230,7 +230,6 @@ export function SkillsBrowser({ skills, activeSkill }: SkillsBrowserProps) {
               <CaretLeft className="h-3 w-3" />
               {t("actions.backToVault")}
             </Link>
-
             <button
               type="button"
               className="inline-flex items-center gap-1.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-neutral-500 transition hover:text-neutral-900 lg:hidden dark:text-neutral-400 dark:hover:text-neutral-100"
@@ -242,39 +241,43 @@ export function SkillsBrowser({ skills, activeSkill }: SkillsBrowserProps) {
               {t("sidebar.toggle")}
             </button>
           </div>
-          <div className="hidden lg:block" />
-          <div className="hidden lg:block" />
 
-          <SkillsSidebar
-            skills={filteredSkills}
-            activeSlug={activeSkill.slug}
-            filter={filter}
-            totalCount={skills.length}
-            isOpen={sidebarOpen}
-            onFilterChange={setFilter}
-            onNavigate={() => {
-              setSidebarOpen(false);
-            }}
-            t={t}
-          />
+          <SkillsUtilityBanner />
+        </div>
 
-          <SkillsViewer
-            skill={activeSkill}
-            scrollContainerRef={scrollContainerRef}
-            copied={copied}
-            copyFailed={copyFailed}
-            downloadHref={downloadHref}
-            downloadLabel={downloadLabel}
-            onCopyRaw={handleCopyRaw}
-            t={t}
-          />
+        <div className="mx-auto w-full max-w-[1600px] flex-1 lg:min-h-0">
+          <div className="grid h-full gap-x-3 gap-y-0 lg:grid-cols-[260px_minmax(0,1fr)_200px]">
+            <SkillsSidebar
+              skills={filteredSkills}
+              activeSlug={activeSkill.slug}
+              filter={filter}
+              totalCount={skills.length}
+              isOpen={sidebarOpen}
+              onFilterChange={setFilter}
+              onNavigate={() => {
+                setSidebarOpen(false);
+              }}
+              t={t}
+            />
 
-          <SkillsToc
-            headings={activeSkill.headings}
-            activeHeadingId={activeHeadingId}
-            onHeadingClick={handleTocHeadingClick}
-            t={t}
-          />
+            <SkillsViewer
+              skill={activeSkill}
+              scrollContainerRef={scrollContainerRef}
+              copied={copied}
+              copyFailed={copyFailed}
+              downloadHref={downloadHref}
+              downloadLabel={downloadLabel}
+              onCopyRaw={handleCopyRaw}
+              t={t}
+            />
+
+            <SkillsToc
+              headings={activeSkill.headings}
+              activeHeadingId={activeHeadingId}
+              onHeadingClick={handleTocHeadingClick}
+              t={t}
+            />
+          </div>
         </div>
       </div>
     </main>
@@ -445,15 +448,6 @@ function SkillsViewer({
                   {t("viewer.updated")} · {skill.frontmatter.updated}
                 </span>
               ) : null}
-              <a
-                href={SKILLS_DIRECTORY_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 transition hover:text-neutral-900 dark:hover:text-neutral-100"
-              >
-                <ArrowSquareOut className="h-3 w-3" />
-                {t("viewer.reference")} - skills.sh
-              </a>
             </div>
 
             {skill.frontmatter.tags.length > 0 ? (
@@ -491,7 +485,11 @@ function SkillsViewer({
         </div>
       </div>
 
-      <div
+      <motion.div
+        key={skill.slug}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
         ref={scrollContainerRef}
         id="skill-viewer-scroll"
         className="flex-1 overflow-y-auto px-5 py-6 sm:px-6"
@@ -500,7 +498,7 @@ function SkillsViewer({
           content={skill.body}
           options={{ enableHeadingIds: true, headingIds: skill.headings }}
         />
-      </div>
+      </motion.div>
     </section>
   );
 }

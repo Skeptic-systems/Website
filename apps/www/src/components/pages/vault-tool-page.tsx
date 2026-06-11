@@ -8,7 +8,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CaretLeft, LockKey } from "phosphor-react";
+import { CaretLeft } from "phosphor-react";
 import type { ComponentType } from "react";
 
 import { geist } from "@/app/fonts";
@@ -72,10 +72,6 @@ export function VaultToolPageContent({ tool }: VaultToolPageContentProps) {
             <div className="relative space-y-8">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-4">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-neutral-200/70 bg-white/80 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-neutral-500 dark:border-neutral-700/70 dark:bg-neutral-900/70 dark:text-neutral-400">
-                    <LockKey className="h-3.5 w-3.5" weight="fill" />
-                    {t(`tools.${tool.key}.badge`)}
-                  </span>
                   <h1
                     className={`${geist.className} text-3xl font-bold text-neutral-900 dark:text-neutral-50 sm:text-4xl`}
                   >
