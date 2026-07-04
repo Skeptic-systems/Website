@@ -27,6 +27,7 @@
     "links": {
       "about": "About",
       "tools": "Tools",
+      "vault": "Vault",
       "selfhosted": "Selfhosted"
     },
     "cta": {
@@ -462,10 +463,10 @@
       "placeholder": "—"
     },
     "sections": {
-      "pterodactyl": {
-        "title": "Pterodactyl",
+      "pelican": {
+        "title": "Pelican",
         "accent": "Game server fleet",
-        "description": "Powered by Pterodactyl and Wings, this cluster keeps game servers ready to spin up in seconds with tuned limits and automated housekeeping.",
+        "description": "Powered by Pelican and Wings, this cluster keeps game servers ready to spin up in seconds with tuned limits, automated housekeeping, and plugin support.",
         "metrics": {
           "total": "Total servers",
           "active": "Active now",
@@ -473,7 +474,7 @@
           "cpu": "Average CPU load"
         },
         "states": {
-          "error": "We couldn't load the Pterodactyl servers right now.",
+          "error": "We couldn't load the Pelican servers right now.",
           "empty": "No servers are running at the moment."
         },
         "cards": {
@@ -521,6 +522,373 @@
     }
   }
   ,
+  "skills": {
+    "meta": {
+      "title": "AI Skills",
+      "description": "Browse, copy, and download skill files."
+    },
+    "actions": {
+      "backToVault": "Back to vault",
+      "copyRaw": "Copy raw",
+      "download": "Download",
+      "copied": "Copied",
+      "copyFailed": "Copy failed",
+      "browseAll": "Browse all skills",
+      "openSkills": "Open skills library"
+    },
+    "sidebar": {
+      "filterPlaceholder": "Filter notes...",
+      "vaultRoot": "Vault root",
+      "sectionLabel": "AI skills",
+      "fileCount": "{count, plural, one {# note} other {# notes}}",
+      "toggle": "Toggle skill list"
+    },
+    "viewer": {
+      "created": "Created",
+      "updated": "Updated",
+      "tags": "Tags"
+    },
+    "intro": {
+      "setup": {
+        "label": "Setup",
+        "title": "Central skills directory setup",
+        "description": "Link every agent's skill folder to one shared directory.",
+        "cta": "Open setup guide"
+      },
+      "registry": {
+        "label": "Registry",
+        "title": "Open skill registry",
+        "description": "Browse the open skills ecosystem.",
+        "cta": "Browse skills.sh"
+      }
+    },
+    "setup": {
+      "meta": {
+        "kicker": "Agent Skills Setup"
+      },
+      "actions": {
+        "back": "Back to skills",
+        "copy": "Copy script",
+        "copied": "Copied",
+        "download": "Download .ps1"
+      },
+      "hero": {
+        "label": "Central Agent Skills Directory",
+        "title": "One skills folder, every agent.",
+        "description": "Links Cursor, Claude, Codex, and other agent directories to a shared `~/.agents/skills` folder and adds PowerShell shortcuts.",
+        "stats": {
+          "centralPathLabel": "Central path",
+          "centralPathValue": "~/.agents/skills",
+          "agentTargetsLabel": "Agent targets",
+          "agentTargetsValue": "{count, plural, one {# linked folder} other {# linked folders}}",
+          "profileTargetsLabel": "Profiles",
+          "profileTargetsValue": "{count, plural, one {# profile patched} other {# profiles patched}}"
+        }
+      },
+      "notes": {
+        "targetsLabel": "Linked destinations",
+        "targetsTitle": "Known agent folders are pointed at one shared source.",
+        "safetyLabel": "Linking behavior",
+        "safetyTitle": "Backups first, symbolic links when possible.",
+        "safetyBody": "Existing folders are merged into the central directory before they are moved to backup. If real symbolic links are unavailable, the script falls back to junctions so the workflow still lands cleanly on Windows.",
+        "badges": {
+          "symbolicLinks": "Symbolic links",
+          "junctionFallback": "Junction fallback",
+          "profilePatch": "Profile patch"
+        }
+      },
+      "commands": {
+        "openSkills": {
+          "title": "Open the central folder",
+          "description": "Launches the shared `.agents/skills` directory directly in Explorer."
+        },
+        "skills": {
+          "title": "Short alias for the same folder",
+          "description": "Keeps the open action fast when you are already working inside PowerShell."
+        },
+        "showSkills": {
+          "title": "List every markdown skill",
+          "description": "Recursively prints the available `.md` files with relative and full paths."
+        },
+        "addSkill": {
+          "title": "Create a new skill file",
+          "description": "Prompts for a name, creates a starter markdown file, and opens it in VS Code or Notepad."
+        }
+      },
+      "script": {
+        "label": "Install script",
+        "title": "Run the full setup once, then keep working from one directory.",
+        "description": "The script below is the exact file offered for download. Copy it directly or grab the `.ps1` and run it inside PowerShell.",
+        "terminalTitle": "central-agent-skills.ps1"
+      },
+      "changes": {
+        "label": "What changes",
+        "title": "What this script changes on disk and in PowerShell.",
+        "items": {
+          "0": "Creates `.agents`, `.agents/skills`, and a backup directory under your home folder.",
+          "1": "Links a curated set of agent-specific `skills` directories back to the shared central path.",
+          "2": "Adds `open-skills`, `skills`, `show-skills`, and `add-skill` into both Windows PowerShell and PowerShell Core profiles when missing.",
+          "3": "Moves pre-existing folders into timestamped backups after safely merging their contents into the central skills directory."
+        }
+      },
+      "postflight": {
+        "label": "After running it",
+        "title": "What to verify next",
+        "body": "Open a fresh PowerShell session and call `skills` or `open-skills`. Then run `show-skills` to confirm the linked directories now resolve against the shared store.",
+        "footer": "If you want strict symbolic-link behavior only, rerun with `-StrictSymbolicLink`; otherwise the script will use junctions when Windows blocks symlink creation."
+      }
+    },
+    "toc": {
+      "title": "On this page"
+    },
+    "states": {
+      "empty": "No skills are available yet.",
+      "noMatches": "No skills match your filter."
+    },
+    "detail": {
+      "notFoundAccent": "Missing skill",
+      "notFoundTitle": "We couldn't find that skill.",
+      "notFoundBody": "The link may be outdated or the file was removed. Return to the skills library."
+    }
+  },
+  "vault": {
+    "meta": {
+      "title": "Vault",
+      "badge": "Utilities",
+      "tagline": "Tools, converters, and AI skills.",
+      "description": "Engineering utilities and AI skills.",
+      "previewPath": "vault://workspace",
+      "previewChips": {
+        "localFirst": "Local-first",
+        "noUploads": "No uploads",
+        "curated": "Curated"
+      }
+    },
+    "actions": {
+      "back": "Back to home",
+      "backToVault": "Back to vault",
+      "openTool": "Open tool",
+      "comingSoon": "Coming soon"
+    },
+    "aiSkills": {
+      "label": "AI Skills",
+      "headline": "Agent skill files",
+      "description": "Skill files for Claude, Cursor, and other agents — preview, copy, or download.",
+      "browseDescription": "Open the skills library to preview, copy, or download files."
+    },
+    "converters": {
+      "label": "Converters",
+      "headline": "Small tools, zero friction",
+      "description": "Browser-side utilities that translate formats you touch every day — no uploads, no accounts, just paste and convert."
+    },
+    "tools": {
+      "certConverter": {
+        "title": "Cert Converter",
+        "badge": "TLS / PEM",
+        "description": "Convert between PEM, DER, PKCS#12, and bundled certificate chains with clear validation feedback.",
+        "comingSoon": "Certificate parsing and export flows are being wired up."
+      },
+      "dockerCompose": {
+        "title": "Docker Run → Compose",
+        "badge": "Containers",
+        "description": "Turn a docker run command into a clean, editable docker-compose.yml with sensible defaults.",
+        "comingSoon": "Run-flag parsing and compose generation are in progress."
+      },
+      "crontabConverter": {
+        "title": "Crontab Converter",
+        "badge": "Scheduling",
+        "description": "Translate cron expressions into human-readable schedules and back again, with timezone hints.",
+        "comingSoon": "Expression parsing and natural-language output are on the way."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "badge": "Shell Library",
+        "description": "Store recurring shell commands as curated snippets with syntax highlighting and copy actions.",
+        "comingSoon": "More commands will be added over time."
+      }
+    },
+    "toolPage": {
+      "status": "In development",
+      "comingSoonTitle": "Coming soon",
+      "comingSoonBody": "This tool is still being built."
+    },
+    "detail": {
+      "notFoundAccent": "Missing utility",
+      "notFoundTitle": "We couldn't find that vault entry.",
+      "notFoundBody": "The link may be outdated or the tool hasn't been published yet. Return to the vault overview."
+    }
+  },
+  "certConverter": {
+    "categories": {
+      "source": {
+        "certs": "Certificates",
+        "keys": "Keys",
+        "requests": "Requests",
+        "multi": "Multiple files",
+        "fresh": "Start fresh"
+      },
+      "target": {
+        "convert": "Format conversion",
+        "bundle": "Bundling",
+        "keys": "Key operations",
+        "generate": "Generate",
+        "inspect": "Inspect & verify"
+      }
+    },
+    "source": {
+      "label": "I have",
+      "pemCert": "PEM Certificate",
+      "pemCertHint": "You have a .pem or .crt file (Base64 text format)",
+      "derCert": "DER Certificate",
+      "derCertHint": "You have a .der or .cer file (binary format)",
+      "pkcs12": "PKCS#12 / PFX",
+      "pkcs12Hint": "You have a .p12 or .pfx bundle with cert and key inside",
+      "pkcs7": "PKCS#7 / P7B",
+      "pkcs7Hint": "You have a .p7b container with one or more certificates",
+      "privateKey": "Private Key",
+      "privateKeyHint": "You have an unencrypted .key file (PEM format)",
+      "encryptedKey": "Encrypted Private Key",
+      "encryptedKeyHint": "You have a passphrase-protected .key file",
+      "csr": "CSR",
+      "csrHint": "You have a .csr file (Certificate Signing Request)",
+      "certAndKey": "Certificate + Key",
+      "certAndKeyHint": "You have separate .pem cert and .key files",
+      "multiplePem": "Multiple PEM Files",
+      "multiplePemHint": "You have server cert, intermediate, and root CA as separate files",
+      "none": "Nothing",
+      "noneHint": "Generate a private key, CSR, or self-signed certificate from scratch"
+    },
+    "target": {
+      "label": "I want",
+      "placeholder": "Select what you have first",
+      "pemCert": "PEM Certificate",
+      "pemCertHint": "Get a .pem/.crt file in Base64 text format",
+      "derCert": "DER Certificate",
+      "derCertHint": "Get a .der/.cer file in binary format",
+      "pkcs7": "PKCS#7 / P7B",
+      "pkcs7Hint": "Wrap certificate(s) into a .p7b container",
+      "pkcs12": "PKCS#12 / PFX Bundle",
+      "pkcs12Hint": "Create a .p12/.pfx bundle for Windows, Java, or browser import",
+      "chainBundle": "Full Chain (chain.pem)",
+      "chainBundleHint": "Combine leaf + intermediate + root CA into one fullchain.pem",
+      "publicKey": "Public Key",
+      "publicKeyHint": "Extract the public key from your private key",
+      "decryptedKey": "Decrypt Key",
+      "decryptedKeyHint": "Remove the passphrase from your encrypted key",
+      "encryptedKey": "Encrypt Key",
+      "encryptedKeyHint": "Protect your key with an AES-256 passphrase",
+      "pkcs8Key": "PKCS#8 Format",
+      "pkcs8KeyHint": "Convert your key to the PKCS#8 standard format",
+      "csr": "CSR (Signing Request)",
+      "csrHint": "Create a request to submit to your CA for signing",
+      "csrAndKey": "CSR + New Key",
+      "csrAndKeyHint": "Generate a fresh key and CSR in one step — ready for your CA",
+      "selfSigned": "Self-Signed Cert + Key",
+      "selfSignedHint": "Create a new key and self-signed certificate for testing or internal use",
+      "selfSignedFromKey": "Self-Signed Certificate",
+      "selfSignedFromKeyHint": "Sign a certificate with your existing private key",
+      "selfSignedFromCsr": "Sign CSR (Self-Signed)",
+      "selfSignedFromCsrHint": "Use your own key to sign a CSR instead of a CA",
+      "rsaKey": "RSA Private Key",
+      "rsaKeyHint": "Generate a new RSA key pair (2048 or 4096 bit)",
+      "ecKey": "EC Private Key",
+      "ecKeyHint": "Generate a new elliptic curve key pair (P-256, P-384, P-521)",
+      "certDetails": "View Certificate",
+      "certDetailsHint": "Show subject, issuer, validity dates, and SANs",
+      "expiryCheck": "Check Expiry",
+      "expiryCheckHint": "Show when this certificate expires",
+      "fingerprint": "SHA-256 Fingerprint",
+      "fingerprintHint": "Compute the certificate fingerprint for verification",
+      "keyMatch": "Verify Key Match",
+      "keyMatchHint": "Check if your certificate and private key belong together",
+      "verifyChain": "Verify Chain",
+      "verifyChainHint": "Validate a certificate against its CA chain",
+      "viewCsr": "View CSR",
+      "viewCsrHint": "Decode and verify the contents of a CSR"
+    },
+    "params": {
+      "label": "Parameters",
+      "showSubject": "Show subject fields (CN, O, C, ...)",
+      "hideSubject": "Hide subject fields",
+      "fields": {
+        "inputFile": "Input file",
+        "outputFile": "Output file",
+        "keyFile": "Key file",
+        "caFile": "Root CA file",
+        "chainFiles": "CA chain / bundle file",
+        "intermediateCaFile": "Intermediate CA file",
+        "password": "Passphrase (input)",
+        "outPassword": "Passphrase (output)",
+        "cn": "Common Name (CN)",
+        "org": "Organization (O)",
+        "ou": "Organizational Unit (OU)",
+        "country": "Country (C)",
+        "state": "State / Province (ST)",
+        "locality": "Locality (L)",
+        "email": "Email",
+        "san": "Subject Alt Names (SAN)",
+        "days": "Validity (days)",
+        "keySize": "Key size (bits)",
+        "curve": "EC curve",
+        "hash": "Hash algorithm"
+      },
+      "placeholders": {
+        "inputFile": "cert.pem",
+        "outputFile": "output.pem",
+        "keyFile": "private.key",
+        "caFile": "rootca.pem",
+        "chainFiles": "ca-chain.pem",
+        "intermediateCaFile": "intermediate.pem (optional)",
+        "password": "Enter passphrase",
+        "outPassword": "Enter export passphrase",
+        "cn": "example.com",
+        "org": "My Company",
+        "ou": "Engineering",
+        "country": "DE",
+        "state": "Bavaria",
+        "locality": "Erlangen",
+        "email": "admin@example.com",
+        "san": "www.example.com, api.example.com, 10.0.0.1",
+        "days": "365",
+        "keySize": "2048",
+        "curve": "prime256v1",
+        "hash": "sha256"
+      }
+    },
+    "output": {
+      "label": "Generated command",
+      "copy": "Copy",
+      "copied": "Copied"
+    }
+  },
+  "vaultHighlight": {
+    "label": "Vault",
+    "headline": "Vault",
+    "description": "Local-first utilities, format converters, and agent skill files.",
+    "cta": "Explore the vault",
+    "items": {
+      "aiSkills": {
+        "title": "AI Skills",
+        "description": "Skill files you can preview, copy, or download."
+      },
+      "certConverter": {
+        "title": "Cert Converter",
+        "description": "Convert between PEM, DER, and PKCS#12 certificate formats."
+      },
+      "dockerCompose": {
+        "title": "Docker Run → Compose",
+        "description": "Turn a docker run command into a clean compose file."
+      },
+      "crontabConverter": {
+        "title": "Crontab Converter",
+        "description": "Translate cron expressions into human-readable schedules."
+      },
+      "quickCommands": {
+        "title": "Quick Commands",
+        "description": "Keep recurring shell commands highlighted and ready to copy."
+      }
+    }
+  },
   "projects": {
     "title": "Projects",
     "accent": "GitHub archive",
@@ -731,6 +1099,137 @@
       "madeWith": "Made with <heart></heart> by Skeptic",
       "copyright": "\u00A9 Skeptic Systems {start} - {end}",
       "secret": "Moneymarc aka Monetenmarc is the best"
+    }
+  },
+  "dockerComposeConverter": {
+    "input": {
+      "label": "Docker Run Command",
+      "placeholder": "docker run -d --name myapp -p 8080:80 nginx:alpine",
+      "hint": "Paste a full docker run command above. It will be converted to a docker-compose.yml in real time.",
+      "example": "Example",
+      "clear": "Clear"
+    },
+    "output": {
+      "label": "Generated Compose File",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "warnings": {
+      "label": "Conversion Notes"
+    }
+  },
+  "crontabConverter": {
+    "modes": {
+      "build": "Build",
+      "read": "Explain"
+    },
+    "build": {
+      "presetLabel": "Schedule Type",
+      "presets": {
+        "everyMinute": "Every minute",
+        "everyNMinutes": "Every N min",
+        "everyHour": "Hourly",
+        "everyNHours": "Every N hours",
+        "dailyAt": "Daily",
+        "weeklyOn": "Weekly",
+        "monthlyOn": "Monthly",
+        "custom": "Custom"
+      },
+      "paramsLabel": "Parameters",
+      "fields": {
+        "minute": "Minute",
+        "hour": "Hour",
+        "dayOfWeek": "Day of week",
+        "dayOfMonth": "Day of month",
+        "intervalMinutes": "Every N minutes",
+        "intervalHours": "Every N hours"
+      }
+    },
+    "read": {
+      "label": "Cron Expression",
+      "placeholder": "*/5 * * * *",
+      "errors": "Validation Errors"
+    },
+    "output": {
+      "label": "Generated Expression",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "weekdays": {
+      "sun": "Sunday",
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday"
+    },
+    "cheatsheet": {
+      "title": "Cheatsheet",
+      "fieldOrder": "Field Order",
+      "fields": {
+        "minute": "MIN",
+        "hour": "HOUR",
+        "dayOfMonth": "DOM",
+        "month": "MON",
+        "dayOfWeek": "DOW"
+      },
+      "tokens": "Special Characters",
+      "tokenMeaning": {
+        "asterisk": "Any value",
+        "comma": "List separator (e.g. 1,3,5)",
+        "dash": "Range (e.g. 1-5)",
+        "slash": "Step (e.g. */5 = every 5)"
+      },
+      "examples": "Common Examples",
+      "desc": {
+        "everyMinute": "Every minute",
+        "every5Min": "Every 5 minutes",
+        "everyHour": "Every hour (at :00)",
+        "every2Hours": "Every 2 hours",
+        "midnight": "Daily at midnight",
+        "weekdays9am": "Weekdays at 09:00",
+        "monthlyFirst": "First of every month at midnight",
+        "weeklySunday": "Every Sunday at midnight",
+        "bimonthly": "1st & 15th at 04:30",
+        "yearly": "Yearly on Jan 1st at midnight"
+      }
+    }
+  }
+  ,
+  "quickCommands": {
+    "library": "Command Library",
+    "copy": "Copy",
+    "copied": "Copied",
+    "count": "{count, plural, one {# command} other {# commands}}",
+    "snippetCount": "{count, plural, one {# shell} other {# shells}}",
+    "languages": {
+      "shell": "Shell",
+      "powershell": "PowerShell"
+    },
+    "categories": {
+      "codexInstall": "Install Codex"
+    },
+    "commands": {
+      "debianDockerBootstrap": {
+        "title": "Docker install",
+        "description": "Installs curl and sudo, downloads the official Docker installer, runs it, and removes the script afterwards.",
+        "badge": "Docker Setup"
+      },
+      "jellyfinTsToMp4": {
+        "title": "Jellyfin TS to MP4",
+        "description": "Converts .ts files in the Jellyfin movies folder to .mp4 and removes each original after a successful conversion.",
+        "badge": "Jellyfin"
+      },
+      "codexInstall": {
+        "title": "Install Codex",
+        "description": "Installs Codex and sets the codex command for Bash or PowerShell with --yolo.",
+        "badge": "PowerShell",
+        "snippets": {
+          "bash": "Bash",
+          "powershell": "PowerShell"
+        }
+      }
     }
   }
 }

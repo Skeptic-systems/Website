@@ -2,8 +2,58 @@
 
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+
+function parseSectionHash(link: string): string | null {
+  if (link.startsWith("/#")) {
+    return link.slice(1);
+  }
+  if (link.startsWith("#")) {
+    return link;
+  }
+  return null;
+}
+
+function scrollToSectionHash(hash: string, behavior: ScrollBehavior): void {
+  const el = document.querySelector(hash);
+  if (el) {
+    el.scrollIntoView({ behavior, block: "start" });
+  }
+}
+
+export function useNavLinkClick(onAfterClick?: () => void) {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  return useCallback(
+    (link: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+      const hash = parseSectionHash(link);
+      if (!hash) {
+        onAfterClick?.();
+        return;
+      }
+
+      event.preventDefault();
+      const homeHashLink = link.startsWith("/#") ? link : `/${hash}`;
+
+      if (pathname === "/") {
+        scrollToSectionHash(hash, "smooth");
+        onAfterClick?.();
+        return;
+      }
+
+      router.push(homeHashLink);
+      onAfterClick?.();
+
+      window.setTimeout(() => {
+        scrollToSectionHash(hash, "smooth");
+      }, 150);
+    },
+    [onAfterClick, pathname, router],
+  );
+}
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -103,6 +153,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
 
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
+  const handleNavClick = useNavLinkClick(onItemClick);
 
   return (
     <motion.div
@@ -115,16 +166,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
       {items.map((item, idx) => (
         <a
           onMouseEnter={() => setHovered(idx)}
-          onClick={(e) => {
-            if (item.link.startsWith("#")) {
-              e.preventDefault();
-              const el = document.querySelector(item.link);
-              if (el) {
-                el.scrollIntoView({ behavior: "smooth", block: "start" });
-              }
-            }
-            onItemClick?.();
-          }}
+          onClick={(e) => handleNavClick(item.link, e)}
           className="relative inline-flex whitespace-nowrap px-4 py-2 text-neutral-600 dark:text-neutral-300"
           key={item.link}
           href={item.link}

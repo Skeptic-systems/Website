@@ -14,6 +14,7 @@ import {
   Navbar,
   NavbarButton,
   NavItems,
+  useNavLinkClick,
 } from "@/components/ui/resizable-navbar";
 import { authClient } from "@/lib/auth/client";
 
@@ -22,12 +23,14 @@ export function Topbar() {
   const session = authClient.useSession();
 
   const navItems: { name: string; link: string }[] = [
-    { name: t("links.about"), link: "#about" },
-    { name: t("links.tools"), link: "#tools" },
-    { name: t("links.selfhosted"), link: "#selfhosted" },
+    { name: t("links.about"), link: "/#about" },
+    { name: t("links.tools"), link: "/#tools" },
+    { name: t("links.vault"), link: "/vault" },
+    { name: t("links.selfhosted"), link: "/#selfhosted" },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleMobileNavClick = useNavLinkClick(() => setIsMobileMenuOpen(false));
   const isAuthenticated = Boolean(session.data?.user);
 
   const primaryCta = isAuthenticated
@@ -64,7 +67,7 @@ export function Topbar() {
             <a
               key={item.link}
               href={item.link}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleMobileNavClick(item.link, e)}
               className="relative text-neutral-600 dark:text-neutral-300"
             >
               <span className="block">{item.name}</span>

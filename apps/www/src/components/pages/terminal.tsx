@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Flag } from "phosphor-react";
 
-import { geist } from "@/app/fonts";
 import {
   type GsapSectionSetup,
   useGsapSection,
@@ -635,15 +634,6 @@ export function Terminal() {
   const terminalAnimation = useCallback<GsapSectionSetup<HTMLDivElement>>(({ node, gsap }) => {
     const ease = "power2.out";
 
-    const accent = node.querySelector<HTMLElement>("[data-animate='section-accent']");
-    if (accent) {
-      gsap.fromTo(accent, { y: 14, opacity: 0 }, {
-        y: 0, opacity: 1, duration: 0.35, ease,
-        scrollTrigger: { trigger: accent, start: "top 88%", once: true },
-        clearProps: "all",
-      });
-    }
-
     const heading = node.querySelector<HTMLElement>("[data-animate='section-heading']");
     if (heading) {
       gsap.fromTo(heading, { y: 20, opacity: 0 }, {
@@ -684,20 +674,11 @@ export function Terminal() {
       <div className="accent-glow-layer-right" />
       <div className="pointer-events-none absolute inset-0 bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
-      <div className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center px-6 pt-24 sm:pt-28 md:pt-32">
+      <div className="relative z-10 flex min-h-[34vh] flex-col items-center justify-center px-6 pt-16 sm:pt-20 md:pt-24">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-          <span
-            data-animate="section-accent"
-            className={cn(
-              geist.className,
-              "text-xs font-semibold uppercase tracking-[0.32em] text-neutral-500 dark:text-neutral-400",
-            )}
-          >
-            {t("accent")}
-          </span>
           <h2
             data-animate="section-heading"
-            className={sectionHeadingClass("mt-4 text-neutral-900 dark:text-neutral-50")}
+            className={sectionHeadingClass()}
           >
             {t("title")}
           </h2>

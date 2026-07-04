@@ -457,7 +457,7 @@ export function Tools() {
         <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
           <h2
             data-animate="section-heading"
-            className={sectionHeadingClass("mt-16 text-center text-neutral-900 sm:mt-20 md:mt-24 dark:text-neutral-50")}
+            className={sectionHeadingClass("mt-16 text-center sm:mt-20 md:mt-24")}
           >
             {t("title")}
           </h2>
