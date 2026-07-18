@@ -1221,6 +1221,11 @@
         "description": "Converts .ts files in the Jellyfin movies folder to .mp4 and removes each original after a successful conversion.",
         "badge": "Jellyfin"
       },
+      "gitResetToOriginMain": {
+        "title": "Reset to origin/main",
+        "description": "Fast-forwards, fetches and prunes remotes, hard-resets the working tree to origin/main, removes untracked files, and shows the resulting status.",
+        "badge": "Git"
+      },
       "codexInstall": {
         "title": "Install Codex",
         "description": "Installs Codex and sets the codex command for Bash or PowerShell with --yolo.",

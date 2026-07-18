@@ -45,6 +45,16 @@ export const QUICK_COMMANDS: readonly QuickCommand[] = [
       'find /var/docker/jellyfin/movies -type f -name \'*.ts\' -exec bash -c \'for f in "$@"; do mp4="${f%.ts}.mp4"; ffmpeg -i "$f" -c:v copy -c:a aac -b:a 192k -bsf:a aac_adtstoasc "$mp4" && [ -f "$mp4" ] && rm -v "$f"; done\' _ {} +',
   },
   {
+    id: "git-reset-to-origin-main",
+    titleKey: "commands.gitResetToOriginMain.title",
+    descriptionKey: "commands.gitResetToOriginMain.description",
+    badgeKey: "commands.gitResetToOriginMain.badge",
+    language: "shell",
+    tags: ["Git", "Reset"],
+    command:
+      "git pull --ff-only; git fetch --all --prune; git reset --hard origin/main; git clean -fd; git status -sb",
+  },
+  {
     id: "codex-install",
     titleKey: "commands.codexInstall.title",
     descriptionKey: "commands.codexInstall.description",

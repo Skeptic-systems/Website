@@ -1221,6 +1221,11 @@
         "description": "Wandelt .ts-Dateien im Jellyfin-Movie-Ordner zu .mp4 um und entfernt die Originaldatei nach erfolgreicher Konvertierung.",
         "badge": "Jellyfin"
       },
+      "gitResetToOriginMain": {
+        "title": "Auf origin/main zurücksetzen",
+        "description": "Führt einen Fast-Forward aus, holt und bereinigt Remotes, setzt den Arbeitsbaum hart auf origin/main zurück, entfernt nicht versionierte Dateien und zeigt den resultierenden Status.",
+        "badge": "Git"
+      },
       "codexInstall": {
         "title": "Codex installieren",
         "description": "Installiert Codex und setzt den codex-Aufruf für Bash oder PowerShell mit --yolo.",
