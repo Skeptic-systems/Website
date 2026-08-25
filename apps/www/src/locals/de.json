@@ -705,6 +705,12 @@
         "badge": "Shell Library",
         "description": "Speichere wiederkehrende Shell-Befehle als kuratierte Snippets mit Syntax-Highlighting und Copy-Button.",
         "comingSoon": "Weitere Commands werden laufend ergänzt."
+      },
+      "hostnameGenerator": {
+        "title": "Hostname Generator",
+        "badge": "Naming",
+        "description": "Generiere Themen-PC-Namen und ein komplettes, skalierbares Active-Directory-Namensschema.",
+        "comingSoon": "Weitere Themen und Exportformate folgen."
       }
     },
     "toolPage": {
@@ -1235,6 +1241,190 @@
           "powershell": "PowerShell"
         }
       }
+    }
+  },
+  "hostnameGenerator": {
+    "modes": {
+      "hosts": "Hostnamen",
+      "domain": "AD-Blueprint"
+    },
+    "themes": {
+      "pickMany": "Themen (beliebig viele)",
+      "pickOne": "Thema",
+      "hint": "Zahl = Namen im Pool",
+      "greek": {
+        "label": "Griechische Mythologie",
+        "description": "Götter, Titanen, Helden und Monster — Zeus, Cerberus, Argus, Ariadne."
+      },
+      "norse": {
+        "label": "Nordische Mythologie",
+        "description": "Asgard bis Ragnarök — Odin, Heimdall, Bifröst, Draupnir."
+      },
+      "roman": {
+        "label": "Rom",
+        "description": "Imperium und Legionen — Jupiter, Limes, Janus, Tabularium."
+      },
+      "egyptian": {
+        "label": "Ägypten",
+        "description": "Nil und Duat — Ra, Anubis, Thoth, Osiris."
+      },
+      "tolkien": {
+        "label": "Mittelerde",
+        "description": "Tolkien — Gandalf, Palantír, Helms Klamm, Erebor."
+      },
+      "startrek": {
+        "label": "Star Trek",
+        "description": "Sternenflotte — Kirk, Uhura, Worf, Memory Alpha."
+      },
+      "starwars": {
+        "label": "Star Wars",
+        "description": "Eine weit entfernte Galaxis — Yoda, Kamino, Holonet, Schildtor."
+      },
+      "dune": {
+        "label": "Dune",
+        "description": "Arrakis — Muad'Dib, Holtzman, Heighliner, Ghola."
+      },
+      "cyberpunk": {
+        "label": "Cyberpunk",
+        "description": "Neon und schwarzes ICE — Neo, Oracle, Blackice, Architect."
+      },
+      "cosmos": {
+        "label": "Kosmos",
+        "description": "Sterne und Missionen — Polaris, Hubble, Magnetosphäre, Oort."
+      }
+    },
+    "options": {
+      "title": "Optionen",
+      "count": "Anzahl",
+      "prefix": "Präfix",
+      "prefixPlaceholder": "z. B. srv",
+      "separator": "Trenner",
+      "separators": {
+        "dash": "Bindestrich — srv-zeus",
+        "underscore": "Unterstrich — srv_zeus",
+        "none": "Keiner — srvzeus"
+      },
+      "casing": "Schreibweise",
+      "casings": {
+        "lower": "kleinschreibung",
+        "upper": "GROSSSCHREIBUNG",
+        "capital": "Erster Buchstabe groß"
+      },
+      "numbered": "Laufende Nummer anhängen (01, 02, 03 …)"
+    },
+    "actions": {
+      "generate": "Namen generieren",
+      "generateDomain": "Blueprint generieren",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "copyAll": "Alle kopieren",
+      "copyPlan": "Plan kopieren",
+      "copyCsv": "CSV kopieren",
+      "copyDomain": "Domain kopieren"
+    },
+    "warnings": {
+      "netbios": "{count} über 15 Zeichen (NetBIOS-Limit)"
+    },
+    "domain": {
+      "title": "Domäne & Benennung",
+      "label": "Domain-Label",
+      "labelPlaceholder": "automatisch aus dem Thema",
+      "tld": "TLD",
+      "style": "Host-Stil",
+      "styles": {
+        "pure": "Nur Name — zeus",
+        "roleTag": "Rollen-Tag — dc-zeus",
+        "indexed": "Name + Index — zeus-01",
+        "roleTagIndexed": "Rolle + Index — dc-zeus-01"
+      },
+      "forest": "Forest-Root-Domäne",
+      "netbios": "NetBIOS",
+      "note": "Jeder Host bekommt einen Namen, der zu seiner Aufgabe passt: der Bote macht Mail, der hundertäugige Wächter macht Monitoring, der Torwächter ist die Firewall. Namen bleiben im gesamten Plan eindeutig — du kannst jede Rolle hochskalieren und das Schema bleibt sauber."
+    },
+    "roles": {
+      "title": "Rollen in der Domäne",
+      "hint": "Zahl = Hosts pro Rolle",
+      "dc": {
+        "label": "Domain Controller",
+        "hint": "Herrscher — sie entscheiden"
+      },
+      "dns": {
+        "label": "DNS",
+        "hint": "Orakel, die jede Anfrage beantworten"
+      },
+      "dhcp": {
+        "label": "DHCP",
+        "hint": "Verteiler, die austeilen"
+      },
+      "exchange": {
+        "label": "Mail / Exchange",
+        "hint": "Boten"
+      },
+      "sql": {
+        "label": "Datenbank",
+        "hint": "Gedächtnis und Aufzeichnungen"
+      },
+      "file": {
+        "label": "Fileserver",
+        "hint": "Schatzkammern und Lager"
+      },
+      "backup": {
+        "label": "Backup",
+        "hint": "Kopien, Wiedergeburt, Rückkehr"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "hint": "Die, die alles sehen"
+      },
+      "firewall": {
+        "label": "Firewall",
+        "hint": "Torwächter und Mauern"
+      },
+      "proxy": {
+        "label": "Proxy / Gateway",
+        "hint": "Fährleute zwischen Welten"
+      },
+      "web": {
+        "label": "Web",
+        "hint": "Stimmen in der Öffentlichkeit"
+      },
+      "hypervisor": {
+        "label": "Hypervisor",
+        "hint": "Träger, die alles andere tragen"
+      },
+      "nas": {
+        "label": "NAS / Storage",
+        "hint": "Tiefe, weite Orte"
+      },
+      "print": {
+        "label": "Print / Fertigung",
+        "hint": "Schmiede und Essen"
+      },
+      "vpn": {
+        "label": "VPN",
+        "hint": "Verborgene Pfade und Fäden"
+      },
+      "dev": {
+        "label": "Dev",
+        "hint": "Erbauer und Erfinder"
+      },
+      "test": {
+        "label": "Lab / Test",
+        "hint": "Wo Dinge explodieren dürfen"
+      },
+      "client": {
+        "label": "Clients",
+        "hint": "Crew, Gefährten, Helden"
+      },
+      "admin": {
+        "label": "Admin / PAW",
+        "hint": "Richter und Verwalter"
+      }
+    },
+    "table": {
+      "role": "Rolle",
+      "hostname": "Hostname",
+      "fqdn": "FQDN"
     }
   }
 }

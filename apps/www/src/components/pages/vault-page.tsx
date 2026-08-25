@@ -7,6 +7,7 @@ import {
   IconCertificate,
   IconClock,
   IconBrandDocker,
+  IconServer2,
   IconTerminal2,
 } from "@tabler/icons-react";
 import {
@@ -36,6 +37,7 @@ const TOOL_ICONS: Record<VaultToolKey, IconComponent> = {
   dockerCompose: IconBrandDocker,
   crontabConverter: IconClock,
   quickCommands: IconTerminal2,
+  hostnameGenerator: IconServer2,
 };
 
 export function VaultPageContent() {
@@ -162,6 +164,9 @@ export function VaultPageContent() {
                     </Link>
                     <Link href="/vault/quick-commands" className="block transition hover:text-white">
                       quick-commands/
+                    </Link>
+                    <Link href="/vault/hostname-generator" className="block transition hover:text-white">
+                      hostname-generator/
                     </Link>
                   </div>
 

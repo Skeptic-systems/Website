@@ -705,6 +705,12 @@
         "badge": "Shell Library",
         "description": "Store recurring shell commands as curated snippets with syntax highlighting and copy actions.",
         "comingSoon": "More commands will be added over time."
+      },
+      "hostnameGenerator": {
+        "title": "Hostname Generator",
+        "badge": "Naming",
+        "description": "Generate themed PC names and a complete, scalable Active Directory naming scheme.",
+        "comingSoon": "More themes and export formats are on the way."
       }
     },
     "toolPage": {
@@ -1235,6 +1241,190 @@
           "powershell": "PowerShell"
         }
       }
+    }
+  },
+  "hostnameGenerator": {
+    "modes": {
+      "hosts": "Hostnames",
+      "domain": "AD Blueprint"
+    },
+    "themes": {
+      "pickMany": "Themes (pick as many as you like)",
+      "pickOne": "Theme",
+      "hint": "Number = names in the pool",
+      "greek": {
+        "label": "Greek Mythology",
+        "description": "Gods, titans, heroes and monsters — Zeus, Cerberus, Argus, Ariadne."
+      },
+      "norse": {
+        "label": "Norse Mythology",
+        "description": "Asgard to Ragnarök — Odin, Heimdall, Bifrost, Draupnir."
+      },
+      "roman": {
+        "label": "Rome",
+        "description": "Empire and legions — Jupiter, Limes, Janus, Tabularium."
+      },
+      "egyptian": {
+        "label": "Egypt",
+        "description": "Nile and Duat — Ra, Anubis, Thoth, Osiris."
+      },
+      "tolkien": {
+        "label": "Middle-earth",
+        "description": "Tolkien — Gandalf, Palantir, Helm's Deep, Erebor."
+      },
+      "startrek": {
+        "label": "Star Trek",
+        "description": "Starfleet — Kirk, Uhura, Worf, Memory Alpha."
+      },
+      "starwars": {
+        "label": "Star Wars",
+        "description": "A galaxy far, far away — Yoda, Kamino, Holonet, Shield Gate."
+      },
+      "dune": {
+        "label": "Dune",
+        "description": "Arrakis — Muad'Dib, Holtzman, Heighliner, Ghola."
+      },
+      "cyberpunk": {
+        "label": "Cyberpunk",
+        "description": "Neon and black ICE — Neo, Oracle, Blackice, Architect."
+      },
+      "cosmos": {
+        "label": "Cosmos",
+        "description": "Stars and missions — Polaris, Hubble, Magnetosphere, Oort."
+      }
+    },
+    "options": {
+      "title": "Options",
+      "count": "How many",
+      "prefix": "Prefix",
+      "prefixPlaceholder": "e.g. srv",
+      "separator": "Separator",
+      "separators": {
+        "dash": "Hyphen — srv-zeus",
+        "underscore": "Underscore — srv_zeus",
+        "none": "None — srvzeus"
+      },
+      "casing": "Casing",
+      "casings": {
+        "lower": "lowercase",
+        "upper": "UPPERCASE",
+        "capital": "Capitalised"
+      },
+      "numbered": "Append a running number (01, 02, 03 …)"
+    },
+    "actions": {
+      "generate": "Generate names",
+      "generateDomain": "Generate blueprint",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyAll": "Copy all",
+      "copyPlan": "Copy plan",
+      "copyCsv": "Copy CSV",
+      "copyDomain": "Copy domain"
+    },
+    "warnings": {
+      "netbios": "{count} over 15 chars (NetBIOS limit)"
+    },
+    "domain": {
+      "title": "Domain & naming",
+      "label": "Domain label",
+      "labelPlaceholder": "auto from theme",
+      "tld": "TLD",
+      "style": "Host style",
+      "styles": {
+        "pure": "Name only — zeus",
+        "roleTag": "Role tag — dc-zeus",
+        "indexed": "Name + index — zeus-01",
+        "roleTagIndexed": "Role + index — dc-zeus-01"
+      },
+      "forest": "Forest root domain",
+      "netbios": "NetBIOS",
+      "note": "Every host gets a name that fits its job: the messenger runs mail, the hundred-eyed watchman runs monitoring, the gatekeeper is the firewall. Names stay unique across the whole plan, so you can scale any role up and keep the scheme intact."
+    },
+    "roles": {
+      "title": "Roles in the domain",
+      "hint": "Number = hosts per role",
+      "dc": {
+        "label": "Domain Controller",
+        "hint": "Rulers — they decide"
+      },
+      "dns": {
+        "label": "DNS",
+        "hint": "Oracles that answer every lookup"
+      },
+      "dhcp": {
+        "label": "DHCP",
+        "hint": "Givers who hand out what you need"
+      },
+      "exchange": {
+        "label": "Mail / Exchange",
+        "hint": "Messengers"
+      },
+      "sql": {
+        "label": "Database",
+        "hint": "Memory and records"
+      },
+      "file": {
+        "label": "File Server",
+        "hint": "Treasuries and storerooms"
+      },
+      "backup": {
+        "label": "Backup",
+        "hint": "Copies, rebirth, restoration"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "hint": "The ones who see everything"
+      },
+      "firewall": {
+        "label": "Firewall",
+        "hint": "Gatekeepers and walls"
+      },
+      "proxy": {
+        "label": "Proxy / Gateway",
+        "hint": "Ferrymen between worlds"
+      },
+      "web": {
+        "label": "Web",
+        "hint": "Public voices"
+      },
+      "hypervisor": {
+        "label": "Hypervisor",
+        "hint": "Bearers that carry everything else"
+      },
+      "nas": {
+        "label": "NAS / Storage",
+        "hint": "Deep, vast places"
+      },
+      "print": {
+        "label": "Print / Fabrication",
+        "hint": "Smiths and forges"
+      },
+      "vpn": {
+        "label": "VPN",
+        "hint": "Hidden paths and threads"
+      },
+      "dev": {
+        "label": "Dev",
+        "hint": "Makers and inventors"
+      },
+      "test": {
+        "label": "Lab / Test",
+        "hint": "Where things may blow up"
+      },
+      "client": {
+        "label": "Clients",
+        "hint": "Crew, companions, heroes"
+      },
+      "admin": {
+        "label": "Admin / PAW",
+        "hint": "Judges and stewards"
+      }
+    },
+    "table": {
+      "role": "Role",
+      "hostname": "Hostname",
+      "fqdn": "FQDN"
     }
   }
 }
